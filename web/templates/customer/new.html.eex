@@ -1,0 +1,6 @@
+<h2>New customer</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: customer_path(@conn, :create) %>
+
+<%= link "Back", to: customer_path(@conn, :index) %>

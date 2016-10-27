@@ -1,8 +1,30 @@
-<div class="row">
-  <div class="col-lg-12">
-    <h4>Customers</h4>
-    <ul>
-      <%= Enum.map(37..42, fn(i) -> "<li><a href=\"#{customer_path(@conn, :show, i)}\">#{i}</a></li>" |> Phoenix.HTML.raw end) %>
-    </ul>
-  </div>
-</div>
+<h2>Listing customers</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Number</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for customer <- @customers do %>
+    <tr>
+      <td><%= customer.name %></td>
+      <td><%= customer.email %></td>
+      <td><%= customer.number %></td>
+
+      <td class="text-right">
+        <%= link "Show", to: customer_path(@conn, :show, customer), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: customer_path(@conn, :edit, customer), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: customer_path(@conn, :delete, customer), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New customer", to: customer_path(@conn, :new) %>

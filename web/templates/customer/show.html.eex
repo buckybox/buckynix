@@ -1,5 +1,23 @@
-<div class="row">
-  <div class="col-lg-12">
-    <h4>Customer <%= @id %></h4>
-  </div>
-</div>
+<h2>Show customer</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @customer.name %>
+  </li>
+
+  <li>
+    <strong>Email:</strong>
+    <%= @customer.email %>
+  </li>
+
+  <li>
+    <strong>Number:</strong>
+    <%= @customer.number %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: customer_path(@conn, :edit, @customer) %>
+<%= link "Back", to: customer_path(@conn, :index) %>
