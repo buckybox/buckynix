@@ -3,9 +3,9 @@
 <table class="table">
   <thead>
     <tr>
+      <th>Number</th>
       <th>Name</th>
       <th>Email</th>
-      <th>Number</th>
 
       <th></th>
     </tr>
@@ -13,9 +13,9 @@
   <tbody>
 <%= for customer <- @customers do %>
     <tr>
+      <td><%= customer.number %></td>
       <td><%= customer.name %></td>
       <td><%= customer.email %></td>
-      <td><%= customer.number %></td>
 
       <td class="text-right">
         <%= link "Show", to: customer_path(@conn, :show, customer), class: "btn btn-default btn-xs" %>
