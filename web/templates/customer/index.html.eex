@@ -2,15 +2,7 @@
   <div class="col-lg-12">
     <h4>Customers</h4>
     <ul>
-      <li>
-        <a href="/customers/1">Customer 1</a>
-      </li>
-      <li>
-        Customer 2
-      </li>
-      <li>
-        Customer 3
-      </li>
+      <%= Enum.map(37..42, fn(i) -> "<li><a href=\"#{customer_path(@conn, :show, i)}\">#{i}</a></li>" |> Phoenix.HTML.raw end) %>
     </ul>
   </div>
 </div>
