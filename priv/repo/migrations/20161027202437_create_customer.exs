@@ -11,5 +11,7 @@ defmodule Buckynix.Repo.Migrations.CreateCustomer do
       timestamps()
     end
 
+    create unique_index(:customers, [:email])
+    create unique_index(:customers, [:number])
   end
 end

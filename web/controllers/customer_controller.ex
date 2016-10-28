@@ -4,7 +4,9 @@ defmodule Buckynix.CustomerController do
   alias Buckynix.Customer
 
   def index(conn, _params) do
-    customers = Repo.all(Customer)
+    customers = Customer
+      |> order_by(:number)
+      |> Repo.all
     render(conn, "index.html", customers: customers)
   end
 
