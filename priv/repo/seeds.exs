@@ -9,3 +9,23 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+alias Buckynix.{Repo, Customer}
+
+[
+  %{
+    name: "John Doe",
+    email: "john@example.net",
+    number: 42,
+    # password: "12345678"
+  },
+  %{
+    name: "Bob Carrot",
+    email: "bob@carrot.net",
+    number: 666,
+    # password: "12345678"
+  },
+]
+|> Enum.map(&Customer.changeset(%Customer{}, &1))
+|> Enum.each(&Repo.insert!(&1))
+
