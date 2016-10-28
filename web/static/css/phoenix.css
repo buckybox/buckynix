@@ -27,12 +27,11 @@ form.link, form.button {
   border-bottom: 1px solid #e5e5e5;
 }
 .logo {
-  width: 519px;
-  height: 71px;
+  width: 165px;
+  height: 44px;
   display: inline-block;
   margin-bottom: 1em;
-  background-image: url("/images/phoenix.png");
-  background-size: 519px 71px;
+  background-image: url("/images/buckynix.png");
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
@@ -46,6 +45,11 @@ form.link, form.button {
 @media (min-width: 768px) {
   .container {
     max-width: 730px;
+  }
+}
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1162px;
   }
 }
 .container-narrow > hr {
