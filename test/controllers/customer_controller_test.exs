@@ -2,7 +2,7 @@ defmodule Buckynix.CustomerControllerTest do
   use Buckynix.ConnCase
 
   alias Buckynix.Customer
-  @valid_attrs %{email: "some content", name: "some content", number: 42}
+  @valid_attrs %{email: "joe#{Enum.random(1..100)}@test.local", name: "Joe", number: Enum.random(1..100)}
   @invalid_attrs %{}
 
   test "lists all entries on index", %{conn: conn} do
@@ -34,7 +34,7 @@ defmodule Buckynix.CustomerControllerTest do
 
   test "renders page not found when id is nonexistent", %{conn: conn} do
     assert_error_sent 404, fn ->
-      get conn, customer_path(conn, :show, -1)
+      get conn, customer_path(conn, :show, Ecto.UUID.generate)
     end
   end
 

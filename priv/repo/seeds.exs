@@ -27,5 +27,7 @@ alias Buckynix.{Repo, Customer}
   },
 ]
 |> Enum.map(&Customer.changeset(%Customer{}, &1))
-|> Enum.each(&Repo.insert!(&1))
+|> Enum.map(&Repo.insert!(&1))
+|> Enum.map(&Ecto.build_assoc(&1, :account, %{balance: Enum.random(0..100_00), currency: "EUR"}))
+|> Enum.map(&Repo.insert!(&1))
 

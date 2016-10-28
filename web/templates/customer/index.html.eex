@@ -5,7 +5,8 @@
     <tr>
       <th>Number</th>
       <th>Name</th>
-      <th>Email</th>
+      <th>Next delivery</th>
+      <th>Balance</th>
 
       <th></th>
     </tr>
@@ -15,7 +16,8 @@
     <tr>
       <td><%= customer.number %></td>
       <td><%= customer.name %></td>
-      <td><%= customer.email %></td>
+      <td><%= "???" %></td>
+      <td><%= Buckynix.Account.balance(customer.account) %></td>
 
       <td class="text-right">
         <%= link "Show", to: customer_path(@conn, :show, customer), class: "btn btn-default btn-xs" %>

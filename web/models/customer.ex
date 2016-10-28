@@ -1,12 +1,16 @@
 defmodule Buckynix.Customer do
   use Buckynix.Web, :model
 
+  alias Buckynix.Account
+
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "customers" do
     field :name, :string
     field :email, :string
     field :number, :integer
+
+    has_one :account, Account
 
     timestamps()
   end
