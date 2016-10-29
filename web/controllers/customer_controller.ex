@@ -3,7 +3,7 @@ defmodule Buckynix.CustomerController do
 
   alias Buckynix.{Customer,Account,Transaction}
 
-  def tag(conn, %{ "tag" => tag }) do
+  def tag(conn, %{"tag" => tag}) do
     customers = Repo.all(
       from c in Customer,
       where: fragment("? = ANY (tags)", ^tag),
@@ -12,7 +12,7 @@ defmodule Buckynix.CustomerController do
     render(conn, "index.html", customers: customers)
   end
 
-  def search(conn, %{ "search" => %{"query" => query} }) do
+  def search(conn, %{"search" => %{"query" => query}}) do
     customers = Repo.all(
       from c in Customer,
       where: ilike(c.name, ^"%#{query}%"),
