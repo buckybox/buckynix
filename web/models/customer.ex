@@ -6,6 +6,7 @@ defmodule Buckynix.Customer do
   schema "customers" do
     field :name, :string
     field :email, :string
+    field :tags, {:array, :string}
 
     has_one :account, Buckynix.Account
 
@@ -17,7 +18,7 @@ defmodule Buckynix.Customer do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :email])
-    |> validate_required([:name, :email])
+    |> cast(params, [:name, :email, :tags])
+    |> validate_required([:name, :email, :tags])
   end
 end

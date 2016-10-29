@@ -16,12 +16,18 @@ customers = [
   %{
     name: "John Doe",
     email: "john@example.net",
+    tags: ~w(test),
     # password: "12345678"
   },
   %{
     name: "Bob Carrot",
     email: "bob@carrot.net",
-    # password: "12345678"
+    tags: ~w(crazy carrot test)
+  },
+  %{
+    name: "Buck Baller",
+    email: "buck@baller.xyz",
+    tags: [],
   },
 ]
 |> Enum.map(&Customer.changeset(%Customer{}, &1))

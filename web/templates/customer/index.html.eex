@@ -12,13 +12,21 @@
   </thead>
 
   <tbody>
-    <tr>
-      <td colspan="4" class="text-center"><%= link "Create a new customer", to: customer_path(@conn, :new), class: "btn btn-primary" %></td>
+    <tr class="new-row">
+      <td colspan="4"><%= link "Create a new customer", to: customer_path(@conn, :new), class: "btn btn-primary" %></td>
     </tr>
 
 <%= for customer <- @customers do %>
     <tr>
-      <td><%= customer.name %></td>
+      <td>
+        <%= link customer.name, to: customer_path(@conn, :show, customer) %>
+
+        <%= for tag <- customer.tags do %>
+          <%= link to: customer_path(@conn, :tag, tag) do %>
+            <span class="label label-info"><%= tag %></span>
+          <% end %>
+        <% end %>
+      </td>
       <td><%= "???" %></td>
       <td><%= customer.account.balance %></td>
 

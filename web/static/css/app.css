@@ -1,1 +1,7 @@
 /* This file is for your main application css. */
+
+table.table tr.new-row > td > a {
+  display: block;
+  background-color: #FAE1A0;
+  color: #08c;
+}

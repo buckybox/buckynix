@@ -17,9 +17,8 @@ defmodule Buckynix.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    get "/customers/tag/:tag", CustomerController, :tag
     resources "/customers", CustomerController do
-      get "/tag/:slug", CustomerController, :tag
-
       resources "/orders", OrderController
     end
   end

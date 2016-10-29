@@ -27,9 +27,9 @@ defmodule Buckynix.CustomerControllerTest do
   end
 
   test "shows chosen resource", %{conn: conn} do
-    customer = Repo.insert! %Customer{}
+    customer = Repo.insert! Customer.changeset(%Customer{}, @valid_attrs)
     conn = get conn, customer_path(conn, :show, customer)
-    assert html_response(conn, 200) =~ "Show customer"
+    assert html_response(conn, 200) =~ customer.name
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do

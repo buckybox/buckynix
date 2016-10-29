@@ -6,6 +6,7 @@ defmodule Buckynix.Repo.Migrations.CreateCustomer do
       add :id, :binary_id, primary_key: true
       add :name, :string, null: false
       add :email, :string, null: false
+      add :tags, {:array, :string}, null: false, default: []
 
       timestamps()
     end

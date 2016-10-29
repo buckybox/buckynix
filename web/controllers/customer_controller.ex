@@ -3,6 +3,15 @@ defmodule Buckynix.CustomerController do
 
   alias Buckynix.{Customer,Account,Transaction}
 
+  def tag(conn, %{ "tag" => tag }) do
+    customers = Repo.all(
+      from c in Customer,
+      where: fragment("? = ANY (tags)", ^tag),
+      preload: [:account]
+    )
+    render(conn, "index.html", customers: customers)
+  end
+
   def index(conn, _params) do
     customers = Customer
       |> preload(:account)
