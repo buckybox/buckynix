@@ -1,4 +1,4 @@
-<h2>Listing customers</h2>
+<h2><%= length(@customers) %> customers</h2>
 
 <table class="table">
   <thead>
@@ -10,7 +10,12 @@
       <th></th>
     </tr>
   </thead>
+
   <tbody>
+    <tr>
+      <td colspan="4" class="text-center"><%= link "Create a new customer", to: customer_path(@conn, :new), class: "btn btn-primary" %></td>
+    </tr>
+
 <%= for customer <- @customers do %>
     <tr>
       <td><%= customer.name %></td>
@@ -18,13 +23,10 @@
       <td><%= customer.account.balance %></td>
 
       <td class="text-right">
-        <%= link "Show", to: customer_path(@conn, :show, customer), class: "btn btn-default btn-xs" %>
+        <%= link "Show", to: customer_path(@conn, :show, customer), class: "btn btn-primary btn-xs" %>
         <%= link "Edit", to: customer_path(@conn, :edit, customer), class: "btn btn-default btn-xs" %>
-        <%= link "Delete", to: customer_path(@conn, :delete, customer), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
       </td>
     </tr>
 <% end %>
   </tbody>
 </table>
-
-<%= link "New customer", to: customer_path(@conn, :new) %>
