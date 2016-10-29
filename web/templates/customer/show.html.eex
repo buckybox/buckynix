@@ -1,13 +1,18 @@
 <div class="row">
   <div class="col-lg-4">
     <%= link "Back", to: customer_path(@conn, :index), class: "btn btn-default" %>
-    <%= link raw('<span class="glyphicon glyphicon-envelope"></span> Email'), to: customer_path(@conn, :show, @customer), class: "btn btn-primary" %>
+    <%= link raw(~s(<span class="glyphicon glyphicon-envelope"></span> Email)), to: customer_path(@conn, :show, @customer), class: "btn btn-primary" %>
 
     <h3><%= @customer.name %></h3>
 
     <ul class="list-inline">
-      <li><span class="label label-info">tag1</span></li>
-      <li><span class="label label-info">tag1</span></li>
+      <%= for tag <- @customer.tags do %>
+        <li>
+          <%= link to: customer_path(@conn, :tag, tag) do %>
+            <span class="label label-info"><%= tag %></span>
+          <% end %>
+        </li>
+      <% end %>
     </ul>
 
     <h4><%= @account.balance %></h4>
@@ -21,6 +26,24 @@
   </div>
 
   <div class="col-lg-8">
+    <h3><span class="label label-default">Orders</span></h3>
+
+    <table class="table">
+      <tbody>
+        <tr class="new-row">
+          <td colspan="3"><%= link "Create a new order", to: customer_path(@conn, :new), class: "btn btn-primary" %></td>
+        </tr>
+
+        <%= for order <- @orders do %>
+          <tr>
+            <td><%= order.label %></td>
+            <td><%= order.description %></td>
+            <td class="text-right"><%= order.price %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
     <h3><span class="label label-default">Transactions</span></h3>
 
     <table class="table">
@@ -32,13 +55,13 @@
         </tr>
       </thead>
       <tbody>
-    <%= for transaction <- @transactions do %>
-        <tr>
-          <td><%= transaction.value_date %></td>
-          <td><%= transaction.description %></td>
-          <td class="text-right"><%= transaction.amount %></td>
-        </tr>
-    <% end %>
+        <%= for transaction <- @transactions do %>
+          <tr>
+            <td><%= transaction.value_date %></td>
+            <td><%= transaction.description %></td>
+            <td class="text-right"><%= transaction.amount %></td>
+          </tr>
+        <% end %>
       </tbody>
     </table>
   </div>

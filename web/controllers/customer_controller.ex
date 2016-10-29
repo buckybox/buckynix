@@ -12,6 +12,15 @@ defmodule Buckynix.CustomerController do
     render(conn, "index.html", customers: customers)
   end
 
+  def search(conn, %{ "search" => %{"query" => query} }) do
+    customers = Repo.all(
+      from c in Customer,
+      where: ilike(c.name, ^"%#{query}%"),
+      preload: [:account]
+    )
+    render(conn, "index.html", customers: customers)
+  end
+
   def index(conn, _params) do
     customers = Customer
       |> preload(:account)
@@ -40,9 +49,10 @@ defmodule Buckynix.CustomerController do
   def show(conn, %{"id" => id}) do
     customer = Repo.get!(Customer, id)
     account = Repo.get_by!(Account, customer_id: customer.id)
+    orders = []
     transactions = Repo.all(Transaction, account_id: account.id)
     # TODO: must be a cleaner way to fetch this - with preload?
-    render(conn, "show.html", customer: customer, account: account, transactions: transactions)
+    render(conn, "show.html", customer: customer, account: account, orders: orders, transactions: transactions)
   end
 
   def edit(conn, %{"id" => id}) do

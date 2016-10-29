@@ -18,6 +18,7 @@ defmodule Buckynix.Router do
 
     get "/", PageController, :index
     get "/customers/tag/:tag", CustomerController, :tag
+    get "/customers/search", CustomerController, :search
     resources "/customers", CustomerController do
       resources "/orders", OrderController
     end
