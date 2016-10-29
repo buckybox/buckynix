@@ -6,6 +6,8 @@ defmodule Buckynix.Account do
     field :currency, :string
     field :balance, Money.Ecto.Type
 
+    has_many :transaction, Buckynix.Transaction
+
     timestamps()
   end
 

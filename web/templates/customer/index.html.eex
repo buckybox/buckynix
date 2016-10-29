@@ -3,7 +3,6 @@
 <table class="table">
   <thead>
     <tr>
-      <th>Number</th>
       <th>Name</th>
       <th>Next delivery</th>
       <th>Balance</th>
@@ -14,7 +13,6 @@
   <tbody>
 <%= for customer <- @customers do %>
     <tr>
-      <td><%= customer.number %></td>
       <td><%= customer.name %></td>
       <td><%= "???" %></td>
       <td><%= Buckynix.Account.balance(customer.account) %></td>

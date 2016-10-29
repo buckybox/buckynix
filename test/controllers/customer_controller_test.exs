@@ -2,7 +2,7 @@ defmodule Buckynix.CustomerControllerTest do
   use Buckynix.ConnCase
 
   alias Buckynix.Customer
-  @valid_attrs %{email: "joe#{Enum.random(1..100)}@test.local", name: "Joe", number: Enum.random(1..100)}
+  @valid_attrs %{email: "joe#{Enum.random(1..100)}@test.local", name: "Joe"}
   @invalid_attrs %{}
 
   test "lists all entries on index", %{conn: conn} do

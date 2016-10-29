@@ -6,7 +6,6 @@ defmodule Buckynix.CustomerController do
   def index(conn, _params) do
     customers = Customer
       |> preload(:account)
-      |> order_by(:number)
       |> Repo.all
     render(conn, "index.html", customers: customers)
   end

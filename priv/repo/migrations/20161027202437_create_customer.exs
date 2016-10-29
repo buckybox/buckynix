@@ -4,14 +4,12 @@ defmodule Buckynix.Repo.Migrations.CreateCustomer do
   def change do
     create table(:customers, primary_key: false) do
       add :id, :binary_id, primary_key: true
-      add :name, :string
-      add :email, :string
-      add :number, :integer
+      add :name, :string, null: false
+      add :email, :string, null: false
 
       timestamps()
     end
 
     create unique_index(:customers, [:email])
-    create unique_index(:customers, [:number])
   end
 end

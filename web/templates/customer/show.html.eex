@@ -12,11 +12,6 @@
     <%= @customer.email %>
   </li>
 
-  <li>
-    <strong>Number:</strong>
-    <%= @customer.number %>
-  </li>
-
 </ul>
 
 <%= link "Edit", to: customer_path(@conn, :edit, @customer) %>

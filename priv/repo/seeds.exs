@@ -12,22 +12,29 @@
 
 alias Buckynix.{Repo, Customer}
 
-[
+customers = [
   %{
     name: "John Doe",
     email: "john@example.net",
-    number: 42,
     # password: "12345678"
   },
   %{
     name: "Bob Carrot",
     email: "bob@carrot.net",
-    number: 666,
     # password: "12345678"
   },
 ]
 |> Enum.map(&Customer.changeset(%Customer{}, &1))
 |> Enum.map(&Repo.insert!(&1))
-|> Enum.map(&Ecto.build_assoc(&1, :account, %{balance: Enum.random(0..100_00), currency: "EUR"}))
+
+accounts = customers
+|> Enum.map(&Ecto.build_assoc(&1, :account, %{currency: "EUR"}))
 |> Enum.map(&Repo.insert!(&1))
 
+for i <- 1..Enum.random(1..3) do
+  transactions = accounts
+  |> Enum.map(&Ecto.build_assoc(&1, :transaction, %{
+    amount: Enum.random(1..1000), description: "Test tx", value_date: Ecto.DateTime.utc
+  }))
+  |> Enum.map(&Repo.insert!(&1))
+end
