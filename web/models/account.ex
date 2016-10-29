@@ -19,9 +19,4 @@ defmodule Buckynix.Account do
     |> cast(params, [:currency, :balance])
     |> validate_required([:currency, :balance])
   end
-
-  def balance(account) do
-    Money.new(account.balance.amount, account.currency)
-    |> Money.to_string
-  end
 end

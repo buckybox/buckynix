@@ -1,7 +1,7 @@
 defmodule Buckynix.CustomerController do
   use Buckynix.Web, :controller
 
-  alias Buckynix.Customer
+  alias Buckynix.{Customer,Account,Transaction}
 
   def index(conn, _params) do
     customers = Customer
@@ -30,7 +30,10 @@ defmodule Buckynix.CustomerController do
 
   def show(conn, %{"id" => id}) do
     customer = Repo.get!(Customer, id)
-    render(conn, "show.html", customer: customer)
+    account = Repo.get_by!(Account, customer_id: customer.id)
+    transactions = Repo.all(Transaction, account_id: account.id)
+    # TODO: must be a cleaner way to fetch this - with preload?
+    render(conn, "show.html", customer: customer, account: account, transactions: transactions)
   end
 
   def edit(conn, %{"id" => id}) do

@@ -27,4 +27,4 @@ config :logger, :console,
 import_config "#{Mix.env}.exs"
 
 config :money,
-  default_currency: :USD # XXX: workaround for https://github.com/liuggio/money/issues/30
+  default_currency: :EUR # XXX: workaround for https://github.com/liuggio/money/issues/30

@@ -1,18 +1,36 @@
-<h2>Show customer</h2>
+<div class="row">
+  <div class="col-lg-4">
+    <h3><%= @customer.name %></h3>
 
-<ul>
+    <ul>
+      <li><%= @account.balance %></li>
+      <li>Email: <strong><%= @customer.email %></strong></li>
+    </ul>
+  </div>
 
-  <li>
-    <strong>Name:</strong>
-    <%= @customer.name %>
-  </li>
+  <div class="col-lg-8">
+    <h4>Transactions</h4>
 
-  <li>
-    <strong>Email:</strong>
-    <%= @customer.email %>
-  </li>
-
-</ul>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Value Date</th>
+          <th>Description</th>
+          <th class="text-right">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+    <%= for transaction <- @transactions do %>
+        <tr>
+          <td><%= transaction.value_date %></td>
+          <td><%= transaction.description %></td>
+          <td class="text-right"><%= transaction.amount %></td>
+        </tr>
+    <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
 
 <%= link "Edit", to: customer_path(@conn, :edit, @customer) %>
 <%= link "Back", to: customer_path(@conn, :index) %>

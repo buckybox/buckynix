@@ -2,7 +2,7 @@ defmodule Buckynix.Transaction do
   use Buckynix.Web, :model
 
   schema "transactions" do
-    field :amount, :integer
+    field :amount, Money.Ecto.Type
     field :description, :string
     field :value_date, Ecto.DateTime
     belongs_to :account, Buckynix.Account
