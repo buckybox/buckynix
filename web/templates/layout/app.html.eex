@@ -17,10 +17,12 @@
         <nav role="navigation">
           <ul class="nav nav-pills pull-right">
             <%= if @current_user do %>
-              <li>
-                <%= @current_user.name %>
-                <%= link "Log out", to: session_path(@conn, :delete), method: :delete %>
-              </li>
+              <li><%= link raw(~s(<span class="glyphicon glyphicon-user"></span>) <> " Customers"), to: customer_path(@conn, :index) %></li>
+              <li><%= link raw(~s(<span class="glyphicon glyphicon-road"></span>) <> " Deliveries"), to: customer_path(@conn, :index) %></li>
+
+              <li><%= link raw(~s(<span class="glyphicon glyphicon-cog"></span>) <> " Organization settings"), to: customer_path(@conn, :index) %></li>
+              <li><%= @current_user.name %></li>
+              <li><%= link "Log out", to: session_path(@conn, :delete), method: :delete %></li>
             <% end %>
           </ul>
         </nav>
