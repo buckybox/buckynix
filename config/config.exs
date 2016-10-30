@@ -28,3 +28,17 @@ import_config "#{Mix.env}.exs"
 
 config :money,
   default_currency: :EUR # XXX: workaround for https://github.com/liuggio/money/issues/30
+
+# %% Coherence Configuration %%   Don't remove this line
+config :coherence,
+  user_schema: Buckynix.User,
+  repo: Buckynix.Repo,
+  module: Buckynix,
+  logged_out_url: "/",
+  email_from: {"Your Name", "yourname@example.com"},
+  opts: [:rememberable, :invitable, :registerable, :trackable, :lockable, :recoverable, :authenticatable]
+
+config :coherence, Buckynix.Coherence.Mailer,
+  adapter: Swoosh.Adapters.Sendgrid,
+  api_key: "your api key here"
+# %% End Coherence Configuration %%

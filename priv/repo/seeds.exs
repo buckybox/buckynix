@@ -12,6 +12,9 @@
 
 alias Buckynix.{Repo, Customer}
 
+Buckynix.User.changeset(%Buckynix.User{}, %{name: "Test User", email: "testuser@example.com", password: "secret", password_confirmation: "secret"})
+|> Buckynix.Repo.insert!
+
 customers = [
   %{
     name: "John Doe",

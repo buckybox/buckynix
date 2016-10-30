@@ -18,8 +18,10 @@ defmodule Buckynix.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Buckynix, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex]]
+     applications: [
+       :coherence,
+       :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
+       :phoenix_ecto, :postgrex]]
   end
 
   # Specifies which paths to compile per environment.
@@ -38,7 +40,8 @@ defmodule Buckynix.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
-     {:money, "~> 1.2.0"},
+     {:coherence, "~> 0.3"},
+     {:money, "~> 1.2"},
      {:credo, "~> 0.5", only: [:dev, :test]}]
   end
 
