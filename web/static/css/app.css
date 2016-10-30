@@ -32,6 +32,14 @@ form.link, form.button {
   }
 }
 
+.text-right {
+  text-align: right;
+}
+
+span.money.negative {
+  color: #D0381B;
+}
+
 ul.list-inline li {
   float: left;
   margin-right: 2px;

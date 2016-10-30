@@ -83,8 +83,8 @@
                 <td><%= transaction.inserted_at %></td>
                 <td><%= transaction.value_date %></td>
                 <td><%= transaction.description %></td>
-                <td class="text-right"><%= transaction.amount %></td>
-                <td class="text-right"><%= transaction.balance %></td>
+                <td class="text-right"><%= Buckynix.Money.html(transaction.amount) %></td>
+                <td class="text-right"><%= Buckynix.Money.html(transaction.balance) %></td>
               </tr>
             <% end %>
           </tbody>
