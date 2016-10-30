@@ -5,7 +5,7 @@
   <div class="col-lg-6 text-center">
     <%= form_for @conn, customer_path(@conn, :search), [as: :search, method: :get, class: "form-inline"], fn f -> %>
       <%= text_input f, :query, class: "form-control", style: "width: 80%" %>
-      <%= submit raw(~s(<span class="glyphicon glyphicon-search"></span>)), class: "btn btn-primary" %>
+      <%= submit raw(~s(<i class="fa fa-search"></i>)), class: "btn btn-primary" %>
     <% end %>
   </div>
 </div>
@@ -25,7 +25,7 @@
 
             <%= for tag <- customer.tags do %>
               <%= link to: customer_path(@conn, :tag, tag) do %>
-                <span class="label label-info"><%= tag %></span>
+                <span class="tag tag-info"><%= tag %></span>
               <% end %>
             <% end %>
           </td>
