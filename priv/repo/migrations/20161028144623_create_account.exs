@@ -41,7 +41,7 @@ defmodule Buckynix.Repo.Migrations.CreateAccount do
 
     execute "
       CREATE TRIGGER accounts_balance_update
-      AFTER INSERT OR UPDATE OR DELETE ON transactions
+      AFTER INSERT OR UPDATE ON transactions
       FOR EACH ROW EXECUTE PROCEDURE accounts_balance_update();
     "
   end
