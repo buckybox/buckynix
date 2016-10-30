@@ -60,10 +60,10 @@ accounts = customers
 |> Enum.map(&Ecto.build_assoc(&1, :account, %{currency: "EUR"}))
 |> Enum.map(&Repo.insert!(&1))
 
-for i <- 1..Enum.random(1..3) do
+for i <- Enum.random(2..4)..0 do
   transactions = accounts
   |> Enum.map(&Ecto.build_assoc(&1, :transaction, %{
-    amount: Enum.random(1..1000), description: "Test tx", value_date: Ecto.DateTime.utc
+    amount: Enum.random(-1000..1000), description: "Test tx #{10-i}", value_date: Ecto.DateTime.cast!(Timex.shift(Timex.now, days: -i))
   }))
   |> Enum.map(&Repo.insert!(&1))
 end

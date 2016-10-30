@@ -7,6 +7,8 @@ defmodule Buckynix.Transaction do
     field :value_date, Ecto.DateTime
     belongs_to :account, Buckynix.Account
 
+    field :balance, Money.Ecto.Type, virtual: true
+
     timestamps()
   end
 

@@ -1,11 +1,5 @@
 /* This file is for your main application css. */
 
-/* Space out content a bit */
-body, form, ul, table {
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
 /* Phoenix flash messages */
 .alert:empty { display: none; }
 
@@ -14,7 +8,7 @@ form.link, form.button {
   display: inline;
 }
 
-/* Custom page header */
+/* Page header */
 .header {
   border-bottom: 1px solid #e5e5e5;
 }
@@ -26,14 +20,7 @@ form.link, form.button {
   background-image: url("/images/buckynix.png");
 }
 
-/* Everything but the jumbotron gets side spacing for mobile first views */
-.header,
-.marketing {
-  padding-right: 15px;
-  padding-left: 15px;
-}
-
-/* Customize container */
+/* Container */
 @media (min-width: 768px) {
   .container {
     max-width: 730px;
@@ -44,37 +31,10 @@ form.link, form.button {
     max-width: 1162px;
   }
 }
-.container-narrow > hr {
-  margin: 30px 0;
-}
 
-/* Main marketing message */
-.jumbotron {
-  text-align: center;
-  border-bottom: 1px solid #e5e5e5;
-}
-
-/* Supporting marketing content */
-.marketing {
-  margin: 35px 0;
-}
-
-/* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px) {
-  /* Remove the padding we set earlier */
-  .header,
-  .marketing {
-    padding-right: 0;
-    padding-left: 0;
-  }
-  /* Space out the masthead */
-  .header {
-    margin-bottom: 30px;
-  }
-  /* Remove the bottom border on the jumbotron for visual effect */
-  .jumbotron {
-    border-bottom: 0;
-  }
+ul.list-inline li {
+  float: left;
+  margin-right: 2px;
 }
 
 table.table tr.new-row > td > a {

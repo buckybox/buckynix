@@ -50,7 +50,22 @@ defmodule Buckynix.CustomerController do
     customer = Repo.get!(Customer, id)
     account = Repo.get_by!(Account, customer_id: customer.id)
     orders = []
-    transactions = Repo.all(Transaction, account_id: account.id)
+
+    transactions = Repo.all(
+      from t in Transaction,
+      where: t.account_id == ^account.id,
+      order_by: [desc: :value_date]
+    )
+
+    transactions = transactions |> Enum.map(
+      fn(tx) ->
+        %{ tx | balance: Enum.reduce_while(transactions, account.balance, fn(tx2, acc) ->
+          if tx2.value_date <= tx.value_date, do: {:halt, acc}, else: {:cont, Money.subtract(acc, tx2.amount)}
+        end
+        )}
+      end
+    )
+
     # TODO: must be a cleaner way to fetch this - with preload?
     render(conn, "show.html", customer: customer, account: account, orders: orders, transactions: transactions)
   end

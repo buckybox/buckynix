@@ -1,69 +1,96 @@
 <div class="row">
   <div class="col-lg-4">
     <%= link "Back", to: customer_path(@conn, :index), class: "btn btn-default" %>
-    <%= link raw(~s(<i class="fa fa-envelope"></i> Email)), to: customer_path(@conn, :show, @customer), class: "btn btn-primary" %>
-
-    <h3><%= @customer.name %></h3>
-
-    <ul class="list-inline">
-      <%= for tag <- @customer.tags do %>
-        <li>
-          <%= link to: customer_path(@conn, :tag, tag) do %>
-            <span class="tag tag-info"><%= tag %></span>
-          <% end %>
-        </li>
-      <% end %>
-    </ul>
-
-    <h4><%= @account.balance %></h4>
-
-    <ul class="list-unstyled">
-      <li>Email: <strong><%= @customer.email %></strong></li>
-    </ul>
-
     <%= link "Edit", to: customer_path(@conn, :edit, @customer), class: "btn btn-default btn-xs" %>
     <%= link "Delete", to: customer_path(@conn, :delete, @customer), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+
+    <div class="card">
+      <div class="card-block">
+        <div class="pull-right">
+          <%= link raw(~s(<i class="fa fa-envelope"></i> Email)), to: customer_path(@conn, :show, @customer), class: "btn btn-primary" %>
+        </div>
+
+        <h4 class="card-title"><%= @customer.name %></h4>
+
+        <ul class="list-inline">
+          <%= for tag <- @customer.tags do %>
+            <li>
+              <%= link to: customer_path(@conn, :tag, tag) do %>
+                <span class="tag tag-info"><%= tag %></span>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item"><h4><%= @account.balance %></h4></li>
+        <li class="list-group-item">
+          <ul class="list-unstyled">
+            <li>Email: <strong><%= @customer.email %></strong></li>
+            <li>Phone: <strong><%= "07123456789" %></strong></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="card-block">
+        <a href="#" class="card-link">Card link</a>
+        <a href="#" class="card-link">Another link</a>
+      </div>
+    </div>
+
   </div>
 
   <div class="col-lg-8">
-    <h3><span class="tag tag-default">Orders</span></h3>
+    <div class="card">
+      <h4 class="card-header">Orders</h4>
+      <div class="card-block">
+        <h4 class="card-title">Create a new order</h4>
+        <p class="card-text">No orders</p>
 
-    <table class="table">
-      <tbody>
-        <tr class="new-row">
-          <td colspan="3"><%= link "Create a new order", to: customer_path(@conn, :new), class: "btn btn-primary" %></td>
-        </tr>
+        <table class="table">
+          <tbody>
+            <tr class="new-row">
+              <td colspan="3"><%= link "Create a new order", to: customer_path(@conn, :new), class: "btn btn-primary" %></td>
+            </tr>
 
-        <%= for order <- @orders do %>
-          <tr>
-            <td><%= order.tag %></td>
-            <td><%= order.description %></td>
-            <td class="text-right"><%= order.price %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+            <%= for order <- @orders do %>
+              <tr>
+                <td><%= order.tag %></td>
+                <td><%= order.description %></td>
+                <td class="text-right"><%= order.price %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-    <h3><span class="tag tag-default">Transactions</span></h3>
-
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Value Date</th>
-          <th>Description</th>
-          <th class="text-right">Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        <%= for transaction <- @transactions do %>
-          <tr>
-            <td><%= transaction.value_date %></td>
-            <td><%= transaction.description %></td>
-            <td class="text-right"><%= transaction.amount %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+    <div class="card">
+      <h4 class="card-header">Transactions</h4>
+      <div class="card-block">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Creation Date</th>
+              <th>Value Date</th>
+              <th>Description</th>
+              <th class="text-right">Amount</th>
+              <th class="text-right">Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= for transaction <- @transactions do %>
+              <tr>
+                <td><%= transaction.inserted_at %></td>
+                <td><%= transaction.value_date %></td>
+                <td><%= transaction.description %></td>
+                <td class="text-right"><%= transaction.amount %></td>
+                <td class="text-right"><%= transaction.balance %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 
