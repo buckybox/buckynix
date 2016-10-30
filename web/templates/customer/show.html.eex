@@ -1,13 +1,17 @@
 <div class="row">
   <div class="col-lg-4">
-    <%= link "Back", to: customer_path(@conn, :index), class: "btn btn-default" %>
-    <%= link "Edit", to: customer_path(@conn, :edit, @customer), class: "btn btn-default btn-xs" %>
-    <%= link "Delete", to: customer_path(@conn, :delete, @customer), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
-
     <div class="card">
       <div class="card-block">
-        <div class="pull-right">
-          <%= link raw(~s(<i class="fa fa-envelope"></i> Email)), to: customer_path(@conn, :show, @customer), class: "btn btn-primary" %>
+        <div class="btn-group pull-right" role="group" aria-label="Button group with nested dropdown">
+          <a class="btn btn-primary" href="<%= customer_path(@conn, :show, @customer) %>"><i class="fa fa-envelope fa-fw"></i> Email</a>
+
+          <div class="btn-group" role="group">
+            <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+              <%= link "Edit", to: customer_path(@conn, :edit, @customer), class: "dropdown-item" %>
+              <%= link "Delete", to: customer_path(@conn, :delete, @customer), method: :delete, data: [confirm: "Are you sure?"], class: "dropdown-item" %>
+            </div>
+          </div>
         </div>
 
         <h4 class="card-title"><%= @customer.name %></h4>
@@ -23,11 +27,12 @@
         </ul>
       </div>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item"><h4><%= @account.balance %></h4></li>
+        <li class="list-group-item"><h4><%= Buckynix.Money.html(@account.balance) %></h4></li>
         <li class="list-group-item">
           <ul class="list-unstyled">
+            <%= link raw(~s(<i class="fa fa-edit"></i>)), to: customer_path(@conn, :edit, @customer), class: "btn btn-secondary pull-right" %>
             <li>Email: <strong><%= @customer.email %></strong></li>
-            <li>Phone: <strong><%= "07123456789" %></strong></li>
+            <li>Phone: <strong><%= link "07123456789", to: "tel:+3307123456789" %></strong></li>
           </ul>
         </li>
       </ul>
