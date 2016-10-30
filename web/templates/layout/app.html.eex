@@ -16,10 +16,18 @@
       <header class="header">
         <nav role="navigation">
           <ul class="nav nav-pills pull-right">
-            <li><a href="/sessions/log_out">Log out</a></li>
+            <%= if @current_user do %>
+              <li>
+                <%= @current_user.name %>
+                <%= link "Log out", to: session_path(@conn, :delete), method: :delete %>
+              </li>
+            <% end %>
           </ul>
         </nav>
-        <span class="logo"></span>
+
+        <%= link to: page_path(@conn, :index) do %>
+          <span class="logo"></span>
+        <% end %>
       </header>
 
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>

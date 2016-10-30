@@ -10,10 +10,30 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias Buckynix.{Repo, Customer}
+alias Buckynix.{Repo, User, Customer}
 
-Buckynix.User.changeset(%Buckynix.User{}, %{name: "Test User", email: "testuser@example.com", password: "secret", password_confirmation: "secret"})
-|> Buckynix.Repo.insert!
+users = [
+  %{
+    name: "John Doe",
+    email: "john@example.net",
+    password: "rubbish",
+    password_confirmation: "rubbish"
+  },
+  %{
+    name: "Bob Carrot",
+    email: "bob@carrot.net",
+    password: "rubbish",
+    password_confirmation: "rubbish"
+  },
+  %{
+    name: "Buck Baller",
+    email: "buck@baller.xyz",
+    password: "rubbish",
+    password_confirmation: "rubbish"
+  },
+]
+|> Enum.map(&User.changeset(%User{}, &1))
+|> Enum.map(&Repo.insert!(&1))
 
 customers = [
   %{

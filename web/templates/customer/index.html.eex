@@ -1,33 +1,18 @@
 <div class="row">
-  <div class="col-lg-4">
+  <div class="col-lg-3">
+    <h4><%= length(@customers) %> customers</h4>
   </div>
-  <div class="col-lg-4">
+  <div class="col-lg-6 text-center">
     <%= form_for @conn, customer_path(@conn, :search), [as: :search, method: :get, class: "form-inline"], fn f -> %>
-      <div class="form-group">
-        <%= text_input f, :query, class: "form-control" %>
-      </div>
-
-      <div class="form-group">
-        <%= submit raw(~s(<span class="glyphicon glyphicon-search"></span>)), class: "btn btn-primary" %>
-      </div>
+      <%= text_input f, :query, class: "form-control", style: "width: 80%" %>
+      <%= submit raw(~s(<span class="glyphicon glyphicon-search"></span>)), class: "btn btn-primary" %>
     <% end %>
   </div>
 </div>
 
 <div class="row">
   <div class="col-lg-12">
-    <h2><%= length(@customers) %> customers</h2>
-
     <table class="table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Next delivery</th>
-          <th class="text-right">Balance</th>
-          <th></th>
-        </tr>
-      </thead>
-
       <tbody>
         <tr class="new-row">
           <td colspan="4"><%= link "Create a new customer", to: customer_path(@conn, :new), class: "btn btn-primary" %></td>
@@ -45,7 +30,7 @@
             <% end %>
           </td>
 
-          <td><%= "???" %></td>
+          <td><%= "Next delivery???" %></td>
 
           <td class="text-right"><strong><%= customer.account.balance %></strong></td>
 

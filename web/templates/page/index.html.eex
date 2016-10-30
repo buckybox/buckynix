@@ -1,36 +1,22 @@
 <div class="jumbotron">
   <h2><%= gettext "Welcome to %{name}", name: "Buckynix!" %></h2>
-  <p class="lead">A productive web framework that<br />does not compromise speed and maintainability.</p>
+  <p class="lead">An open platform to buy and sell <strong>local food</strong>.</p>
 </div>
 
-<div class="row marketing">
+<div class="row text-center">
   <div class="col-lg-6">
-    <h4>Resources</h4>
-    <ul>
-      <li>
-        <a href="http://phoenixframework.org/docs/overview">Guides</a>
-      </li>
-      <li>
-        <a href="https://hexdocs.pm/phoenix">Docs</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix">Source</a>
-      </li>
-    </ul>
+    <div class="jumbotron">
+      <h2>I want to sell food</h2>
+      <h4>Manage your organization</h4>
+      <%= link "Admin Panel", to: session_path(@conn, :new), class: "btn btn-primary btn-lg" %>
+    </div>
   </div>
 
   <div class="col-lg-6">
-    <h4>Help</h4>
-    <ul>
-      <li>
-        <a href="http://groups.google.com/group/phoenix-talk">Mailing list</a>
-      </li>
-      <li>
-        <a href="http://webchat.freenode.net/?channels=elixir-lang">#elixir-lang on freenode IRC</a>
-      </li>
-      <li>
-        <a href="https://twitter.com/elixirphoenix">@elixirphoenix</a>
-      </li>
-    </ul>
+    <div class="jumbotron">
+      <h2>I want to buy food</h2>
+      <h4>Find food producers nearby</h4>
+      <%= link "Marketplace", to: session_path(@conn, :new), class: "btn btn-primary btn-lg" %>
+    </div>
   </div>
 </div>
