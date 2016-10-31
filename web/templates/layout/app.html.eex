@@ -20,7 +20,7 @@
           <ul class="nav nav-pills pull-right">
             <%= if @current_user do %>
               <li><%= link raw(~s(<i class="fa fa-user"></i>) <> " Customers"), to: customer_path(@conn, :index) %></li>
-              <li><%= link raw(~s(<i class="fa fa-road"></i>) <> " Deliveries"), to: customer_path(@conn, :index) %></li>
+              <li><%= link raw(~s(<i class="fa fa-road"></i>) <> " Logistics"), to: customer_path(@conn, :index) %></li>
 
               <li><%= link raw(~s(<i class="fa fa-cog"></i>) <> " Organization settings"), to: customer_path(@conn, :index) %></li>
               <li><%= @current_user.name %></li>

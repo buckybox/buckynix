@@ -20,7 +20,7 @@
           <%= for tag <- @customer.tags do %>
             <li>
               <%= link to: customer_path(@conn, :tag, tag) do %>
-                <span class="tag tag-info"><%= tag %></span>
+                <span class="badge badge-info"><%= tag %></span>
               <% end %>
             </li>
           <% end %>
