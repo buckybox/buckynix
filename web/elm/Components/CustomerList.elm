@@ -64,10 +64,11 @@ decodeCustomerFetch =
 
 decodeCustomerData : Json.Decoder Customer.Model
 decodeCustomerData =
-  Json.object3 Customer.Model
+  Json.object4 Customer.Model
     (Json.at ["attributes", "url"] Json.string)
     (Json.at ["attributes", "name"] Json.string)
     (Json.at ["attributes", "balance"] Json.string)
+    (Json.at ["attributes", "tags"] (Json.list Json.string))
 
 initialModel : Model
 initialModel =
