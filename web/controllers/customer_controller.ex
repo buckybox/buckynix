@@ -25,7 +25,12 @@ defmodule Buckynix.CustomerController do
     customers = Customer
       |> preload(:account)
       |> Repo.all
-      |> Enum.map(fn(c) -> %{ c | url: "URLL" } end)
+      |> Enum.map(fn(customer) ->
+        %{ customer |
+          url: customer_path(conn, :show, customer),
+          balance: (Buckynix.Money.html(customer.account.balance) |> Phoenix.HTML.safe_to_string)
+        }
+      end)
     render(conn, :index, data: customers)
   end
 

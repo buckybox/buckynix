@@ -9,6 +9,7 @@ defmodule Buckynix.Customer do
     field :tags, {:array, :string}
 
     field :url, :string, virtual: true
+    field :balance, :string, virtual: true
 
     has_one :account, Buckynix.Account
 
