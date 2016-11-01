@@ -25,6 +25,7 @@ defmodule Buckynix.CustomerController do
     customers = Customer
       |> preload(:account)
       |> Repo.all
+      |> Enum.map(fn(c) -> %{ c | url: "URLL" } end)
     render(conn, :index, data: customers)
   end
 

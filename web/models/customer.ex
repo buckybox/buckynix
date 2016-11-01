@@ -8,6 +8,8 @@ defmodule Buckynix.Customer do
     field :email, :string
     field :tags, {:array, :string}
 
+    field :url, :string, virtual: true
+
     has_one :account, Buckynix.Account
 
     timestamps()

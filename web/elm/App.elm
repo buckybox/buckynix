@@ -31,10 +31,18 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.none
 
+customerListView : Model -> Html Msg
+customerListView model =
+  Html.App.map CustomerListMsg (CustomerList.view model.customerListModel)
+
+pageView : Model -> Html Msg
+pageView model =
+  customerListView model
+
 view : Model -> Html Msg
 view model =
   div [ class "elm-app" ]
-    [ Html.App.map CustomerListMsg (CustomerList.view model.customerListModel) ]
+    [ pageView model ]
 
 main : Program Never
 main =

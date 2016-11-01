@@ -35,26 +35,10 @@ users = [
 |> Enum.map(&User.changeset(%User{}, &1))
 |> Enum.map(&Repo.insert!(&1))
 
-customers = [
-  %{
-    name: "John Doe",
-    email: "john@example.net",
-    tags: ~w(test),
-    # password: "12345678"
-  },
-  %{
-    name: "Bob Carrot",
-    email: "bob@carrot.net",
-    tags: ~w(crazy carrot test)
-  },
-  %{
-    name: "Buck Baller",
-    email: "buck@baller.xyz",
-    tags: [],
-  },
-]
-|> Enum.map(&Customer.changeset(%Customer{}, &1))
-|> Enum.map(&Repo.insert!(&1))
+customers = for i <- 1..Enum.random(10..20) do
+  Customer.changeset(%Customer{}, %{ name: "Customer #{i}", email: "c#{i}@example.net", tags: ~w(test baller) })
+  |> Repo.insert!
+end
 
 accounts = customers
 |> Enum.map(&Ecto.build_assoc(&1, :account, %{currency: "EUR"}))
