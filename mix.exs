@@ -42,6 +42,7 @@ defmodule Buckynix.Mixfile do
      {:cowboy, "~> 1.0"},
      {:timex, "~> 3.1"},
      {:coherence, "~> 0.3", github: "devshane/coherence", branch: "timex3"},
+     {:ja_serializer, "~> 0.11"},
      {:money, "~> 1.2"},
      {:credo, "~> 0.5", only: [:dev, :test]}]
   end

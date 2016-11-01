@@ -20,9 +20,11 @@ defmodule Buckynix.Router do
     plug Coherence.Authentication.Session, protected: true
   end
 
-  # pipeline :api do
-  #   plug :accepts, ["json"]
-  # end
+  pipeline :api do
+    plug :accepts, ["json-api"]
+    plug JaSerializer.ContentTypeNegotiation
+    plug JaSerializer.Deserializer
+  end
 
   scope "/" do
     pipe_through :browser
@@ -53,8 +55,9 @@ defmodule Buckynix.Router do
     end
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", Buckynix do
-  #   pipe_through :api
-  # end
+  scope "/api", Buckynix do
+    pipe_through :api
+
+    resources "/transactions", TransactionController, only: [:index, :create]
+  end
 end

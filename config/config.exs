@@ -13,7 +13,7 @@ config :buckynix,
 config :buckynix, Buckynix.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "Dt/OJYmJJo0eVOAa2Pt+vy+g56TfNI86S1Pe6WOEYKyDkhdMJdn3l0tLw+6RWyCG",
-  render_errors: [view: Buckynix.ErrorView, accepts: ~w(html json)],
+  render_errors: [view: Buckynix.ErrorView, accepts: ~w(html json json-api)],
   pubsub: [name: Buckynix.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
@@ -25,6 +25,13 @@ config :logger, :console,
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
+
+config :phoenix, :format_encoders,
+  "json-api": Poison
+
+config :mime, :types, %{
+  "application/vnd.api+json" => ["json-api"]
+}
 
 config :money,
   default_currency: :EUR # XXX: workaround for https://github.com/liuggio/money/issues/30
