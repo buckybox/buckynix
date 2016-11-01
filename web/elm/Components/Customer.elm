@@ -20,4 +20,4 @@ view model =
   tr []
   [ td [] [ a [ href model.url ] [ text model.name ] ]
   , td [] [ text "Next del???" ]
-  , td [] [ strong [ innerHtml model.balance ] [] ] ]
+  , td [ class "text-right" ] [ strong [ innerHtml model.balance ] [] ] ]

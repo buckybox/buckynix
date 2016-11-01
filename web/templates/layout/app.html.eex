@@ -14,36 +14,43 @@
   </head>
 
   <body>
-    <div class="container">
-      <div id="elm-container"></div>
+    <div class="container-fuild bg-faded">
+      <div class="container">
+        <nav class="navbar navbar-light">
+          <a class="navbar-brand mr-3" href="/">
+            <img src="<%= static_path(@conn, "/images/buckynix.png") %>" height="28" class="d-inline-block align-top" alt="">
+          </a>
 
-      <header class="header">
-        <nav role="navigation">
-          <ul class="nav nav-pills pull-right">
+          <ul class="nav navbar-nav">
             <%= if @current_user do %>
-              <li><%= link raw(~s(<i class="fa fa-user"></i>) <> " Customers"), to: customer_path(@conn, :index) %></li>
-              <li><%= link raw(~s(<i class="fa fa-road"></i>) <> " Logistics"), to: customer_path(@conn, :index) %></li>
+              <li class="nav-item"><%= link raw(~s(<i class="fa fa-user"></i>) <> " Customers"), to: customer_path(@conn, :index), class: "nav-link" %></li>
+              <li class="nav-item"><%= link raw(~s(<i class="fa fa-road"></i>) <> " Logistics"), to: customer_path(@conn, :index), class: "nav-link" %></li>
+              <li class="nav-item"><%= link raw(~s(<i class="fa fa-cog"></i>) <> " Organization settings"), to: customer_path(@conn, :index), class: "nav-link" %></li>
 
-              <li><%= link raw(~s(<i class="fa fa-cog"></i>) <> " Organization settings"), to: customer_path(@conn, :index) %></li>
-              <li><%= @current_user.name %></li>
-              <li><%= link "Log out", to: session_path(@conn, :delete), method: :delete %></li>
+              <li class="nav-item dropdown float-xs-right">
+                <a class="nav-link dropdown-toggle" href="http://example.com" id="supportedContentDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= @current_user.name %></a>
+                <div class="dropdown-menu" aria-labelledby="supportedContentDropdown">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <%= link "Log out", to: session_path(@conn, :delete), method: :delete, class: "dropdown-item" %>
+                </div>
+              </li>
+              <li class="nav-item float-xs-right"><i class="fa fa-bell align-bottom"></i></li>
             <% end %>
           </ul>
         </nav>
+      </div>
+    </div>
 
-        <%= link to: page_path(@conn, :index) do %>
-          <span class="logo"></span>
-        <% end %>
-      </header>
-
+    <div class="container mt-2">
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
 
       <main role="main">
         <%= render @view_module, @view_template, assigns %>
       </main>
+    </div>
 
-    </div> <!-- /container -->
     <script src="<%= static_path(@conn, "/js/jquery-3.1.1.slim.min.js") %>"></script>
     <script src="<%= static_path(@conn, "/js/bootstrap.min.js") %>"></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>

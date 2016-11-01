@@ -12,13 +12,6 @@ form.link, form.button {
 .header {
   border-bottom: 1px solid #e5e5e5;
 }
-.logo {
-  width: 165px;
-  height: 44px;
-  display: inline-block;
-  margin-bottom: 1em;
-  background-image: url("/images/buckynix.png");
-}
 
 /* Container */
 @media (min-width: 768px) {
@@ -30,6 +23,10 @@ form.link, form.button {
   .container {
     max-width: 1162px;
   }
+}
+
+.text-center {
+  text-align: center;
 }
 
 .text-right {
