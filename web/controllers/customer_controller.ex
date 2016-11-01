@@ -25,7 +25,7 @@ defmodule Buckynix.CustomerController do
     customers = Customer
       |> preload(:account)
       |> Repo.all
-    render(conn, "index.html", customers: customers)
+    render(conn, :index, data: customers)
   end
 
   def new(conn, _params) do

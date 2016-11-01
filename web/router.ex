@@ -58,6 +58,8 @@ defmodule Buckynix.Router do
   scope "/api", Buckynix do
     pipe_through :api
 
-    resources "/transactions", TransactionController, only: [:index, :create]
+    resources "/customers", CustomerController, only: [:index] do
+      resources "/transactions", TransactionController, only: [:index, :create]
+    end
   end
 end

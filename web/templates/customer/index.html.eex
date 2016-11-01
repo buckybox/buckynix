@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-lg-3">
-    <h4><%= length(@customers) %> customers</h4>
+    <h4><%= length(@data) %> customers</h4>
   </div>
   <div class="col-lg-6 text-center">
     <%= form_for @conn, customer_path(@conn, :search), [as: :search, method: :get, class: "form-inline"], fn f -> %>
@@ -18,7 +18,7 @@
           <td colspan="4"><%= link "Create a new customer", to: customer_path(@conn, :new), class: "btn btn-primary" %></td>
         </tr>
 
-    <%= for customer <- @customers do %>
+    <%= for customer <- @data do %>
         <tr>
           <td>
             <%= link customer.name, to: customer_path(@conn, :show, customer) %>
