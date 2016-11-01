@@ -25,3 +25,6 @@ erl_crash.dump
 
 # Our custom Bootstrap build
 /bootstrap/bootstrap/
+
+# Our Elm app
+/web/static/vendor/app.js
