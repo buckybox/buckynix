@@ -15,7 +15,7 @@ initialModel =
 
 init : (Model, Cmd Msg)
 init =
-  ( initialModel, Cmd.none )
+  ( initialModel, (Cmd.map CustomerListMsg CustomerList.fetchCustomers) )
 
 type Msg
   = CustomerListMsg CustomerList.Msg
@@ -26,10 +26,6 @@ update msg model =
     CustomerListMsg customerMsg ->
       let (updatedModel, cmd) = CustomerList.update customerMsg model.customerListModel
       in ( { model | customerListModel = updatedModel }, Cmd.map CustomerListMsg cmd )
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-  Sub.none
 
 customerListView : Model -> Html Msg
 customerListView model =
@@ -43,6 +39,10 @@ view : Model -> Html Msg
 view model =
   div [ class "elm-app" ]
     [ pageView model ]
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Sub.none
 
 main : Program Never
 main =

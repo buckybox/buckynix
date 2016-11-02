@@ -1,14 +1,9 @@
-module Customer exposing (view, Model)
+module Components.Customer exposing (view, Model)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
 
-import Json.Encode
-import VirtualDom
-
-innerHtml : String -> Attribute msg
-innerHtml =
-  VirtualDom.property "innerHTML" << Json.Encode.string
+import Components.HtmlAttributesExtra exposing (innerHtml)
 
 type alias Model =
   { url : String

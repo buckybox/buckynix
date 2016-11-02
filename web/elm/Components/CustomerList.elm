@@ -5,57 +5,37 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import List
 
-import Http
+import Http exposing (Error)
 import Task
 import Json.Decode as Json exposing ((:=))
-import Debug
 
-import Customer
+import Components.JsonApi as JsonApi
+import Components.Customer as Customer
 
 type alias Model =
   { customers: List Customer.Model }
 
 type Msg
-  = NoOp
-  | Fetch
+  = Fetch
   | FetchSucceed (List Customer.Model)
   | FetchFail Http.Error
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    NoOp ->
-      (model, Cmd.none)
     Fetch ->
       (model, fetchCustomers)
     FetchSucceed customerList ->
       (Model customerList, Cmd.none)
     FetchFail error ->
-      case error of
-        Http.UnexpectedPayload errorMessage ->
-          Debug.log errorMessage
-          (model, Cmd.none)
-        _ ->
-          (model, Cmd.none)
-
-jsonApiGet decoder url =
-  let
-    request =
-      Http.send Http.defaultSettings
-        { verb = "GET"
-        , headers = [("Accept", "application/vnd.api+json")]
-        , url = url
-        , body = Http.empty
-        }
-  in
-    Http.fromJson decoder request
+      (model, Cmd.none)
 
 fetchCustomers : Cmd Msg
 fetchCustomers =
   let
     url = "/api/customers"
   in
-    Task.perform FetchFail FetchSucceed (jsonApiGet decodeCustomerFetch url)
+    Task.perform FetchFail FetchSucceed (JsonApi.get decodeCustomerFetch url)
 
 decodeCustomerFetch : Json.Decoder (List Customer.Model)
 decodeCustomerFetch =
@@ -82,7 +62,7 @@ renderCustomers model =
   table [ class "table" ]
     (List.concat [
       [ newLink ],
-      (List.map renderCustomer model.customers),
+      (List.map (\customer -> Customer.view customer) model.customers),
       [ moreLink ]
     ])
 
@@ -97,7 +77,3 @@ moreLink =
   [ td [ colspan 4, class "text-center" ]
        [ a [ href "javascript:void(0)", onClick Fetch ] [ text "more" ] ]
   ]
-
-renderCustomer : Customer.Model -> Html a
-renderCustomer customer =
-  Customer.view customer
