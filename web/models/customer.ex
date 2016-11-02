@@ -13,15 +13,17 @@ defmodule Buckynix.Customer do
 
     has_one :account, Buckynix.Account
 
-    timestamps()
+    timestamps
   end
+
+  @required_fields ~w(name email tags)
 
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :email, :tags])
-    |> validate_required([:name, :email, :tags])
+    |> cast(params, @required_fields)
+    |> validate_required(@required_fields)
   end
 end

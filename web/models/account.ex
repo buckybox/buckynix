@@ -8,15 +8,17 @@ defmodule Buckynix.Account do
 
     has_many :transaction, Buckynix.Transaction
 
-    timestamps()
+    timestamps
   end
+
+  @required_fields ~w(currency balance)
 
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:currency, :balance])
-    |> validate_required([:currency, :balance])
+    |> cast(params, @required_fields)
+    |> validate_required(@required_fields)
   end
 end

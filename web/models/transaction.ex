@@ -9,15 +9,17 @@ defmodule Buckynix.Transaction do
 
     field :balance, Money.Ecto.Type, virtual: true
 
-    timestamps()
+    timestamps
   end
+
+  @required_fields ~w(amount description value_date)
 
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:amount, :description, :value_date])
-    |> validate_required([:amount, :description, :value_date])
+    |> cast(params, @required_fields)
+    |> validate_required(@required_fields)
   end
 end
