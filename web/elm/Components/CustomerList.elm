@@ -1,7 +1,7 @@
 module Components.CustomerList exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import List
 
@@ -76,9 +76,27 @@ initialModel =
 
 view : Model -> Html Msg
 view model =
-  div [ class "customer-list" ]
-  [ table [ class "table" ] (List.map renderCustomer model.customers)
-  , button [ onClick Fetch, class "btn btn-primary" ] [ text "Fetch" ] ]
+  div [ class "customer-list" ] [ renderCustomers model ]
+
+renderCustomers model =
+  table [ class "table" ]
+    (List.concat [
+      [ newLink ],
+      (List.map renderCustomer model.customers),
+      [ moreLink ]
+    ])
+
+newLink =
+  tr [ class "new-row" ]
+  [ td [ colspan 4 ]
+       [ a [ href "/customers/new", class "btn btn-primary" ] [ text "Create a new customer" ] ]
+  ]
+
+moreLink =
+  tr []
+  [ td [ colspan 4, class "text-center" ]
+       [ a [ href "javascript:void(0)", onClick Fetch ] [ text "more" ] ]
+  ]
 
 renderCustomer : Customer.Model -> Html a
 renderCustomer customer =
