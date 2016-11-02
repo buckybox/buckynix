@@ -11,7 +11,7 @@ defmodule Buckynix.Account do
     timestamps
   end
 
-  @required_fields ~w(currency balance)
+  @required_fields ~w(currency balance)a
 
   @doc """
   Builds a changeset based on the `struct` and `params`.

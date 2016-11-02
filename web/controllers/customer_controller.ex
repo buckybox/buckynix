@@ -26,10 +26,10 @@ defmodule Buckynix.CustomerController do
       |> preload(:account)
       |> Repo.all
       |> Enum.map(fn(customer) ->
-        %{ customer |
+        %{customer |
           url: customer_path(conn, :show, customer),
           balance: (Buckynix.Money.html(customer.account.balance) |> Phoenix.HTML.safe_to_string)
-        }
+         }
       end)
     render(conn, :index, data: customers)
   end
@@ -65,7 +65,7 @@ defmodule Buckynix.CustomerController do
 
     transactions = transactions |> Enum.map(
       fn(tx) ->
-        %{ tx | balance: Enum.reduce_while(transactions, account.balance, fn(tx2, acc) ->
+        %{tx | balance: Enum.reduce_while(transactions, account.balance, fn(tx2, acc) ->
           if tx2.value_date <= tx.value_date, do: {:halt, acc}, else: {:cont, Money.subtract(acc, tx2.amount)}
         end
         )}

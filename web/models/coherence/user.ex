@@ -10,7 +10,7 @@ defmodule Buckynix.User do
     timestamps
   end
 
-  @required_fields ~w(name email)
+  @required_fields ~w(name email)a
 
   def changeset(model, params \\ %{}) do
     model

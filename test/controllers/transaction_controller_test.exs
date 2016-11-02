@@ -4,7 +4,7 @@ defmodule Buckynix.TransactionControllerTest do
   alias Buckynix.Transaction
   alias Buckynix.Repo
 
-  @valid_attrs %{description: "some content", value_date: %{day: 17, hour: 14, min: 0, month: 4, sec: 0, year: 2010}}
+  @valid_attrs %{amount: 1234, description: "some content", value_date: %{day: 17, hour: 14, min: 0, month: 4, sec: 0, year: 2010}}
   @invalid_attrs %{}
 
   setup do
@@ -20,13 +20,13 @@ defmodule Buckynix.TransactionControllerTest do
   end
 
   test "lists all entries on index", %{conn: conn} do
-    conn = get conn, transaction_path(conn, :index)
+    conn = get conn, customer_transaction_path(conn, :index, 1)
     assert json_response(conn, 200)["data"] == []
   end
 
   test "shows chosen resource", %{conn: conn} do
-    transaction = Repo.insert! %Transaction{}
-    conn = get conn, transaction_path(conn, :show, transaction)
+    transaction = Repo.insert! Transaction.changeset(%Transaction{}, @valid_attrs)
+    conn = get conn, customer_transaction_path(conn, :show, 1, transaction)
     data = json_response(conn, 200)["data"]
     assert data["id"] == "#{transaction.id}"
     assert data["type"] == "transaction"
@@ -36,12 +36,12 @@ defmodule Buckynix.TransactionControllerTest do
 
   test "does not show resource and instead throw error when id is nonexistent", %{conn: conn} do
     assert_error_sent 404, fn ->
-      get conn, transaction_path(conn, :show, -1)
+      get conn, customer_transaction_path(conn, :show, 1, -1)
     end
   end
 
   test "creates and renders resource when data is valid", %{conn: conn} do
-    conn = post conn, transaction_path(conn, :create), %{
+    conn = post conn, customer_transaction_path(conn, :create, 1), %{
       "meta" => %{},
       "data" => %{
         "type" => "transaction",
@@ -55,7 +55,7 @@ defmodule Buckynix.TransactionControllerTest do
   end
 
   test "does not create resource and renders errors when data is invalid", %{conn: conn} do
-    conn = post conn, transaction_path(conn, :create), %{
+    conn = post conn, customer_transaction_path(conn, :create, 1), %{
       "meta" => %{},
       "data" => %{
         "type" => "transaction",
@@ -68,8 +68,8 @@ defmodule Buckynix.TransactionControllerTest do
   end
 
   test "updates and renders chosen resource when data is valid", %{conn: conn} do
-    transaction = Repo.insert! %Transaction{}
-    conn = put conn, transaction_path(conn, :update, transaction), %{
+    transaction = Repo.insert! Transaction.changeset(%Transaction{}, @valid_attrs)
+    conn = put conn, customer_transaction_path(conn, :update, 1, transaction), %{
       "meta" => %{},
       "data" => %{
         "type" => "transaction",
@@ -84,8 +84,8 @@ defmodule Buckynix.TransactionControllerTest do
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    transaction = Repo.insert! %Transaction{}
-    conn = put conn, transaction_path(conn, :update, transaction), %{
+    transaction = Repo.insert! Transaction.changeset(%Transaction{}, @valid_attrs)
+    conn = put conn, customer_transaction_path(conn, :update, 1, transaction), %{
       "meta" => %{},
       "data" => %{
         "type" => "transaction",
@@ -99,8 +99,8 @@ defmodule Buckynix.TransactionControllerTest do
   end
 
   test "deletes chosen resource", %{conn: conn} do
-    transaction = Repo.insert! %Transaction{}
-    conn = delete conn, transaction_path(conn, :delete, transaction)
+    transaction = Repo.insert! Transaction.changeset(%Transaction{}, @valid_attrs)
+    conn = delete conn, customer_transaction_path(conn, :delete, 1, transaction)
     assert response(conn, 204)
     refute Repo.get(Transaction, transaction.id)
   end

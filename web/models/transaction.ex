@@ -12,7 +12,7 @@ defmodule Buckynix.Transaction do
     timestamps
   end
 
-  @required_fields ~w(amount description value_date)
+  @required_fields ~w(amount description value_date)a
 
   @doc """
   Builds a changeset based on the `struct` and `params`.

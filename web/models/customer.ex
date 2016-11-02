@@ -6,7 +6,7 @@ defmodule Buckynix.Customer do
   schema "customers" do
     field :name, :string
     field :email, :string
-    field :tags, {:array, :string}
+    field :tags, {:array, :string}, default: []
 
     field :url, :string, virtual: true
     field :balance, :string, virtual: true
@@ -16,7 +16,7 @@ defmodule Buckynix.Customer do
     timestamps
   end
 
-  @required_fields ~w(name email tags)
+  @required_fields ~w(name email tags)a
 
   @doc """
   Builds a changeset based on the `struct` and `params`.
