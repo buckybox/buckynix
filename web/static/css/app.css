@@ -37,10 +37,10 @@ span.money.negative {
   color: #D0381B;
 }
 
-ul.list-inline li {
-  float: left;
-  margin-right: 2px;
-}
+/* ul.list-inline li { */
+/*   float: left; */
+/*   margin-right: 2px; */
+/* } */
 
 table.table tr.new-row > td > a {
   display: block;

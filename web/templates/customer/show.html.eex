@@ -2,7 +2,7 @@
   <div class="col-lg-4">
     <div class="card">
       <div class="card-block">
-        <div class="btn-group pull-right" role="group" aria-label="Button group with nested dropdown">
+        <div class="btn-group float-right" role="group" aria-label="Button group with nested dropdown">
           <a class="btn btn-primary" href="<%= customer_path(@conn, :show, @customer) %>"><i class="fa fa-envelope fa-fw"></i> Email</a>
 
           <div class="btn-group" role="group">
@@ -30,7 +30,6 @@
         <li class="list-group-item"><h4><%= Buckynix.Money.html(@account.balance) %></h4></li>
         <li class="list-group-item">
           <ul class="list-unstyled">
-            <%= link raw(~s(<i class="fa fa-edit"></i>)), to: customer_path(@conn, :edit, @customer), class: "btn btn-secondary pull-right" %>
             <li>Email: <strong><%= @customer.email %></strong></li>
             <li>Phone: <strong><%= link "07123456789", to: "tel:+3307123456789" %></strong></li>
           </ul>

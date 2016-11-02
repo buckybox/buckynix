@@ -1,6 +1,6 @@
 #!/bin/bash -eux
 
-pushd $(dirname $0)
+cd $(dirname $0)
 
 if [ -d bootstrap ]; then
     cd bootstrap
@@ -20,7 +20,7 @@ bundle install
 grunt
 tree dist/
 
-popd
+cd ../..
 
 cp -v bootstrap/bootstrap/dist/css/bootstrap.min.css* web/static/assets/css/
 cp -v bootstrap/bootstrap/dist/js/bootstrap.min.js web/static/assets/js/

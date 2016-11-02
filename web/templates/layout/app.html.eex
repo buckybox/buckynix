@@ -16,33 +16,43 @@
   <body>
     <div class="container-fuild bg-faded">
       <div class="container">
-        <nav class="navbar navbar-light">
-          <a class="navbar-brand mr-3" href="/">
-            <img src="<%= static_path(@conn, "/images/buckynix.png") %>" height="28" class="d-inline-block align-top" alt="">
-          </a>
+        <nav class="navbar navbar-light row">
+          <div class="col-xs">
+            <a class="navbar-brand mr-3" href="/">
+              <img src="<%= static_path(@conn, "/images/buckynix.png") %>" height="28" class="d-inline-block align-top" alt="">
+            </a>
+          </div>
 
-          <ul class="nav navbar-nav">
-            <%= if @current_user do %>
-              <li class="nav-item"><%= link raw(~s(<i class="fa fa-user"></i>) <> " Customers"), to: customer_path(@conn, :index), class: "nav-link" %></li>
-              <li class="nav-item"><%= link raw(~s(<i class="fa fa-road"></i>) <> " Logistics"), to: customer_path(@conn, :index), class: "nav-link" %></li>
-              <li class="nav-item"><%= link raw(~s(<i class="fa fa-cog"></i>) <> " Organization settings"), to: customer_path(@conn, :index), class: "nav-link" %></li>
+          <div class="col-xs-6">
+            <ul class="nav navbar-nav text-center">
+              <%= if @current_user do %>
+                <li class="d-inline-block"><%= link raw(~s(<i class="fa fa-user"></i>) <> " Customers"), to: customer_path(@conn, :index), class: "nav-link" %></li>
+                <li class="d-inline-block ml-4"><%= link raw(~s(<i class="fa fa-road"></i>) <> " Logistics"), to: customer_path(@conn, :index), class: "nav-link" %></li>
+                <li class="d-inline-block ml-4"><%= link raw(~s(<i class="fa fa-list"></i>) <> " Products"), to: customer_path(@conn, :index), class: "nav-link" %></li>
+                <li class="d-inline-block ml-4"><%= link raw(~s(<i class="fa fa-cog"></i>) <> " Settings"), to: customer_path(@conn, :index), class: "nav-link" %></li>
+              <% end %>
+            </ul>
+          </div>
 
-              <li class="nav-item dropdown float-xs-right">
-                <a class="nav-link dropdown-toggle" href="http://example.com" id="supportedContentDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= @current_user.name %></a>
-                <div class="dropdown-menu" aria-labelledby="supportedContentDropdown">
-                  <a class="dropdown-item" href="#">Action</a>
-                  <a class="dropdown-item" href="#">Another action</a>
-                  <%= link "Log out", to: session_path(@conn, :delete), method: :delete, class: "dropdown-item" %>
-                </div>
-              </li>
-              <li class="nav-item float-xs-right"><i class="fa fa-bell align-bottom"></i></li>
-            <% end %>
-          </ul>
+          <div class="col-xs">
+            <ul class="nav navbar-nav float-right">
+              <%= if @current_user do %>
+                <li class="nav-item"><%= link raw(~s(<i class="fa fa-bell"></i>)), to: customer_path(@conn, :index), class: "nav-link" %></li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="supportedContentDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= @current_user.name %></a>
+                  <div class="dropdown-menu" aria-labelledby="supportedContentDropdown">
+                    <%= link "Profile", to: customer_path(@conn, :index), class: "dropdown-item" %>
+                    <%= link "Log out", to: session_path(@conn, :delete), method: :delete, class: "dropdown-item" %>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          </div>
         </nav>
       </div>
     </div>
 
-    <div class="container mt-2">
+    <div class="container mt-3">
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
 
