@@ -14,7 +14,8 @@ import Components.Customer as Customer
 
 type alias Model =
   { customers: List Customer.Model
-  , nextCount: Int }
+  , nextCount: Int
+  , fetching: Bool }
 
 type Msg
   = Fetch
@@ -25,14 +26,19 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     Fetch ->
-      (model, fetchCustomers model)
+      ({ model | fetching = True }, fetchCustomers model)
     FetchSucceed customerList ->
       ({
           customers = customerList
         , nextCount = model.nextCount * growthFactor
+        , fetching = False
       } , Cmd.none)
     FetchFail error ->
-      (model, Cmd.none)
+      ({ model | fetching = False }, Cmd.none)
+
+init : Cmd Msg
+init =
+  snd (update Fetch initialModel)
 
 fetchCustomers : Model -> Cmd Msg
 fetchCustomers model =
@@ -59,18 +65,20 @@ growthFactor = 2 -- we'll fetch X times as many on each fetch (exponential)
 
 initialModel : Model
 initialModel =
-  { customers = [], nextCount = initialCount }
+  { customers = [], nextCount = initialCount, fetching = True }
 
 view : Model -> Html Msg
 view model =
   div [ class "customer-list" ] [ renderCustomers model ]
 
 renderCustomers model =
-  let more =
-    if List.length(model.customers) < model.nextCount // growthFactor then
-      [ ]
-    else
-      [ moreLink ]
+  let
+    length = List.length(model.customers)
+    more =
+      if length == 0 || length == model.nextCount // growthFactor then
+        [ moreLink model.fetching ]
+      else
+        [ ]
   in
     table [ class "table" ]
       (List.concat [
@@ -85,8 +93,12 @@ newLink =
        [ a [ href "/customers/new", class "btn btn-primary" ] [ text "Create a new customer" ] ]
   ]
 
-moreLink =
-  tr []
-  [ td [ colspan 4, class "text-center" ]
-       [ a [ href "javascript:void(0)", onClick Fetch ] [ text "more" ] ]
-  ]
+moreLink fetching =
+  let tag =
+    if fetching then
+      i [ class "fa fa-spinner fa-pulse fa-3x fa-fw" ] []
+    else
+      a [ href "javascript:void(0)", onClick Fetch ] [ text "more" ]
+  in
+    tr []
+    [ td [ colspan 4, class "text-center" ] [ tag ] ]
