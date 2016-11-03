@@ -1,22 +1,26 @@
 <div class="jumbotron text-center">
   <h2><%= gettext "Welcome to %{name}", name: "Buckynix!" %></h2>
-  <p class="lead">An open platform to buy and sell <strong>local food</strong>.</p>
+  <p class="lead">An open platform to sell and buy <strong>local food</strong>.</p>
 </div>
 
 <div class="row text-center">
-  <div class="col-lg-6">
-    <div class="jumbotron">
-      <h2>I want to sell food</h2>
-      <h4>Manage your organization</h4>
-      <%= link "Admin Panel", to: organization_path(@conn, :index), class: "btn btn-primary btn-lg" %>
-    </div>
-  </div>
+  <div class="col-xs">
+    <div class="card-deck">
+      <div class="card">
+        <div class="card-block">
+          <h2 class="card-title">I want to sell food</h2>
+          <p class="card-text">Manage your organization</p>
+          <%= link "Admin Panel", to: organization_path(@conn, :index), class: "btn btn-primary btn-lg" %>
+        </div>
+      </div>
 
-  <div class="col-lg-6">
-    <div class="jumbotron">
-      <h2>I want to buy food</h2>
-      <h4>Find food producers nearby</h4>
-      <%= link "Marketplace", to: map_path(@conn, :index), class: "btn btn-primary btn-lg" %>
+      <div class="card">
+        <div class="card-block">
+          <h2 class="card-title">I want to buy food</h2>
+          <p class="card-text">Find food producers nearby</p>
+          <%= link "Marketplace", to: map_path(@conn, :index), class: "btn btn-primary btn-lg" %>
+        </div>
+      </div>
     </div>
   </div>
 </div>
