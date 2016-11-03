@@ -28,17 +28,19 @@ update msg model =
     Fetch ->
       ({ model | fetching = True }, fetchCustomers model)
     FetchSucceed customerList ->
-      ({
-          customers = customerList
-        , nextCount = model.nextCount * growthFactor
-        , fetching = False
-      } , Cmd.none)
+      let
+        factor = if model.nextCount > List.length(customerList) then
+          1 -- don't grow if no more customers
+        else
+          growthFactor
+      in
+        ({
+            customers = customerList
+          , nextCount = model.nextCount * factor
+          , fetching = False
+        } , Cmd.none)
     FetchFail error ->
       ({ model | fetching = False }, Cmd.none)
-
-init : Cmd Msg
-init =
-  snd (update Fetch initialModel)
 
 fetchCustomers : Model -> Cmd Msg
 fetchCustomers model =
@@ -60,7 +62,7 @@ decodeCustomerData =
     (Json.at ["attributes", "balance"] Json.string)
     (Json.at ["attributes", "tags"] (Json.list Json.string))
 
-initialCount = 5
+initialCount = 10
 growthFactor = 2 -- we'll fetch X times as many on each fetch (exponential)
 
 initialModel : Model

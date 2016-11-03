@@ -23,5 +23,11 @@ import "phoenix_html"
 // Set up our Elm App
 const elmCustomersDiv = document.querySelector('#elm-customers');
 if (elmCustomersDiv) {
-  Elm.App.embed(elmCustomersDiv);
+  const app = Elm.App.embed(elmCustomersDiv);
+
+  $(window).scroll(function() {
+     if($(window).scrollTop() + $(window).height() == $(document).height()) {
+       app.ports.jsEvents.send("CustomerList.Fetch");
+     }
+  });
 }
