@@ -15,7 +15,8 @@ initialModel =
 
 init : (Model, Cmd Msg)
 init =
-  ( initialModel, (Cmd.map CustomerListMsg CustomerList.fetchCustomers) )
+  ( initialModel
+  , (Cmd.map CustomerListMsg (CustomerList.fetchCustomers CustomerList.initialModel) ))
 
 type Msg
   = CustomerListMsg CustomerList.Msg

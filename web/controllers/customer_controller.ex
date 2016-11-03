@@ -21,9 +21,12 @@ defmodule Buckynix.CustomerController do
     render(conn, "index.html", customers: customers)
   end
 
-  def index(conn, _params) do
+  def index(conn, params) do
+    count = Map.get(params, "count", 0)
+
     customers = Customer
       |> preload(:account)
+      |> limit(^count)
       |> Repo.all
       |> Enum.map(fn(customer) ->
         %{customer |

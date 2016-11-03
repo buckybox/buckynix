@@ -13,7 +13,8 @@ import Components.JsonApi as JsonApi
 import Components.Customer as Customer
 
 type alias Model =
-  { customers: List Customer.Model }
+  { customers: List Customer.Model
+  , nextCount: Int }
 
 type Msg
   = Fetch
@@ -24,16 +25,19 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     Fetch ->
-      (model, fetchCustomers)
+      (model, fetchCustomers model)
     FetchSucceed customerList ->
-      (Model customerList, Cmd.none)
+      ({
+          customers = customerList
+        , nextCount = model.nextCount * growthFactor
+      } , Cmd.none)
     FetchFail error ->
       (model, Cmd.none)
 
-fetchCustomers : Cmd Msg
-fetchCustomers =
+fetchCustomers : Model -> Cmd Msg
+fetchCustomers model =
   let
-    url = "/api/customers"
+    url = "/api/customers?count=" ++ (toString model.nextCount)
   in
     Task.perform FetchFail FetchSucceed (JsonApi.get decodeCustomerFetch url)
 
@@ -50,21 +54,30 @@ decodeCustomerData =
     (Json.at ["attributes", "balance"] Json.string)
     (Json.at ["attributes", "tags"] (Json.list Json.string))
 
+initialCount = 5
+growthFactor = 2 -- we'll fetch X times as many on each fetch (exponential)
+
 initialModel : Model
 initialModel =
-  { customers = [] }
+  { customers = [], nextCount = initialCount }
 
 view : Model -> Html Msg
 view model =
   div [ class "customer-list" ] [ renderCustomers model ]
 
 renderCustomers model =
-  table [ class "table" ]
-    (List.concat [
-      [ newLink ],
-      (List.map (\customer -> Customer.view customer) model.customers),
+  let more =
+    if List.length(model.customers) < model.nextCount // growthFactor then
+      [ ]
+    else
       [ moreLink ]
-    ])
+  in
+    table [ class "table" ]
+      (List.concat [
+        [ newLink ],
+        (List.map (\customer -> Customer.view customer) model.customers),
+        more
+      ])
 
 newLink =
   tr [ class "new-row" ]

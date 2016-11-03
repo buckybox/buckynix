@@ -60,7 +60,7 @@ for organization <- organizations do
   |> Repo.update!
 end
 
-customers = for i <- 1..Enum.random(10..20) do
+customers = for i <- 1..Enum.random(10..50) do
   Customer.changeset(%Customer{}, %{ name: "Customer #{i}", email: "c#{i}@example.net", tags: ~w(test baller) })
   |> Repo.insert!
 end
