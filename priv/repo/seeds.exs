@@ -49,6 +49,17 @@ users = [
 |> Enum.map(&User.changeset(%User{}, &1))
 |> Enum.map(&Repo.insert!(&1))
 
+
+for organization <- organizations do
+  users = Enum.take_random(users, 2)
+
+  organization
+  |> Repo.preload(:users)
+  |> Ecto.Changeset.change()
+  |> Ecto.Changeset.put_assoc(:users, users)
+  |> Repo.update!
+end
+
 customers = for i <- 1..Enum.random(10..20) do
   Customer.changeset(%Customer{}, %{ name: "Customer #{i}", email: "c#{i}@example.net", tags: ~w(test baller) })
   |> Repo.insert!

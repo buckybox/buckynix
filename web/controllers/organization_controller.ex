@@ -4,7 +4,8 @@ defmodule Buckynix.OrganizationController do
   alias Buckynix.Organization
 
   def index(conn, _params) do
-    organizations = Repo.all(Organization)
+    user = conn.assigns[:current_user]
+    organizations = Repo.all(assoc(user, :organizations))
     render(conn, "index.html", organizations: organizations)
   end
 
@@ -28,7 +29,10 @@ defmodule Buckynix.OrganizationController do
 
   def show(conn, %{"id" => id}) do
     organization = Repo.get!(Organization, id)
-    render(conn, "show.html", organization: organization)
+
+    conn
+    |> put_session(:current_organization, Integer.to_string(organization.id))
+    |> redirect(to: customer_path(conn, :index))
   end
 
   def edit(conn, %{"id" => id}) do

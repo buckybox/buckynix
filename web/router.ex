@@ -9,6 +9,7 @@ defmodule Buckynix.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug Coherence.Authentication.Session
+    plug Buckynix.Plugs.Organization
   end
 
   pipeline :protected do
@@ -18,6 +19,7 @@ defmodule Buckynix.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug Coherence.Authentication.Session, protected: true
+    plug Buckynix.Plugs.Organization
   end
 
   pipeline :api do
@@ -41,6 +43,7 @@ defmodule Buckynix.Router do
 
     # Add public routes below
     get "/", PageController, :index
+    get "/map", MapController, :index
   end
 
   scope "/", Buckynix do

@@ -8,7 +8,7 @@
     <div class="jumbotron">
       <h2>I want to sell food</h2>
       <h4>Manage your organization</h4>
-      <%= link "Admin Panel", to: session_path(@conn, :new), class: "btn btn-primary btn-lg" %>
+      <%= link "Admin Panel", to: organization_path(@conn, :index), class: "btn btn-primary btn-lg" %>
     </div>
   </div>
 
@@ -16,7 +16,7 @@
     <div class="jumbotron">
       <h2>I want to buy food</h2>
       <h4>Find food producers nearby</h4>
-      <%= link "Marketplace", to: session_path(@conn, :new), class: "btn btn-primary btn-lg" %>
+      <%= link "Marketplace", to: map_path(@conn, :index), class: "btn btn-primary btn-lg" %>
     </div>
   </div>
 </div>

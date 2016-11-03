@@ -31,6 +31,7 @@ defmodule Buckynix.CustomerController do
           balance: (Buckynix.Money.html(customer.account.balance) |> Phoenix.HTML.safe_to_string)
          }
       end)
+
     render(conn, :index, data: customers)
   end
 

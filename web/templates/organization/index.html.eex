@@ -1,26 +1,25 @@
-<h2>Listing organizations</h2>
+<div class="row">
+  <div class="col-xs">
+    <h2>Pick the organization to manage</h2>
+  </div>
+  <div class="col-xs text-xs-right">
+    <%= link "Create new organization", to: organization_path(@conn, :new), class: "btn btn-secondary" %>
+  </div>
+</div>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for organization <- @organizations do %>
-    <tr>
-      <td><%= organization.name %></td>
-
-      <td class="text-right">
-        <%= link "Show", to: organization_path(@conn, :show, organization), class: "btn btn-default btn-xs" %>
-        <%= link "Edit", to: organization_path(@conn, :edit, organization), class: "btn btn-default btn-xs" %>
-        <%= link "Delete", to: organization_path(@conn, :delete, organization), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
-
-<%= link "New organization", to: organization_path(@conn, :new) %>
+<div class="row">
+  <div class="col-xs">
+    <div class="card-deck text-xs-center">
+      <%= for organization <- @organizations do %>
+        <div class="card">
+          <img class="card-img-top" src="<%= static_path(@conn, "/images/stock-photo-food.jpg") %>" alt="Card image cap">
+          <div class="card-block">
+            <h4 class="card-title"><%= organization.name %></h4>
+            <p class="card-text"><small class="text-muted">Last login 3 days ago</small></p>
+            <%= link "Manage", to: organization_path(@conn, :show, organization), class: "btn btn-primary btn-lg" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

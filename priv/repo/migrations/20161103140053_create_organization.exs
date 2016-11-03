@@ -3,10 +3,9 @@ defmodule Buckynix.Repo.Migrations.CreateOrganization do
 
   def change do
     create table(:organizations) do
-      add :name, :string
+      add :name, :string, null: false
 
       timestamps()
     end
-
   end
 end

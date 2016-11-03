@@ -7,6 +7,8 @@ defmodule Buckynix.User do
     field :email, :string
     coherence_schema
 
+    many_to_many :organizations, Buckynix.Organization, join_through: "organizations_users"
+
     timestamps
   end
 

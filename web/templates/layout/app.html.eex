@@ -25,7 +25,7 @@
 
           <div class="col-xs-6">
             <ul class="nav navbar-nav text-center">
-              <%= if @current_user do %>
+              <%= if @current_organization do %>
                 <li class="d-inline-block"><%= link raw(~s(<i class="fa fa-user"></i>) <> " Customers"), to: customer_path(@conn, :index), class: "nav-link" %></li>
                 <li class="d-inline-block ml-4"><%= link raw(~s(<i class="fa fa-road"></i>) <> " Logistics"), to: customer_path(@conn, :index), class: "nav-link" %></li>
                 <li class="d-inline-block ml-4"><%= link raw(~s(<i class="fa fa-list"></i>) <> " Products"), to: customer_path(@conn, :index), class: "nav-link" %></li>

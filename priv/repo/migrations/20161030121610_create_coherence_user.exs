@@ -20,10 +20,10 @@ defmodule Buckynix.Repo.Migrations.CreateCoherenceUser do
       add :reset_password_sent_at, :datetime
       # authenticatable
       add :password_hash, :string
-      
+
       timestamps()
     end
-    create unique_index(:users, [:email])
 
+    create unique_index(:users, [:email])
   end
 end

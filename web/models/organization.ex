@@ -4,6 +4,8 @@ defmodule Buckynix.Organization do
   schema "organizations" do
     field :name, :string
 
+    many_to_many :users, Buckynix.User, join_through: "organizations_users"
+
     timestamps()
   end
 
