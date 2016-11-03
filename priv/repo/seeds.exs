@@ -10,7 +10,21 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias Buckynix.{Repo, User, Customer}
+alias Buckynix.{Repo, Organization, User, Customer}
+
+organizations = [
+  %{
+    name: "Organic Carrots Consortium",
+  },
+  %{
+    name: "Dudes in a Garage",
+  },
+  %{
+    name: "Buck Baller Market",
+  },
+]
+|> Enum.map(&Organization.changeset(%Organization{}, &1))
+|> Enum.map(&Repo.insert!(&1))
 
 users = [
   %{

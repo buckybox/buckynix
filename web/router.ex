@@ -38,7 +38,6 @@ defmodule Buckynix.Router do
 
   scope "/", Buckynix do
     pipe_through :browser
-    get "/", PageController, :index
 
     # Add public routes below
     get "/", PageController, :index
@@ -48,6 +47,8 @@ defmodule Buckynix.Router do
     pipe_through :protected
 
     # Add protected routes below
+    resources "/organizations", OrganizationController
+
     get "/customers/tag/:tag", CustomerController, :tag
     get "/customers/search", CustomerController, :search
     resources "/customers", CustomerController do
