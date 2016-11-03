@@ -31,7 +31,7 @@ defmodule Buckynix.OrganizationController do
     organization = Repo.get!(Organization, id)
 
     conn
-    |> put_session(:current_organization, Integer.to_string(organization.id))
+    |> put_session(:current_organization, organization.id)
     |> redirect(to: customer_path(conn, :index))
   end
 

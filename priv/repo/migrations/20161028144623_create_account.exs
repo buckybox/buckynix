@@ -3,7 +3,7 @@ defmodule Buckynix.Repo.Migrations.CreateAccount do
 
   def change do
     create table(:accounts) do
-      add :customer_id, references(:customers, on_delete: :delete_all, type: :binary_id)
+      add :customer_id, references(:customers, on_delete: :delete_all, type: :binary_id), null: false
       add :currency, :string, null: false
       add :balance, :integer, null: false, default: 0
 
