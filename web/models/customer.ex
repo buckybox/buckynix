@@ -26,4 +26,12 @@ defmodule Buckynix.Customer do
     |> cast(params, @required_fields)
     |> validate_required(@required_fields)
   end
+
+  def with_tag(query, tag) do
+    case tag do
+      nil -> from c in query
+      _ ->   from c in query,
+             where: fragment("? = ANY(tags)", ^tag)
+    end
+  end
 end

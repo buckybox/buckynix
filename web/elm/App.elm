@@ -11,8 +11,7 @@ type alias Model =
 
 init : (Model, Cmd Msg)
 init =
-  let (model, cmd) = CustomerList.update CustomerList.Fetch CustomerList.initialModel
-  in ( { customerListModel = model }, Cmd.map CustomerListMsg cmd )
+  ( { customerListModel = CustomerList.initialModel }, Cmd.none )
 
 type Msg
   = CustomerListMsg CustomerList.Msg

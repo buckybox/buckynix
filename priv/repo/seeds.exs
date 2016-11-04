@@ -61,7 +61,10 @@ for organization <- organizations do
 end
 
 customers = for i <- 1..Enum.random(10..50) do
-  Customer.changeset(%Customer{}, %{ name: "Customer #{i}", email: "c#{i}@example.net", tags: ~w(test baller) })
+  name = Enum.random(~w(Alice Bob Charlie)) <> " " <> Enum.random(~w(Smith Dupont Ferrari))
+  tags = Enum.take_random(~w(test baller elixir), Enum.random(0..3))
+
+  Customer.changeset(%Customer{}, %{ name: "#{name} #{i}", email: "c#{i}@example.net", tags: tags })
   |> Repo.insert!
 end
 

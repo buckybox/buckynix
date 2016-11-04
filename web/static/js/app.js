@@ -20,10 +20,15 @@ import "phoenix_html"
 
 // import socket from "./socket"
 
+import utils from "./utils"
+
 // Set up our Elm App
 const elmCustomersDiv = document.querySelector('#elm-customers');
 if (elmCustomersDiv) {
   const app = Elm.App.embed(elmCustomersDiv);
+
+  var query = utils.getParameterByName("query") || "";
+  app.ports.jsEvents.send(["CustomerList.Search", query]);
 
   $(window).scroll(function() {
     if($(window).scrollTop() + $(window).height() == $(document).height()) {

@@ -81,14 +81,14 @@ initialModel =
 view : Model -> Html Msg
 view model =
   div [ class "customer-list" ]
-    [ searchBar
+    [ searchBar model.query
     , renderCustomers model ]
 
 renderCustomers model =
   let
     length = List.length(model.customers)
     moreLinkWrapper =
-      if length == 0 || length == model.nextCount // growthFactor then
+      if length == 0 || length == model.nextCount // growthFactor then -- FIXME
         [ moreLink model.fetching ]
       else
         []
@@ -101,11 +101,11 @@ renderCustomers model =
     div [ class "row" ]
       [ div [ class "col-xs" ] [ table [ class "table" ] rows ] ]
 
-searchBar =
+searchBar query =
   div [ class "row" ]
     [ div [ class "col-xs-3" ] []
     , div [ class "col-xs-6" ]
-      [ input [ name "query", placeholder "Search customers", class "form-control", onInput Search ] [] ]
+      [ input [ name "query", placeholder "Search customers", class "form-control", onInput Search, value query ] [] ]
     ]
 
 newLink =

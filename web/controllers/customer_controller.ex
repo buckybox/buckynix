@@ -3,31 +3,24 @@ defmodule Buckynix.CustomerController do
 
   alias Buckynix.{Customer,Account,Transaction}
 
-  def tag(conn, %{"tag" => tag}) do
-    customers = Repo.all(
-      from c in Customer,
-      where: fragment("? = ANY (tags)", ^tag),
-      preload: [:account]
-    )
-    render(conn, "index.html", customers: customers)
-  end
-
   def index(conn, params) do
     count = Map.get(params, "count", 0)
     query = Map.get(params, "query", "")
 
-    customers = Repo.all(
-      from c in Customer,
+    tag_regex = ~r/tag:(\w+)/
+    tag = List.last(Regex.run(tag_regex, query) || [])
+    query = Regex.replace(tag_regex, query, "") # remove tag from query
+      |> String.strip
+
+    sql = from c in Customer,
       preload: [:account],
       where: ilike(c.name, ^"%#{query}%"),
       limit: ^count
-    )
-    |> Enum.map(fn(customer) ->
-      %{customer |
-        url: customer_path(conn, :show, customer),
-        balance: (Buckynix.Money.html(customer.account.balance) |> Phoenix.HTML.safe_to_string)
-       }
-    end)
+
+    customers = sql
+      |> Customer.with_tag(tag)
+      |> Repo.all
+      |> Enum.map(fn(customer) -> customer_with_url_and_balance(conn, customer) end)
 
     render(conn, :index, data: customers)
   end
@@ -104,5 +97,12 @@ defmodule Buckynix.CustomerController do
     conn
     |> put_flash(:info, "Customer deleted successfully.")
     |> redirect(to: customer_path(conn, :index))
+  end
+
+  defp customer_with_url_and_balance(conn, customer) do
+    %{customer |
+      url: customer_path(conn, :show, customer),
+      balance: (Buckynix.Money.html(customer.account.balance) |> Phoenix.HTML.safe_to_string)
+     }
   end
 end

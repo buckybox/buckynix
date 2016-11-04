@@ -52,8 +52,6 @@ defmodule Buckynix.Router do
     # Add protected routes below
     resources "/organizations", OrganizationController
 
-    get "/customers/tag/:tag", CustomerController, :tag
-    get "/customers/search", CustomerController, :search
     resources "/customers", CustomerController do
       resources "/orders", OrderController
     end
