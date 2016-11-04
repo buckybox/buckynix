@@ -34,4 +34,4 @@ var utils = (function() {
   return module;
 }());
 
-export default utils;
+export default utils

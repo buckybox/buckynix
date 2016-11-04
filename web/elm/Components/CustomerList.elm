@@ -98,7 +98,7 @@ renderCustomers model =
         moreLinkWrapper
       ]
   in
-    div [ class "row" ]
+    div [ class "row mt-3" ]
       [ div [ class "col-xs" ] [ table [ class "table" ] rows ] ]
 
 searchBar query =

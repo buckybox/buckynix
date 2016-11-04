@@ -8,6 +8,7 @@ defmodule Buckynix.User do
     coherence_schema
 
     many_to_many :organizations, Buckynix.Organization, join_through: "organizations_users"
+    has_many :notifications, Buckynix.Notification
 
     timestamps
   end

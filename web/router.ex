@@ -60,6 +60,8 @@ defmodule Buckynix.Router do
   scope "/api", Buckynix do
     pipe_through :api
 
+    resources "/notifications", NotificationController, except: [:new, :edit]
+
     resources "/customers", CustomerController, only: [:index] do
       resources "/transactions", TransactionController, only: [:index, :create]
     end

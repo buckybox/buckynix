@@ -3,6 +3,7 @@ defmodule Buckynix.UserSocket do
 
   ## Channels
   # channel "room:*", Buckynix.RoomChannel
+  channel "notification:*", Buckynix.NotificationChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

@@ -10,7 +10,7 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias Buckynix.{Repo, Organization, User, Customer}
+alias Buckynix.{Repo, Organization, User, Notification, Customer}
 
 organizations = [
   %{
@@ -49,6 +49,19 @@ users = [
 |> Enum.map(&User.changeset(%User{}, &1))
 |> Enum.map(&Repo.insert!(&1))
 
+for user <- users do
+  notifications = [
+    %{
+      body: "This is a test notification."
+    },
+    %{
+      body: "This is another notification."
+    },
+  ]
+  |> Enum.map(&Notification.changeset(%Notification{}, &1))
+  |> Enum.map(&Ecto.Changeset.put_assoc(&1, :user, user))
+  |> Enum.map(&Repo.insert!(&1))
+end
 
 for organization <- organizations do
   users = Enum.take_random(users, 2)

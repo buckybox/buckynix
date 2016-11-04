@@ -11,16 +11,16 @@
 //
 // If you no longer want to use a dependency, remember
 // to also remove its path from "config.paths.watched".
-import "phoenix_html";
+import "phoenix_html"
 
 // Import local files
 //
 // Local files can be imported directly using relative
 // paths "./socket" or full ones "web/static/js/socket".
 
-// import socket from "./socket"
+import socket from "./socket"
 
-import utils from "./utils";
+import utils from "./utils"
 
 // Set up our Elm App
 const elmCustomersDiv = document.querySelector('#elm-customers');
@@ -47,5 +47,17 @@ if (elmCustomersDiv) {
   });
 }
 
-utils.notify("Hello World!!!");
+socket.connect()
 
+let channel = socket.channel("notification:42", {})
+
+channel.on("broadcast_notification", payload => {
+  utils.notify(payload.body)
+})
+
+channel.join()
+  .receive("ok", resp => { console.info("Joined successfully") })
+  .receive("error", resp => { console.error("Unable to join", resp) })
+
+// channel.push("new_msg", {body: "READY"})
+channel.push("fetch_notification")
