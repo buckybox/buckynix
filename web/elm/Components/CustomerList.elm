@@ -2,7 +2,7 @@ module Components.CustomerList exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput)
 import List
 
 import Http exposing (Error)
@@ -80,23 +80,33 @@ initialModel =
 
 view : Model -> Html Msg
 view model =
-  div [ class "customer-list" ] [ renderCustomers model ]
+  div [ class "customer-list" ]
+    [ searchBar
+    , renderCustomers model ]
 
 renderCustomers model =
   let
     length = List.length(model.customers)
-    more =
+    moreLinkWrapper =
       if length == 0 || length == model.nextCount // growthFactor then
         [ moreLink model.fetching ]
       else
-        [ ]
-  in
-    table [ class "table" ]
-      (List.concat [
+        []
+    rows = List.concat [
         [ newLink ],
         (List.map (\customer -> Customer.view customer) model.customers),
-        more
-      ])
+        moreLinkWrapper
+      ]
+  in
+    div [ class "row" ]
+      [ div [ class "col-xs" ] [ table [ class "table" ] rows ] ]
+
+searchBar =
+  div [ class "row" ]
+    [ div [ class "col-xs-3" ] []
+    , div [ class "col-xs-6" ]
+      [ input [ name "query", placeholder "Search customers", class "form-control", onInput Search ] [] ]
+    ]
 
 newLink =
   tr [ class "new-row" ]
