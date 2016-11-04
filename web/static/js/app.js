@@ -11,7 +11,7 @@
 //
 // If you no longer want to use a dependency, remember
 // to also remove its path from "config.paths.watched".
-import "phoenix_html"
+import "phoenix_html";
 
 // Import local files
 //
@@ -20,7 +20,7 @@ import "phoenix_html"
 
 // import socket from "./socket"
 
-import utils from "./utils"
+import utils from "./utils";
 
 // Set up our Elm App
 const elmCustomersDiv = document.querySelector('#elm-customers');
@@ -46,3 +46,6 @@ if (elmCustomersDiv) {
     }
   });
 }
+
+utils.notify("Hello World!!!");
+
