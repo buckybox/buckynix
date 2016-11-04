@@ -27,9 +27,19 @@ const elmCustomersDiv = document.querySelector('#elm-customers');
 if (elmCustomersDiv) {
   const app = Elm.App.embed(elmCustomersDiv);
 
+  // Prefill search bar with URL query part
   var query = utils.getParameterByName("query") || "";
   app.ports.jsEvents.send(["CustomerList.Search", query]);
 
+  // Hook {Ctrl,Cmd}+F to our search bar
+  $(window).on('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && (String.fromCharCode(e.which).toLowerCase() === 'f')) {
+      e.preventDefault();
+      $("input.search:first").get(0).select();
+    }
+  });
+
+  // Fetch more results when we scroll to the bottom
   $(window).scroll(function() {
     if($(window).scrollTop() + $(window).height() == $(document).height()) {
       app.ports.jsEvents.send(["CustomerList.Fetch"]);

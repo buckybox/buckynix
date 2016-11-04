@@ -105,7 +105,7 @@ searchBar query =
   div [ class "row" ]
     [ div [ class "col-xs-3" ] []
     , div [ class "col-xs-6" ]
-      [ input [ name "query", placeholder "Search customers", class "form-control", onInput Search, value query ] [] ]
+      [ input [ name "query", placeholder "Search customers", class "search form-control", onInput Search, value query ] [] ]
     ]
 
 newLink =
