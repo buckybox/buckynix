@@ -25,9 +25,14 @@ const elmCustomersDiv = document.querySelector('#elm-customers');
 if (elmCustomersDiv) {
   const app = Elm.App.embed(elmCustomersDiv);
 
+  $("#search_query").on('input', function() {
+    var query = $(this).val();
+    app.ports.jsEvents.send(["CustomerList.Search", query]);
+  });
+
   $(window).scroll(function() {
-     if($(window).scrollTop() + $(window).height() == $(document).height()) {
-       app.ports.jsEvents.send("CustomerList.Fetch");
-     }
+    if($(window).scrollTop() + $(window).height() == $(document).height()) {
+      app.ports.jsEvents.send(["CustomerList.Fetch"]);
+    }
   });
 }

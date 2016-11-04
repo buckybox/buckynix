@@ -16,7 +16,7 @@ init =
 
 type Msg
   = CustomerListMsg CustomerList.Msg
-  | JsMsg String
+  | JsMsg (List String)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -24,8 +24,11 @@ update msg model =
     CustomerListMsg customerListMsg ->
       let (updatedModel, cmd) = CustomerList.update customerListMsg model.customerListModel
       in ( { model | customerListModel = updatedModel }, Cmd.map CustomerListMsg cmd )
-    JsMsg "CustomerList.Fetch" ->
+    JsMsg ["CustomerList.Fetch"] ->
       let (updatedModel, cmd) = CustomerList.update CustomerList.Fetch model.customerListModel
+      in ( { model | customerListModel = updatedModel }, Cmd.map CustomerListMsg cmd )
+    JsMsg ["CustomerList.Search", query] ->
+      let (updatedModel, cmd) = CustomerList.update (CustomerList.Search query) model.customerListModel
       in ( { model | customerListModel = updatedModel }, Cmd.map CustomerListMsg cmd )
     JsMsg _ ->
       (model, Cmd.none)
@@ -47,7 +50,7 @@ subscriptions model =
   jsEvents JsMsg
 
 -- port for listening for events from JavaScript
-port jsEvents : (String -> msg) -> Sub msg
+port jsEvents : (List String -> msg) -> Sub msg
 
 main : Program Never
 main =

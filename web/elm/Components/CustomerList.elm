@@ -14,6 +14,7 @@ import Components.Customer as Customer
 
 type alias Model =
   { customers: List Customer.Model
+  , query: String
   , nextCount: Int
   , fetching: Bool }
 
@@ -21,6 +22,7 @@ type Msg
   = Fetch
   | FetchSucceed (List Customer.Model)
   | FetchFail Http.Error
+  | Search String
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -34,18 +36,22 @@ update msg model =
         else
           growthFactor
       in
-        ({
+        ({ model |
             customers = customerList
           , nextCount = model.nextCount * factor
           , fetching = False
         } , Cmd.none)
     FetchFail error ->
       ({ model | fetching = False }, Cmd.none)
+    Search query ->
+      let updatedModel = { model | query = query }
+      in (updatedModel, fetchCustomers updatedModel)
 
 fetchCustomers : Model -> Cmd Msg
 fetchCustomers model =
   let
     url = "/api/customers?count=" ++ (toString model.nextCount)
+      ++ "&query=" ++ model.query
   in
     Task.perform FetchFail FetchSucceed (JsonApi.get decodeCustomerFetch url)
 
@@ -67,7 +73,10 @@ growthFactor = 2 -- we'll fetch X times as many on each fetch (exponential)
 
 initialModel : Model
 initialModel =
-  { customers = [], nextCount = initialCount, fetching = True }
+  { customers = []
+  , query = ""
+  , nextCount = initialCount
+  , fetching = True }
 
 view : Model -> Html Msg
 view model =

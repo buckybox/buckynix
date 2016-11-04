@@ -12,28 +12,22 @@ defmodule Buckynix.CustomerController do
     render(conn, "index.html", customers: customers)
   end
 
-  def search(conn, %{"search" => %{"query" => query}}) do
-    customers = Repo.all(
-      from c in Customer,
-      where: ilike(c.name, ^"%#{query}%"),
-      preload: [:account]
-    )
-    render(conn, "index.html", customers: customers)
-  end
-
   def index(conn, params) do
     count = Map.get(params, "count", 0)
+    query = Map.get(params, "query", "")
 
-    customers = Customer
-      |> preload(:account)
-      |> limit(^count)
-      |> Repo.all
-      |> Enum.map(fn(customer) ->
-        %{customer |
-          url: customer_path(conn, :show, customer),
-          balance: (Buckynix.Money.html(customer.account.balance) |> Phoenix.HTML.safe_to_string)
-         }
-      end)
+    customers = Repo.all(
+      from c in Customer,
+      preload: [:account],
+      where: ilike(c.name, ^"%#{query}%"),
+      limit: ^count
+    )
+    |> Enum.map(fn(customer) ->
+      %{customer |
+        url: customer_path(conn, :show, customer),
+        balance: (Buckynix.Money.html(customer.account.balance) |> Phoenix.HTML.safe_to_string)
+       }
+    end)
 
     render(conn, :index, data: customers)
   end
