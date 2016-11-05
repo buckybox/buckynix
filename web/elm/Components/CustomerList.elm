@@ -80,7 +80,7 @@ decodeCustomerData =
     (Json.at ["attributes", "balance"] Json.string)
     (Json.at ["attributes", "tags"] (Json.list Json.string))
 
-initialCount = 10
+initialCount = 25
 growthFactor = 2 -- we'll fetch X times as many on each fetch (exponential)
 
 initialModel : Model
@@ -106,14 +106,16 @@ renderCustomers model =
         [ moreLink model.fetching ]
       else
         []
-    rows = List.concat [
-        [ newLink ],
-        (List.map (\customer -> Customer.view customer) model.customers),
-        moreLinkWrapper
-      ]
+    rows = List.map (\customer -> Customer.view customer) model.customers
   in
     div [ class "row mt-3" ]
-      [ div [ class "col-xs" ] [ table [ class "table" ] rows ] ]
+      [ div [ class "col-xs" ]
+        [ table [ class "table table-striped table-sm" ]
+          [ thead [] [ newLink ]
+          , tbody [] rows
+          , tfoot [] moreLinkWrapper ]
+        ]
+      ]
 
 searchBar model =
   div [ class "row flex-items-xs-middle" ]
@@ -128,9 +130,9 @@ searchBar model =
     ]
 
 newLink =
-  tr [ class "new-row" ]
+  tr []
   [ td [ colspan 4 ]
-       [ a [ href "/customers/new", class "btn btn-primary" ] [ text "Create a new customer" ] ]
+       [ a [ href "/customers/new", class "btn btn-outline-warning btn-block" ] [ text "Create a new customer" ] ]
   ]
 
 moreLink fetching =

@@ -3,6 +3,7 @@
 // Copy variables from `./bootstrap/scss/_variables.scss` to this file to
 // override default values without modifying source files.
 
-$brand-primary: #83b400;
 $enable-print-styles: false;
 $enable-flex: true;
+$brand-primary: #83b400;
+$table-bg-accent: rgba(0,0,0,.01);
