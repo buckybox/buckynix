@@ -16,11 +16,18 @@ type alias Model =
   { customers: List Customer.Model
   , query: String
   , nextCount: Int
-  , fetching: Bool }
+  , fetching: Bool
+  , filterCount: Int
+  , totalCount: Int }
+
+type alias JsonModel =
+  { data: List Customer.Model
+  , filterCount: Int
+  , totalCount: Int }
 
 type Msg
   = Fetch
-  | FetchSucceed (List Customer.Model)
+  | FetchSucceed JsonModel
   | FetchFail Http.Error
   | Search String
 
@@ -29,8 +36,9 @@ update msg model =
   case msg of
     Fetch ->
       ({ model | fetching = True }, fetchCustomers model)
-    FetchSucceed customerList ->
+    FetchSucceed jsonModel ->
       let
+        customerList = jsonModel.data
         factor = if model.nextCount > List.length(customerList) then
           1 -- don't grow if no more customers
         else
@@ -40,6 +48,8 @@ update msg model =
             customers = customerList
           , nextCount = model.nextCount * factor
           , fetching = False
+          , filterCount = jsonModel.filterCount
+          , totalCount = jsonModel.totalCount
         } , Cmd.none)
     FetchFail error ->
       ({ model | fetching = False }, Cmd.none)
@@ -55,10 +65,12 @@ fetchCustomers model =
   in
     Task.perform FetchFail FetchSucceed (JsonApi.get decodeCustomerFetch url)
 
-decodeCustomerFetch : Json.Decoder (List Customer.Model)
+decodeCustomerFetch : Json.Decoder JsonModel
 decodeCustomerFetch =
-  Json.object1 identity
+  Json.object3 JsonModel
     ("data" := Json.list decodeCustomerData)
+    (Json.at ["meta", "filter-count"] Json.int)
+    (Json.at ["meta", "total-count"] Json.int)
 
 decodeCustomerData : Json.Decoder Customer.Model
 decodeCustomerData =
@@ -76,12 +88,14 @@ initialModel =
   { customers = []
   , query = ""
   , nextCount = initialCount
-  , fetching = True }
+  , fetching = True
+  , filterCount = 0
+  , totalCount = 0 }
 
 view : Model -> Html Msg
 view model =
   div [ class "customer-list" ]
-    [ searchBar model.query
+    [ searchBar model
     , renderCustomers model ]
 
 renderCustomers model =
@@ -101,11 +115,16 @@ renderCustomers model =
     div [ class "row mt-3" ]
       [ div [ class "col-xs" ] [ table [ class "table" ] rows ] ]
 
-searchBar query =
-  div [ class "row" ]
+searchBar model =
+  div [ class "row flex-items-xs-middle" ]
     [ div [ class "col-xs-3" ] []
     , div [ class "col-xs-6" ]
-      [ input [ name "query", placeholder "Search customers", class "search form-control", onInput Search, value query ] [] ]
+      [ input [ name "query", placeholder "Search customers", class "search form-control", onInput Search, value model.query ] [] ]
+    , div [ class "col-xs-3" ]
+      [ small [ class "text-muted" ] [ text (
+        (toString model.filterCount) ++ " of " ++
+        (toString model.totalCount) ++ " matches" )
+      ] ]
     ]
 
 newLink =

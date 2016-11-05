@@ -22,7 +22,14 @@ defmodule Buckynix.CustomerController do
       |> Repo.all
       |> Enum.map(fn(customer) -> customer_with_url_and_balance(conn, customer) end)
 
-    render(conn, :index, data: customers)
+    total_count = Repo.aggregate(Customer, :count, :id)
+
+    meta = %{
+      "filter-count" => length(customers),
+      "total-count" => total_count
+    }
+
+    render(conn, :index, data: customers, opts: [meta: meta])
   end
 
   def new(conn, _params) do
