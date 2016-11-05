@@ -28,7 +28,7 @@ if (elmCustomersDiv) {
   const app = Elm.App.embed(elmCustomersDiv);
 
   // Prefill search bar with URL query part
-  var filter = utils.getParameterByName("query") || "";
+  var filter = utils.getParameterByName("filter") || "";
   app.ports.jsEvents.send(["CustomerList.Search", filter]);
 
   // Hook {Ctrl,Cmd}+F to our search bar
