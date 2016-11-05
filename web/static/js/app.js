@@ -51,7 +51,7 @@ socket.connect()
 
 let channel = socket.channel("notification:42", {})
 
-channel.on("broadcast_notification", payload => {
+channel.on("push_notification", payload => {
   utils.notify(payload.body)
 })
 
@@ -60,4 +60,3 @@ channel.join()
   .receive("error", resp => { console.error("Unable to join", resp) })
 
 // channel.push("new_msg", {body: "READY"})
-channel.push("fetch_notification")
