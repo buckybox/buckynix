@@ -5,27 +5,18 @@ defmodule Buckynix.CustomerController do
 
   def index(conn, params) do
     count = Map.get(params, "count", 0)
-    query = Map.get(params, "query", "")
+    filter = Map.get(params, "filter", "")
 
-    tag_regex = ~r/tag:(\w+)/
-    tag = List.last(Regex.run(tag_regex, query) || [])
-    query = Regex.replace(tag_regex, query, "") # remove tag from query
-      |> String.strip
-
-    sql = from c in Customer,
-      preload: [:account],
-      where: ilike(c.name, ^"%#{query}%"),
-      limit: ^count
-
-    customers = sql
-      |> Customer.with_tag(tag)
+    customers = get_customers(filter)
+      |> limit(^count)
       |> Repo.all
       |> Enum.map(fn(customer) -> customer_with_url_and_balance(conn, customer) end)
 
+    filter_count = Repo.aggregate(get_customers(filter), :count, :id)
     total_count = Repo.aggregate(Customer, :count, :id)
 
     meta = %{
-      "filter-count" => length(customers),
+      "filter-count" => filter_count,
       "total-count" => total_count
     }
 
@@ -111,5 +102,18 @@ defmodule Buckynix.CustomerController do
       url: customer_path(conn, :show, customer),
       balance: (Buckynix.Money.html(customer.account.balance) |> Phoenix.HTML.safe_to_string)
      }
+  end
+
+  defp get_customers(filter) do
+    tag_regex = ~r/tag:(\w+)/
+    tag = List.last(Regex.run(tag_regex, filter) || [])
+    filter = Regex.replace(tag_regex, filter, "") # remove tag from filter
+      |> String.strip
+
+    query = from c in Customer,
+      preload: [:account],
+      where: ilike(c.name, ^"%#{filter}%")
+
+    query |> Customer.with_tag(tag)
   end
 end

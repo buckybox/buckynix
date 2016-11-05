@@ -14,7 +14,7 @@ import Components.Customer as Customer
 
 type alias Model =
   { customers: List Customer.Model
-  , query: String
+  , filter: String
   , nextCount: Int
   , fetching: Bool
   , filterCount: Int
@@ -53,15 +53,15 @@ update msg model =
         } , Cmd.none)
     FetchFail error ->
       ({ model | fetching = False }, Cmd.none)
-    Search query ->
-      let updatedModel = { model | query = query }
+    Search filter ->
+      let updatedModel = { model | filter = filter }
       in (updatedModel, fetchCustomers updatedModel)
 
 fetchCustomers : Model -> Cmd Msg
 fetchCustomers model =
   let
     url = "/api/customers?count=" ++ (toString model.nextCount)
-      ++ "&query=" ++ model.query
+      ++ "&filter=" ++ model.filter
   in
     Task.perform FetchFail FetchSucceed (JsonApi.get decodeCustomerFetch url)
 
@@ -86,7 +86,7 @@ growthFactor = 2 -- we'll fetch X times as many on each fetch (exponential)
 initialModel : Model
 initialModel =
   { customers = []
-  , query = ""
+  , filter = ""
   , nextCount = initialCount
   , fetching = True
   , filterCount = 0
@@ -119,7 +119,7 @@ searchBar model =
   div [ class "row flex-items-xs-middle" ]
     [ div [ class "col-xs-3" ] []
     , div [ class "col-xs-6" ]
-      [ input [ name "query", placeholder "Search customers", class "search form-control", onInput Search, value model.query ] [] ]
+      [ input [ name "filter", placeholder "Search customers", class "search form-control", onInput Search, value model.filter ] [] ]
     , div [ class "col-xs-3" ]
       [ small [ class "text-muted" ] [ text (
         (toString model.filterCount) ++ " of " ++
