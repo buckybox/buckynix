@@ -131,7 +131,7 @@ searchBar model =
 
 newLink =
   tr []
-  [ td [ colspan 4 ]
+  [ td [ colspan 5 ]
        [ a [ href "/customers/new", class "btn btn-outline-warning btn-block" ] [ text "Create a new customer" ] ]
   ]
 
@@ -143,4 +143,4 @@ moreLink fetching =
       a [ href "javascript:void(0)", onClick Fetch ] [ text "more" ]
   in
     tr []
-    [ td [ colspan 4, class "text-center" ] [ tag ] ]
+    [ td [ colspan 5, class "text-center" ] [ tag ] ]
