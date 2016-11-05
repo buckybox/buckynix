@@ -2,7 +2,6 @@ defmodule Buckynix.NotificationChannel do
   use Buckynix.Web, :channel
 
   alias Buckynix.Notification
-  alias Buckynix.{Repo,User} # FIXME: shouldn't use in Channels??
 
   def join("notification:" <> "42", params, socket) do
     send(self, {:after_join, params})
@@ -16,15 +15,19 @@ defmodule Buckynix.NotificationChannel do
   def handle_info({:after_join, _params}, socket) do
     user_id = socket.assigns.user_id
 
-    first_notification = Repo.one(
-      from n in Notification,
-        where: n.user_id == ^user_id,
-        order_by: [asc: n.inserted_at],
-        limit: 1
-    )
+    query = from n in Notification,
+      where: n.user_id == ^user_id,
+      order_by: [asc: n.inserted_at],
+      select: [:body]
+
+    notifications = query |> Repo.all
+    first_notification = query |> limit(1) |> Repo.one
 
     if first_notification do
-      push socket, "push_notification", %{body: first_notification.body}
+      push socket, "push_notification", %{
+        body: first_notification.body,
+        count: length(notifications)
+      }
     end
 
     {:noreply, socket}

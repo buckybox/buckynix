@@ -53,6 +53,11 @@ let channel = socket.channel("notification:42", {})
 
 channel.on("push_notification", payload => {
   utils.notify(payload.body)
+
+  let notificationCount = $("#notification-count")
+  if (notificationCount) {
+    notificationCount.html(payload.count)
+  }
 })
 
 channel.join()
