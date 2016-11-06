@@ -99,13 +99,6 @@ defmodule Buckynix.UserController do
     |> redirect(to: user_path(conn, :index))
   end
 
-  defp user_with_url_and_balance(conn, user) do
-    %{user |
-      url: user_path(conn, :show, user),
-      balance: (Phoenix.HTML.safe_to_string Buckynix.Money.html(user.account.balance))
-     }
-  end
-
   defp get_users(filter) do
     tag_regex = ~r/tag:(\w+)/
     tag = List.last(Regex.run(tag_regex, filter) || [])
@@ -116,5 +109,12 @@ defmodule Buckynix.UserController do
       where: ilike(c.name, ^"%#{filter}%")
 
     query |> User.with_tag(tag)
+  end
+
+  defp user_with_url_and_balance(conn, user) do
+    %{user |
+      url: user_path(conn, :show, user),
+      balance: (Phoenix.HTML.safe_to_string Buckynix.Money.html(user.account.balance))
+     }
   end
 end

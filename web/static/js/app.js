@@ -23,11 +23,11 @@ import utils from "./utils"
 // Set up our Elm App(s)
 const elmUserListAppDiv = document.querySelector('#elm-user-list-app');
 if (elmUserListAppDiv) {
-  const app = Elm.UserListApp.embed(elmUserListAppDiv);
+  let elmUserListApp = Elm.UserListApp.embed(elmUserListAppDiv);
 
   // Prefill search bar with URL query part
   var filter = utils.getParameterByName("filter") || "";
-  app.ports.jsEvents.send(["UserList.Search", filter]);
+  elmUserListApp.ports.jsEvents.send(["UserList.Search", filter]);
 
   // Hook {Ctrl,Cmd}+F to our search bar
   $(window).on('keydown', function(e) {
@@ -47,7 +47,7 @@ if (elmUserListAppDiv) {
 
 const elmUserTransactionListApp = document.querySelector('#elm-user-transaction-list-app');
 if (elmUserTransactionListApp) {
-  const app = Elm.UserTransactionListApp.embed(elmUserTransactionListApp);
+  Elm.UserTransactionListApp.embed(elmUserTransactionListApp, {userId: "123"});
 }
 
 // Set up channels / web sockets
