@@ -5,7 +5,7 @@ defmodule Buckynix.Repo.Migrations.CreateCoherenceRememberable do
       add :series_hash, :string
       add :token_hash, :string
       add :token_created_at, :datetime
-      add :user_id, references(:users, on_delete: :delete_all)
+      add :user_id, references(:users, on_delete: :delete_all, type: :binary_id)
 
       timestamps
     end

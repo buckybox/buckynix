@@ -26,9 +26,9 @@
           <div class="col-xs-6">
             <ul class="nav navbar-nav text-center">
               <%= if @current_organization do %>
-                <li class="d-inline-block"><%= link raw(~s(<i class="fa fa-user"></i>) <> " Customers"), to: customer_path(@conn, :index), class: "nav-link" %></li>
-                <li class="d-inline-block ml-4"><%= link raw(~s(<i class="fa fa-road"></i>) <> " Logistics"), to: customer_path(@conn, :index), class: "nav-link" %></li>
-                <li class="d-inline-block ml-4"><%= link raw(~s(<i class="fa fa-list"></i>) <> " Products"), to: customer_path(@conn, :index), class: "nav-link" %></li>
+                <li class="d-inline-block"><%= link raw(~s(<i class="fa fa-user"></i>) <> " Users"), to: user_path(@conn, :index), class: "nav-link" %></li>
+                <li class="d-inline-block ml-4"><%= link raw(~s(<i class="fa fa-road"></i>) <> " Logistics"), to: user_path(@conn, :index), class: "nav-link" %></li>
+                <li class="d-inline-block ml-4"><%= link raw(~s(<i class="fa fa-list"></i>) <> " Products"), to: user_path(@conn, :index), class: "nav-link" %></li>
                 <li class="d-inline-block ml-4"><%= link raw(~s(<i class="fa fa-cog"></i>) <> " Settings"), to: organization_path(@conn, :edit, @current_organization), class: "nav-link" %></li>
               <% end %>
             </ul>
@@ -37,11 +37,11 @@
           <div class="col-xs">
             <ul class="nav navbar-nav float-right">
               <%= if @current_user do %>
-                <li class="nav-item"><%= link raw(~s(<sup><span id="notification-count" class="badge badge-pill badge-warning"></span></sup><i class="fa fa-bell"></i>)), to: customer_path(@conn, :index), class: "nav-link" %></li>
+                <li class="nav-item"><%= link raw(~s(<sup><span id="notification-count" class="badge badge-pill badge-warning"></span></sup><i class="fa fa-bell"></i>)), to: user_path(@conn, :index), class: "nav-link" %></li>
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= @current_user.name %></a>
                   <div class="dropdown-menu">
-                    <%= link "Profile", to: customer_path(@conn, :edit, @current_user), class: "dropdown-item" %>
+                    <%= link "Profile", to: user_path(@conn, :edit, @current_user), class: "dropdown-item" %>
                     <%= link "Log out", to: session_path(@conn, :delete), method: :delete, class: "dropdown-item" %>
                   </div>
                 </li>

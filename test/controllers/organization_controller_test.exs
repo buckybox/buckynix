@@ -2,11 +2,19 @@ defmodule Buckynix.OrganizationControllerTest do
   use Buckynix.ConnCase
 
   alias Buckynix.Organization
+  alias Buckynix.User
   @valid_attrs %{name: "Org name"}
   @invalid_attrs %{name: ""}
 
+  @user_attrs %{
+    email: "joe@test.local",
+    name: "Joe",
+    password: "rubbish",
+    password_confirmation: "rubbish"
+  }
+
   setup context do
-    user = Repo.insert! %Buckynix.User{name: "Name", email: "test@example.com"}
+    user = Repo.insert! User.changeset(%User{}, @user_attrs)
     conn = assign context[:conn], :current_user, user
 
     organization = case context[:with_organization] do
@@ -43,7 +51,7 @@ defmodule Buckynix.OrganizationControllerTest do
   @tag :with_organization
   test "redirects to admin panel", %{conn: conn, organization: organization} do
     conn = get conn, organization_path(conn, :show, organization)
-    assert redirected_to(conn) == customer_path(conn, :index)
+    assert redirected_to(conn) == user_path(conn, :index)
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do

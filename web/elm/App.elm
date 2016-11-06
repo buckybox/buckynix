@@ -4,41 +4,41 @@ import Html exposing (Html, div)
 import Html.Attributes exposing (class)
 import Html.App
 
-import Components.CustomerList as CustomerList
+import Components.UserList as UserList
 
 type alias Model =
-  { customerListModel: CustomerList.Model }
+  { userListModel: UserList.Model }
 
 init : (Model, Cmd Msg)
 init =
-  ( { customerListModel = CustomerList.initialModel }, Cmd.none )
+  ( { userListModel = UserList.initialModel }, Cmd.none )
 
 type Msg
-  = CustomerListMsg CustomerList.Msg
+  = UserListMsg UserList.Msg
   | JsMsg (List String)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    CustomerListMsg customerListMsg ->
-      let (updatedModel, cmd) = CustomerList.update customerListMsg model.customerListModel
-      in ( { model | customerListModel = updatedModel }, Cmd.map CustomerListMsg cmd )
-    JsMsg ["CustomerList.Fetch"] ->
-      let (updatedModel, cmd) = CustomerList.update CustomerList.Fetch model.customerListModel
-      in ( { model | customerListModel = updatedModel }, Cmd.map CustomerListMsg cmd )
-    JsMsg ["CustomerList.Search", query] ->
-      let (updatedModel, cmd) = CustomerList.update (CustomerList.Search query) model.customerListModel
-      in ( { model | customerListModel = updatedModel }, Cmd.map CustomerListMsg cmd )
+    UserListMsg userListMsg ->
+      let (updatedModel, cmd) = UserList.update userListMsg model.userListModel
+      in ( { model | userListModel = updatedModel }, Cmd.map UserListMsg cmd )
+    JsMsg ["UserList.Fetch"] ->
+      let (updatedModel, cmd) = UserList.update UserList.Fetch model.userListModel
+      in ( { model | userListModel = updatedModel }, Cmd.map UserListMsg cmd )
+    JsMsg ["UserList.Search", query] ->
+      let (updatedModel, cmd) = UserList.update (UserList.Search query) model.userListModel
+      in ( { model | userListModel = updatedModel }, Cmd.map UserListMsg cmd )
     JsMsg _ ->
       (model, Cmd.none)
 
-customerListView : Model -> Html Msg
-customerListView model =
-  Html.App.map CustomerListMsg (CustomerList.view model.customerListModel)
+userListView : Model -> Html Msg
+userListView model =
+  Html.App.map UserListMsg (UserList.view model.userListModel)
 
 pageView : Model -> Html Msg
 pageView model =
-  customerListView model
+  userListView model
 
 view : Model -> Html Msg
 view model =

@@ -1,4 +1,4 @@
-defmodule Buckynix.CustomerView do
+defmodule Buckynix.UserView do
   use Buckynix.Web, :view
   use JaSerializer.PhoenixView
 

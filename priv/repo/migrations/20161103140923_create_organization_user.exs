@@ -4,7 +4,7 @@ defmodule Buckynix.Repo.Migrations.CreateOrganizationUser do
   def change do
     create table(:organizations_users) do
       add :organization_id, references(:organizations, on_delete: :nothing, type: :binary_id), null: false
-      add :user_id, references(:users, on_delete: :nothing), null: false
+      add :user_id, references(:users, on_delete: :nothing, type: :binary_id), null: false
 
       timestamps()
     end

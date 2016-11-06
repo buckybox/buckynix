@@ -1,4 +1,4 @@
-module Components.CustomerList exposing (..)
+module Components.UserList exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -10,10 +10,10 @@ import Task
 import Json.Decode as Json exposing ((:=))
 
 import Components.JsonApi as JsonApi
-import Components.Customer as Customer
+import Components.User as User
 
 type alias Model =
-  { customers: List Customer.Model
+  { users: List User.Model
   , filter: String
   , nextCount: Int
   , fetching: Bool
@@ -21,7 +21,7 @@ type alias Model =
   , totalCount: Int }
 
 type alias JsonModel =
-  { data: List Customer.Model
+  { data: List User.Model
   , filterCount: Int
   , totalCount: Int }
 
@@ -35,17 +35,17 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     Fetch ->
-      ({ model | fetching = True }, fetchCustomers model)
+      ({ model | fetching = True }, fetchUsers model)
     FetchSucceed jsonModel ->
       let
-        customerList = jsonModel.data
-        factor = if model.nextCount > List.length(customerList) then
-          1 -- don't grow if no more customers
+        userList = jsonModel.data
+        factor = if model.nextCount > List.length(userList) then
+          1 -- don't grow if no more users
         else
           growthFactor
       in
         ({ model |
-            customers = customerList
+            users = userList
           , nextCount = model.nextCount * factor
           , fetching = False
           , filterCount = jsonModel.filterCount
@@ -55,26 +55,26 @@ update msg model =
       ({ model | fetching = False }, Cmd.none)
     Search filter ->
       let updatedModel = { model | filter = filter }
-      in (updatedModel, fetchCustomers updatedModel)
+      in (updatedModel, fetchUsers updatedModel)
 
-fetchCustomers : Model -> Cmd Msg
-fetchCustomers model =
+fetchUsers : Model -> Cmd Msg
+fetchUsers model =
   let
-    url = "/api/customers?count=" ++ (toString model.nextCount)
+    url = "/api/users?count=" ++ (toString model.nextCount)
       ++ "&filter=" ++ model.filter
   in
-    Task.perform FetchFail FetchSucceed (JsonApi.get decodeCustomerFetch url)
+    Task.perform FetchFail FetchSucceed (JsonApi.get decodeUserFetch url)
 
-decodeCustomerFetch : Json.Decoder JsonModel
-decodeCustomerFetch =
+decodeUserFetch : Json.Decoder JsonModel
+decodeUserFetch =
   Json.object3 JsonModel
-    ("data" := Json.list decodeCustomerData)
+    ("data" := Json.list decodeUserData)
     (Json.at ["meta", "filter-count"] Json.int)
     (Json.at ["meta", "total-count"] Json.int)
 
-decodeCustomerData : Json.Decoder Customer.Model
-decodeCustomerData =
-  Json.object4 Customer.Model
+decodeUserData : Json.Decoder User.Model
+decodeUserData =
+  Json.object4 User.Model
     (Json.at ["attributes", "url"] Json.string)
     (Json.at ["attributes", "name"] Json.string)
     (Json.at ["attributes", "balance"] Json.string)
@@ -85,7 +85,7 @@ growthFactor = 2 -- we'll fetch X times as many on each fetch (exponential)
 
 initialModel : Model
 initialModel =
-  { customers = []
+  { users = []
   , filter = ""
   , nextCount = initialCount
   , fetching = True
@@ -94,19 +94,19 @@ initialModel =
 
 view : Model -> Html Msg
 view model =
-  div [ class "customer-list" ]
+  div [ class "user-list" ]
     [ searchBar model
-    , renderCustomers model ]
+    , renderUsers model ]
 
-renderCustomers model =
+renderUsers model =
   let
-    length = List.length(model.customers)
+    length = List.length(model.users)
     moreLinkWrapper =
       if length == 0 || length == model.nextCount // growthFactor then -- FIXME
         [ moreLink model.fetching ]
       else
         []
-    rows = List.map (\customer -> Customer.view customer) model.customers
+    rows = List.map (\user -> User.view user) model.users
   in
     div [ class "row mt-3" ]
       [ div [ class "col-xs" ]
@@ -121,7 +121,7 @@ searchBar model =
   div [ class "row flex-items-xs-middle" ]
     [ div [ class "col-xs-3" ] []
     , div [ class "col-xs-6" ]
-      [ input [ name "filter", placeholder "Search customers", class "search form-control", onInput Search, value model.filter ] [] ]
+      [ input [ name "filter", placeholder "Search users", class "search form-control", onInput Search, value model.filter ] [] ]
     , div [ class "col-xs-3" ]
       [ small [ class "text-muted" ] [ text (
         (toString model.filterCount) ++ " of " ++
@@ -132,7 +132,7 @@ searchBar model =
 newLink =
   tr []
   [ td [ colspan 5 ]
-       [ a [ href "/customers/new", class "btn btn-outline-warning btn-block" ] [ text "Create a new customer" ] ]
+       [ a [ href "/users/new", class "btn btn-outline-warning btn-block" ] [ text "Create a new user" ] ]
   ]
 
 moreLink fetching =

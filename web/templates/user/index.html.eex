@@ -1,5 +1,5 @@
 <div class="row">
   <div class="col-lg-12">
-    <div id="elm-customers"></div>
+    <div id="elm-users"></div>
   </div>
 </div>

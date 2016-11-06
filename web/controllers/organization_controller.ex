@@ -32,7 +32,7 @@ defmodule Buckynix.OrganizationController do
 
     conn
     |> put_session(:current_organization, organization.id)
-    |> redirect(to: customer_path(conn, :index))
+    |> redirect(to: user_path(conn, :index))
   end
 
   def edit(conn, %{"id" => id}) do

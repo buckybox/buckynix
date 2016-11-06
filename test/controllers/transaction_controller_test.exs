@@ -21,7 +21,7 @@ defmodule Buckynix.TransactionControllerTest do
 
   test "lists all entries on index", %{conn: conn} do
     transaction = Repo.insert! Transaction.changeset(%Transaction{}, @valid_attrs)
-    conn = get conn, customer_transaction_path(conn, :index, 1)
+    conn = get conn, user_transaction_path(conn, :index, 1)
     response = json_response(conn, 200)
 
     data = List.first response["data"]
@@ -32,7 +32,7 @@ defmodule Buckynix.TransactionControllerTest do
   end
 
   test "creates and renders resource when data is valid", %{conn: conn} do
-    conn = post conn, customer_transaction_path(conn, :create, 1), %{
+    conn = post conn, user_transaction_path(conn, :create, 1), %{
       "meta" => %{},
       "data" => %{
         "type" => "transaction",
@@ -46,7 +46,7 @@ defmodule Buckynix.TransactionControllerTest do
   end
 
   test "does not create resource and renders errors when data is invalid", %{conn: conn} do
-    conn = post conn, customer_transaction_path(conn, :create, 1), %{
+    conn = post conn, user_transaction_path(conn, :create, 1), %{
       "meta" => %{},
       "data" => %{
         "type" => "transaction",

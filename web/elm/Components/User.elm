@@ -1,4 +1,4 @@
-module Components.Customer exposing (view, Model)
+module Components.User exposing (view, Model)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -24,7 +24,7 @@ view model =
   , td [] (List.map
     (\tag -> 
       a
-      [ href ("/customers?filter=tag%3A" ++ tag), class "badge badge-info mr-1" ]
+      [ href ("/users?filter=tag%3A" ++ tag), class "badge badge-info mr-1" ]
       [ span [] [ text tag ] ]
     )
     model.tags

@@ -23,13 +23,13 @@ import socket from "./socket"
 import utils from "./utils"
 
 // Set up our Elm App
-const elmCustomersDiv = document.querySelector('#elm-customers');
-if (elmCustomersDiv) {
-  const app = Elm.App.embed(elmCustomersDiv);
+const elmUsersDiv = document.querySelector('#elm-users');
+if (elmUsersDiv) {
+  const app = Elm.App.embed(elmUsersDiv);
 
   // Prefill search bar with URL query part
   var filter = utils.getParameterByName("filter") || "";
-  app.ports.jsEvents.send(["CustomerList.Search", filter]);
+  app.ports.jsEvents.send(["UserList.Search", filter]);
 
   // Hook {Ctrl,Cmd}+F to our search bar
   $(window).on('keydown', function(e) {
@@ -42,7 +42,7 @@ if (elmCustomersDiv) {
   // Fetch more results when we scroll to the bottom
   $(window).scroll(function() {
     if($(window).scrollTop() + $(window).height() == $(document).height()) {
-      app.ports.jsEvents.send(["CustomerList.Fetch"]);
+      app.ports.jsEvents.send(["UserList.Fetch"]);
     }
   });
 }

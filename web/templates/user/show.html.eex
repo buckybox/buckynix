@@ -3,22 +3,22 @@
     <div class="card">
       <div class="card-block">
         <div class="btn-group float-right" role="group">
-          <a title="Email" class="btn btn-primary" href="<%= customer_path(@conn, :show, @customer) %>"><i class="fa fa-envelope fa-fw"></i></a>
+          <a title="Email" class="btn btn-primary" href="<%= user_path(@conn, :show, @user) %>"><i class="fa fa-envelope fa-fw"></i></a>
 
           <div class="btn-group" role="group">
             <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
             <div class="dropdown-menu">
-              <%= link "Edit", to: customer_path(@conn, :edit, @customer), class: "dropdown-item" %>
-              <%= link "Delete", to: customer_path(@conn, :delete, @customer), method: :delete, data: [confirm: "Are you sure?"], class: "dropdown-item" %>
+              <%= link "Edit", to: user_path(@conn, :edit, @user), class: "dropdown-item" %>
+              <%= link "Delete", to: user_path(@conn, :delete, @user), method: :delete, data: [confirm: "Are you sure?"], class: "dropdown-item" %>
             </div>
           </div>
         </div>
 
-        <h4 class="card-title"><%= @customer.name %></h4>
+        <h4 class="card-title"><%= @user.name %></h4>
 
         <div>
-          <%= for tag <- @customer.tags do %>
-            <%= link tag, to: customer_path(@conn, :index, filter: "tag:#{tag}"), class: "badge badge-info mr-1" %>
+          <%= for tag <- @user.tags do %>
+            <%= link tag, to: user_path(@conn, :index, filter: "tag:#{tag}"), class: "badge badge-info mr-1" %>
           <% end %>
         </div>
       </div>
@@ -26,7 +26,7 @@
         <li class="list-group-item"><h4><%= Buckynix.Money.html(@account.balance) %></h4></li>
         <li class="list-group-item">
           <ul class="list-unstyled">
-            <li>Email: <strong><%= @customer.email %></strong></li>
+            <li>Email: <strong><%= @user.email %></strong></li>
             <li>Phone: <strong><%= link "07123456789", to: "tel:+3307123456789" %></strong></li>
           </ul>
         </li>
@@ -48,7 +48,7 @@
         <table class="table table-sm">
           <thead>
             <tr>
-              <th colspan="3"><%= link "Create a new order", to: customer_path(@conn, :new), class: "btn btn-outline-warning btn-block" %></th>
+              <th colspan="3"><%= link "Create a new order", to: user_path(@conn, :new), class: "btn btn-outline-warning btn-block" %></th>
             </tr>
           </thead>
           <tbody>

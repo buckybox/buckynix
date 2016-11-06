@@ -2,9 +2,9 @@ defmodule Buckynix.Account do
   use Buckynix.Web, :model
 
   schema "accounts" do
-    belongs_to :customer, Buckynix.Customer, type: :binary_id
     field :currency, :string
     field :balance, Money.Ecto.Type
+    belongs_to :user, Buckynix.User, type: :binary_id
 
     has_many :transaction, Buckynix.Transaction
 

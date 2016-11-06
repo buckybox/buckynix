@@ -1,9 +1,13 @@
-defmodule Buckynix.Repo.Migrations.CreateCoherenceUser do
+defmodule Buckynix.Repo.Migrations.CreateUser do
   use Ecto.Migration
   def change do
-    create table(:users) do
-      add :name, :string
-      add :email, :string
+    create table(:users, primary_key: false) do
+      add :id, :binary_id, primary_key: true
+
+      add :name, :string, null: false
+      add :email, :string, null: false
+      add :tags, {:array, :string}, null: false, default: []
+
       # rememberable
       add :remember_created_at, :datetime
       # trackable

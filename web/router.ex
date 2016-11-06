@@ -52,7 +52,7 @@ defmodule Buckynix.Router do
     # Add protected routes below
     resources "/organizations", OrganizationController
 
-    resources "/customers", CustomerController do
+    resources "/users", UserController do
       resources "/orders", OrderController
     end
   end
@@ -62,7 +62,7 @@ defmodule Buckynix.Router do
 
     resources "/notifications", NotificationController, except: [:new, :edit]
 
-    resources "/customers", CustomerController, only: [:index] do
+    resources "/users", UserController, only: [:index] do
       resources "/transactions", TransactionController, only: [:index, :create]
     end
   end

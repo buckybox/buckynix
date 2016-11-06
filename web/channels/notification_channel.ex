@@ -2,14 +2,16 @@ defmodule Buckynix.NotificationChannel do
   use Buckynix.Web, :channel
 
   alias Buckynix.Notification
+  alias Buckynix.User
 
-  def join("notification:" <> "42", params, socket) do
+  def join("notification:42", params, socket) do
     send(self, {:after_join, params})
-    {:ok, assign(socket, :user_id, 1)}
+    user_id = Repo.one(from u in User, limit: 1).id # FIXME
+    {:ok, assign(socket, :user_id, user_id)}
   end
 
   def join(_, _message, _socket) do
-    {:error, %{reason: "Not your user ID"}}
+    {:error, %{reason: "No such topic"}}
   end
 
   def handle_info({:after_join, _params}, socket) do
