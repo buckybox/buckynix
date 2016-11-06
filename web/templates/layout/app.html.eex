@@ -41,7 +41,7 @@
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= @current_user.name %></a>
                   <div class="dropdown-menu">
-                    <%= link "Profile", to: user_path(@conn, :edit, @current_user), class: "dropdown-item" %>
+                    <%= link "Profile", to: user_path(@conn, :show, @current_user), class: "dropdown-item" %>
                     <%= link "Log out", to: session_path(@conn, :delete), method: :delete, class: "dropdown-item" %>
                   </div>
                 </li>

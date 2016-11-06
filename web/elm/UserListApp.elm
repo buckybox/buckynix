@@ -1,7 +1,6 @@
-port module App exposing (..)
+port module UserListApp exposing (..)
 
 import Html exposing (Html, div)
-import Html.Attributes exposing (class)
 import Html.App
 
 import Components.UserList as UserList
@@ -36,13 +35,9 @@ userListView : Model -> Html Msg
 userListView model =
   Html.App.map UserListMsg (UserList.view model.userListModel)
 
-pageView : Model -> Html Msg
-pageView model =
-  userListView model
-
 view : Model -> Html Msg
 view model =
-  div [ class "elm-app" ] [ pageView model ]
+  div [] [ userListView model ]
 
 subscriptions : Model -> Sub Msg
 subscriptions model =

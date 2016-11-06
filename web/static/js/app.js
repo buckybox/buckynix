@@ -18,14 +18,12 @@ import "phoenix_html"
 // Local files can be imported directly using relative
 // paths "./socket" or full ones "web/static/js/socket".
 
-import socket from "./socket"
-
 import utils from "./utils"
 
-// Set up our Elm App
-const elmUsersDiv = document.querySelector('#elm-users');
-if (elmUsersDiv) {
-  const app = Elm.App.embed(elmUsersDiv);
+// Set up our Elm App(s)
+const elmUserListAppDiv = document.querySelector('#elm-user-list-app');
+if (elmUserListAppDiv) {
+  const app = Elm.UserListApp.embed(elmUserListAppDiv);
 
   // Prefill search bar with URL query part
   var filter = utils.getParameterByName("filter") || "";
@@ -46,6 +44,14 @@ if (elmUsersDiv) {
     }
   });
 }
+
+const elmUserTransactionListApp = document.querySelector('#elm-user-transaction-list-app');
+if (elmUserTransactionListApp) {
+  const app = Elm.UserTransactionListApp.embed(elmUserTransactionListApp);
+}
+
+// Set up channels / web sockets
+import socket from "./socket"
 
 socket.connect()
 
