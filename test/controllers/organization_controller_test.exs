@@ -2,12 +2,26 @@ defmodule Buckynix.OrganizationControllerTest do
   use Buckynix.ConnCase
 
   alias Buckynix.Organization
-  @valid_attrs %{name: "some content"}
-  @invalid_attrs %{}
+  @valid_attrs %{name: "Org name"}
+  @invalid_attrs %{name: ""}
 
-  test "lists all entries on index", %{conn: conn} do
+  setup context do
+    user = Repo.insert! %Buckynix.User{name: "Name", email: "test@example.com"}
+    conn = assign context[:conn], :current_user, user
+
+    organization = case context[:with_organization] do
+      true -> Organization.changeset(%Organization{}, @valid_attrs)
+              |> Repo.insert!
+      _ -> nil
+    end
+
+    [conn: conn, organization: organization]
+  end
+
+  @tag :with_organization
+  test "lists all entries on index", %{conn: conn, organization: organization} do
     conn = get conn, organization_path(conn, :index)
-    assert html_response(conn, 200) =~ "Listing organizations"
+    assert html_response(conn, 200) =~ "Pick the organization"
   end
 
   test "renders form for new resources", %{conn: conn} do
@@ -26,39 +40,39 @@ defmodule Buckynix.OrganizationControllerTest do
     assert html_response(conn, 200) =~ "New organization"
   end
 
-  test "shows chosen resource", %{conn: conn} do
-    organization = Repo.insert! %Organization{}
+  @tag :with_organization
+  test "redirects to admin panel", %{conn: conn, organization: organization} do
     conn = get conn, organization_path(conn, :show, organization)
-    assert html_response(conn, 200) =~ "Show organization"
+    assert redirected_to(conn) == customer_path(conn, :index)
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do
     assert_error_sent 404, fn ->
-      get conn, organization_path(conn, :show, -1)
+      get conn, organization_path(conn, :show, Ecto.UUID.generate)
     end
   end
 
-  test "renders form for editing chosen resource", %{conn: conn} do
-    organization = Repo.insert! %Organization{}
+  @tag :with_organization
+  test "renders form for editing chosen resource", %{conn: conn, organization: organization} do
     conn = get conn, organization_path(conn, :edit, organization)
     assert html_response(conn, 200) =~ "Edit organization"
   end
 
-  test "updates chosen resource and redirects when data is valid", %{conn: conn} do
-    organization = Repo.insert! %Organization{}
+  @tag :with_organization
+  test "updates chosen resource and redirects when data is valid", %{conn: conn, organization: organization} do
     conn = put conn, organization_path(conn, :update, organization), organization: @valid_attrs
     assert redirected_to(conn) == organization_path(conn, :show, organization)
     assert Repo.get_by(Organization, @valid_attrs)
   end
 
-  test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    organization = Repo.insert! %Organization{}
+  @tag :with_organization
+  test "does not update chosen resource and renders errors when data is invalid", %{conn: conn, organization: organization} do
     conn = put conn, organization_path(conn, :update, organization), organization: @invalid_attrs
     assert html_response(conn, 200) =~ "Edit organization"
   end
 
-  test "deletes chosen resource", %{conn: conn} do
-    organization = Repo.insert! %Organization{}
+  @tag :with_organization
+  test "deletes chosen resource", %{conn: conn, organization: organization} do
     conn = delete conn, organization_path(conn, :delete, organization)
     assert redirected_to(conn) == organization_path(conn, :index)
     refute Repo.get(Organization, organization.id)

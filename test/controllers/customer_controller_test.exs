@@ -18,7 +18,7 @@ defmodule Buckynix.CustomerControllerTest do
       _ -> nil
     end
 
-    [conn: conn, customer: customer, customer: customer]
+    [conn: conn, customer: customer]
   end
 
   test "lists all entries on index", %{conn: conn} do
