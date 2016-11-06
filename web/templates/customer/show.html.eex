@@ -34,6 +34,8 @@
       <div class="card-block">
         <a href="#" class="card-link">Card link</a>
         <a href="#" class="card-link">Another link</a>
+
+        <iframe class="rounded" width="100%" height="200" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://www.openstreetmap.org/export/embed.html?bbox=9.527077674865723%2C46.96502510207853%2C9.5985746383667%2C46.99161140433591&amp;layer=mapnik&amp;marker=46.978319905617624%2C9.562826156616211" style="border: 1px solid #ccc"></iframe><br/>
       </div>
     </div>
 
@@ -43,15 +45,13 @@
     <div class="card">
       <h4 class="card-header">Orders</h4>
       <div class="card-block">
-        <h4 class="card-title">Create a new order</h4>
-        <p class="card-text">No orders</p>
-
-        <table class="table">
-          <tbody>
+        <table class="table table-sm">
+          <thead>
             <tr>
-              <td colspan="3"><%= link "Create a new order", to: customer_path(@conn, :new), class: "btn btn-outline-warning btn-block" %></td>
+              <th colspan="3"><%= link "Create a new order", to: customer_path(@conn, :new), class: "btn btn-outline-warning btn-block" %></th>
             </tr>
-
+          </thead>
+          <tbody>
             <%= for order <- @orders do %>
               <tr>
                 <td><%= order.tag %></td>
@@ -88,6 +88,11 @@
               </tr>
             <% end %>
           </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5" class="text-center"><a href="#">show all</a></td>
+            </tr>
+          </tfoot>
         </table>
       </div>
     </div>
