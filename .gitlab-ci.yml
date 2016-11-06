@@ -1,0 +1,32 @@
+# Official language image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/elixir/tags/
+image: elixir:latest
+
+services:
+  - postgres:latest
+  - redis:latest
+
+variables:
+  MIX_ENV: test
+  POSTGRES_HOST: postgres
+  POSTGRES_USER: runner
+  REDIS_URL: redis://redis:6379/
+
+cache:
+  paths:
+    - _build
+    - deps
+
+before_script:
+  - elixir -v
+  - mix local.hex --force
+  - mix deps.get
+
+credo:
+  script:
+  - mix credo
+
+exunit:
+  script:
+  - mix ecto.reset
+  - mix test
