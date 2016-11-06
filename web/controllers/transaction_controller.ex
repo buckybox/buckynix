@@ -18,7 +18,6 @@ defmodule Buckynix.TransactionController do
       {:ok, transaction} ->
         conn
         |> put_status(:created)
-        |> put_resp_header("location", customer_transaction_path(conn, :show, transaction))
         |> render("show.json-api", data: transaction)
       {:error, changeset} ->
         conn

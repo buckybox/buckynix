@@ -19,7 +19,7 @@ defmodule Buckynix.OrganizationControllerTest do
   end
 
   @tag :with_organization
-  test "lists all entries on index", %{conn: conn, organization: organization} do
+  test "lists all entries on index", %{conn: conn} do
     conn = get conn, organization_path(conn, :index)
     assert html_response(conn, 200) =~ "Pick the organization"
   end
