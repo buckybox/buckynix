@@ -8,6 +8,8 @@ defmodule Buckynix.CustomerController do
     filter = Map.get(params, "filter", "")
 
     customers = get_customers(filter)
+    customers =
+      customers
       |> limit(^count)
       |> Repo.all
       |> Enum.map(fn(customer) -> customer_with_url_and_balance(conn, customer) end)
@@ -100,15 +102,14 @@ defmodule Buckynix.CustomerController do
   defp customer_with_url_and_balance(conn, customer) do
     %{customer |
       url: customer_path(conn, :show, customer),
-      balance: (Buckynix.Money.html(customer.account.balance) |> Phoenix.HTML.safe_to_string)
+      balance: (Phoenix.HTML.safe_to_string Buckynix.Money.html(customer.account.balance))
      }
   end
 
   defp get_customers(filter) do
     tag_regex = ~r/tag:(\w+)/
     tag = List.last(Regex.run(tag_regex, filter) || [])
-    filter = Regex.replace(tag_regex, filter, "") # remove tag from filter
-      |> String.strip
+    filter = String.strip Regex.replace(tag_regex, filter, "") # remove tag from filter
 
     query = from c in Customer,
       preload: [:account],
