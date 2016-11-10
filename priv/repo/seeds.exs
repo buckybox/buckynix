@@ -10,7 +10,7 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias Buckynix.{Repo, Organization, User, Notification}
+alias Buckynix.{Repo, Organization, User, Notification, Delivery}
 
 organizations = [
     %{
@@ -73,6 +73,17 @@ for user <- users do
     },
   ]
   |> Enum.map(&Notification.changeset(%Notification{}, &1))
+  |> Enum.map(&Ecto.Changeset.put_assoc(&1, :user, user))
+  |> Enum.map(&Repo.insert!(&1))
+end
+
+now = Timex.now
+dates = Enum.map(-20..8, fn(delta) -> Timex.shift(now, days: delta) end)
+
+for user <- users do
+  dates
+  |> Enum.filter(fn(_) -> Enum.random([true, false]) end)
+  |> Enum.map(&Delivery.changeset(%Delivery{}, %{date: &1}))
   |> Enum.map(&Ecto.Changeset.put_assoc(&1, :user, user))
   |> Enum.map(&Repo.insert!(&1))
 end

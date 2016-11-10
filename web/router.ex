@@ -55,6 +55,8 @@ defmodule Buckynix.Router do
     resources "/users", UserController do
       resources "/orders", OrderController
     end
+
+    resources "/deliveries", DeliveryController, only: [:index]
   end
 
   scope "/api", Buckynix do
@@ -65,5 +67,7 @@ defmodule Buckynix.Router do
     resources "/users", UserController, only: [:index] do
       resources "/transactions", TransactionController, only: [:index, :create]
     end
+
+    resources "/deliveries", DeliveryController, only: [:index]
   end
 end

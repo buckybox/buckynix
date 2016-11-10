@@ -27,7 +27,7 @@
             <ul class="nav navbar-nav text-center">
               <%= if @current_organization do %>
                 <li class="d-inline-block"><%= link raw(~s(<i class="fa fa-user"></i>) <> " Users"), to: user_path(@conn, :index), class: "nav-link" %></li>
-                <li class="d-inline-block ml-4"><%= link raw(~s(<i class="fa fa-road"></i>) <> " Logistics"), to: user_path(@conn, :index), class: "nav-link" %></li>
+                <li class="d-inline-block ml-4"><%= link raw(~s(<i class="fa fa-road"></i>) <> " Logistics"), to: delivery_path(@conn, :index), class: "nav-link" %></li>
                 <li class="d-inline-block ml-4"><%= link raw(~s(<i class="fa fa-list"></i>) <> " Products"), to: user_path(@conn, :index), class: "nav-link" %></li>
                 <li class="d-inline-block ml-4"><%= link raw(~s(<i class="fa fa-cog"></i>) <> " Settings"), to: organization_path(@conn, :edit, @current_organization), class: "nav-link" %></li>
               <% end %>

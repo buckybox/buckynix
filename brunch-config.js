@@ -58,7 +58,7 @@ exports.config = {
     },
     elmBrunch: {
       elmFolder: "web/elm",
-      mainModules: ["UserListApp.elm", "UserTransactionListApp.elm"],
+      mainModules: ["UserListApp.elm", "UserTransactionListApp.elm", "DeliveryListApp.elm"],
       outputFolder: "../static/vendor",
       makeParameters: ["--warn"]
     }

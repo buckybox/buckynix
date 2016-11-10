@@ -50,6 +50,11 @@ if (elmUserTransactionListApp) {
   Elm.UserTransactionListApp.embed(elmUserTransactionListApp, {userId: "123"});
 }
 
+const elmDeliveryListApp = document.querySelector('#elm-delivery-list-app');
+if (elmDeliveryListApp) {
+  Elm.DeliveryListApp.embed(elmDeliveryListApp)
+}
+
 // Set up channels / web sockets
 import socket from "./socket"
 

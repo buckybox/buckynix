@@ -25,8 +25,8 @@ type alias Day =
   , deliveryCount: Int }
 
 type alias Window =
-  { from: Day
-  , to: Day }
+  { from: Date
+  , to: Date }
 
 type alias Calendar =
   { days: List Day
@@ -37,21 +37,21 @@ type alias Model =
 
 initialModel : Model
 initialModel =
-  let
-    day = Day (Date.fromTime 1468454400) Delivered 42
-    days = List.repeat 30 day
-    window = Window day day
-    calendar = Calendar days window
+  { form = renderCalendar }
 
+renderCalendar : Form
+renderCalendar =
+  let
+    date = Date.fromTime 1468454400
+    day = Day date Delivered 42
+    days = List.repeat 30 day
+    window = Window date date
+    calendar = Calendar days window
     width = 30 + 1 -- add 1 px for border
     xPositions = List.map (\x -> toFloat(x) * width) [1..(List.length days)]
   in
-      { form =
-          List.map2 (\day -> \x -> renderDay day |> Collage.moveX x)
-          calendar.days
-          xPositions
-          |> Collage.group
-      }
+    List.map2 (\day -> \x -> renderDay day |> Collage.moveX x) calendar.days xPositions
+    |> Collage.group
 
 renderDay : Day -> Form
 renderDay day =
