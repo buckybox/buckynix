@@ -50,9 +50,13 @@ if (elmUserTransactionListApp) {
   Elm.UserTransactionListApp.embed(elmUserTransactionListApp, {userId: "123"});
 }
 
-const elmDeliveryListApp = document.querySelector('#elm-delivery-list-app');
-if (elmDeliveryListApp) {
-  Elm.DeliveryListApp.embed(elmDeliveryListApp)
+const elmDeliveryListAppDiv = document.querySelector('#elm-delivery-list-app');
+if (elmDeliveryListAppDiv) {
+  let elmDeliveryListApp = Elm.DeliveryListApp.embed(elmDeliveryListAppDiv)
+
+  var from = utils.getParameterByName("filter[from]") || "2016-11-11";
+  var to = utils.getParameterByName("filter[to]") || "2016-11-11";
+  elmDeliveryListApp.ports.jsEvents.send(["DeliveryList.Fetch", from, to]);
 }
 
 // Set up channels / web sockets

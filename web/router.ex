@@ -68,6 +68,6 @@ defmodule Buckynix.Router do
       resources "/transactions", TransactionController, only: [:index, :create]
     end
 
-    resources "/deliveries", DeliveryController, only: [:index]
+    resources "/deliveries", Api.DeliveryController, only: [:index]
   end
 end
