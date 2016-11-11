@@ -7,13 +7,13 @@ import Components.User as User
 
 type alias Model =
   { date : String
-  -- , user : User.Model
   , address : String
-  , product : String }
+  , product : String
+  , user : User.Model }
 
 view : Model -> Html a
 view model =
   tr []
-  -- [ td [] [ User.badge model.user ]
-  [ td [] [ text model.address ]
+  [ td [] [ User.badge model.user ]
+  , td [] [ text model.address ]
   , td [] [ text model.product ] ]

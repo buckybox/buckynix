@@ -3,7 +3,7 @@ defmodule Buckynix.Api.DeliveryView do
 
   defmodule UserSerializer do
     use JaSerializer.PhoenixView
-    attributes [:name]
+    attributes [:url, :name]
   end
 
   attributes [:date]

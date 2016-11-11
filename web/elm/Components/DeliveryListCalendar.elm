@@ -5,7 +5,7 @@ import Html.Attributes exposing (..)
 
 import Http exposing (Error)
 import Task
-import Json.Decode as Json exposing ((:=), andThen)
+import Json.Decode as Json exposing ((:=))
 
 import JsonApi.Decode
 import JsonApi.Documents
@@ -169,35 +169,39 @@ decodeDeliveries document =
       List.map (\delivery -> decodeDeliveriesAttributes delivery) deliveries
 
 decodeDeliveriesAttributes : Resource -> Delivery.Model
-decodeDeliveriesAttributes delivery =
-  case JsonApi.Resources.attributes deliveryDecoder delivery of
+decodeDeliveriesAttributes resource =
+  case JsonApi.Resources.attributes deliveryDecoder resource of
     Err error -> Debug.crash error
-    Ok delivery -> delivery
+    Ok delivery -> { delivery | user = (decodeRelatedUser resource) }
 
 deliveryDecoder : Json.Decoder Delivery.Model
 deliveryDecoder =
-  Json.object3 Delivery.Model
+  Json.object4 Delivery.Model
     ("date" := Json.string)
-    ("date" := Json.string) -- FIXME
-    ("date" := Json.string) -- FIXME
+    (Json.succeed "ADDRESS") -- FIXME
+    (Json.succeed "PRODUCT") -- FIXME
+    (Json.succeed User.empty)
 
-  -- Json.object4 Delivery.Model
-  --   (Json.at ["attributes", "date"] Json.string)
-  --   ((Json.at ["relationships", "user", "data", "id"]) `andThen` decodeUser)
-  --   (JsonApi.Resources.relatedResource "user" decodedPrimaryResource)
-  --   (Json.at ["attributes", "date"] Json.string)
-  --   (Json.at ["attributes", "date"] Json.string)
+decodeRelatedUser : Resource -> User.Model
+decodeRelatedUser delivery =
+  case JsonApi.Resources.relatedResource "user" delivery of
+    Err error -> Debug.crash error
+    Ok user -> decodeUserAttributes user
 
--- decodeUser : String -> Json.Decoder User.Model
--- decodeUser id =
-  -- Json.object4 User.Model
-    -- (Json.at ["included", _, 
+decodeUserAttributes : Resource -> User.Model
+decodeUserAttributes user =
+  case JsonApi.Resources.attributes userDecoder user of
+    Err error -> Debug.crash error
+    Ok user -> user
 
-    -- { url = id
-    -- , name = id
-    -- , balance = "?"
-    -- , tags = [] }
-
+userDecoder : Json.Decoder User.Model
+userDecoder =
+  Json.object4 User.Model
+    (Json.succeed "URL") -- url
+    ("name" := Json.string)
+    (Json.succeed "") -- balance
+    (Json.succeed []) -- tags
+    -- ("tags" := Json.list Json.string)
 
 renderCalendarView : Model -> Html Msg
 renderCalendarView model =

@@ -11,6 +11,13 @@ type alias Model =
   , balance : String
   , tags : List String }
 
+empty : Model
+empty =
+  { url = ""
+  , name = ""
+  , balance = ""
+  , tags = [] }
+
 badge : Model -> Html a
 badge model =
   h5 [] [ a [ href model.url, class "badge badge-primary p-0" ]
