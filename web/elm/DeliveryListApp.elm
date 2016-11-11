@@ -3,14 +3,16 @@ port module DeliveryListApp exposing (..)
 import Html exposing (Html, div)
 import Html.App
 
+import Components.DeliveryListModels as DeliveryListModels
+import Components.DeliveryListView as DeliveryListView
 import Components.DeliveryListCalendar as DeliveryListCalendar
 
 type alias Model =
-  { calendar: DeliveryListCalendar.Model }
+  { calendar: DeliveryListModels.Model }
 
 init : (Model, Cmd Msg)
 init =
-  ( { calendar = DeliveryListCalendar.initialModel }, Cmd.none )
+  ( { calendar = DeliveryListModels.initialModel }, Cmd.none )
 
 type Msg
   = DeliveryListCalendarMsg DeliveryListCalendar.Msg
@@ -30,7 +32,7 @@ update msg model =
 
 deliveryListView : Model -> Html Msg
 deliveryListView model =
-  Html.App.map DeliveryListCalendarMsg (DeliveryListCalendar.view model.calendar)
+  Html.App.map DeliveryListCalendarMsg (DeliveryListView.view model.calendar)
 
 view : Model -> Html Msg
 view model =
