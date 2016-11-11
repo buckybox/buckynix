@@ -9,7 +9,7 @@ import Http exposing (Error)
 import Task
 import Json.Decode as Json exposing ((:=))
 
-import Components.JsonApi as JsonApi
+import Components.JsonApiExtra as JsonApiExtra
 import Components.UserTransaction as UserTransaction
 
 type alias Model =
@@ -47,7 +47,7 @@ fetchUserTransactions model =
   let
     url = "/api/users/" ++ model.userId ++ "/transactions"
   in
-    Task.perform FetchFail FetchSucceed (JsonApi.get decodeUserTransactionFetch url)
+    Task.perform FetchFail FetchSucceed (JsonApiExtra.get decodeUserTransactionFetch url)
 
 decodeUserTransactionFetch : Json.Decoder JsonModel
 decodeUserTransactionFetch =

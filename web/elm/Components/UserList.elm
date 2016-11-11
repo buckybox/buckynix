@@ -9,7 +9,7 @@ import Http exposing (Error)
 import Task
 import Json.Decode as Json exposing ((:=))
 
-import Components.JsonApi as JsonApi
+import Components.JsonApiExtra as JsonApiExtra
 import Components.User as User
 
 type alias Model =
@@ -63,7 +63,7 @@ fetchUsers model =
     url = "/api/users?count=" ++ (toString model.nextCount)
       ++ "&filter=" ++ model.filter
   in
-    Task.perform FetchFail FetchSucceed (JsonApi.get decodeUserFetch url)
+    Task.perform FetchFail FetchSucceed (JsonApiExtra.get decodeUserFetch url)
 
 decodeUserFetch : Json.Decoder JsonModel
 decodeUserFetch =

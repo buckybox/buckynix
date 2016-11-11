@@ -5,7 +5,12 @@ import Html.Attributes exposing (..)
 
 import Http exposing (Error)
 import Task
-import Json.Decode as Json exposing ((:=))
+import Json.Decode as Json exposing ((:=), andThen)
+
+import JsonApi.Decode
+import JsonApi.Documents
+import JsonApi.Resources
+import JsonApi exposing (Document, Resource)
 
 import Collage exposing (Form)
 import Text
@@ -15,8 +20,9 @@ import Color exposing (Color)
 import Element exposing (Element)
 import Date exposing (Date)
 
-import Components.JsonApi as JsonApi
+import Components.JsonApiExtra exposing (get)
 import Components.Delivery as Delivery
+import Components.User as User
 
 type DayState = Delivered | Pending | Open
 
@@ -35,36 +41,36 @@ type alias Day =
 type alias Window = (String, String)
 
 type alias Calendar =
-  { days: List Day
-  , form: Form }
+  { form: Form }
 
 type alias Model =
   { calendar: Calendar
   , window: Window
+  , deliveries: List Delivery.Model
   , fetching: Bool }
 
 initialModel : Model
 initialModel =
   { calendar =
-    { days = []
-    , form = Text.fromString "..." |> Collage.text }
+    { form = Text.fromString "..." |> Collage.text }
   , window = ("", "")
+  , deliveries = []
   , fetching = False }
 
 type alias JsonModel =
   { deliveries: List Delivery.Model }
 
-renderCalendarForm : List Day -> Form
-renderCalendarForm days =
+createCalendarForm : List Day -> Form
+createCalendarForm days =
   let
     width = 30 + 1 -- add 1 px for border
     xPositions = List.map (\x -> toFloat(x) * width) [1..(List.length days)]
   in
-    List.map2 (\day -> \x -> renderDay day |> Collage.moveX x) days xPositions
+    List.map2 (\day -> \x -> createCalendarDay day |> Collage.moveX x) days xPositions
     |> Collage.group
 
-renderDay : Day -> Form
-renderDay day =
+createCalendarDay : Day -> Form
+createCalendarDay day =
   let
     height = 100
     width = 30
@@ -94,7 +100,7 @@ renderDay day =
 
 type Msg
   = Fetch Window
-  | FetchSucceed JsonModel
+  | FetchSucceed Document
   | FetchFail Http.Error
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -102,14 +108,21 @@ update msg model =
   case msg of
     Fetch window ->
       ({ model | fetching = True, window = window }, fetchDeliveries window)
-    FetchSucceed jsonModel ->
+    FetchSucceed document ->
       let
-        deliveries = jsonModel.deliveries
-        days = List.foldr (\delivery -> \dict -> updateDays delivery dict) Dict.empty deliveries |> Dict.values
-        form = renderCalendarForm days
-        calendar = { days = days, form = form }
+        deliveries = decodeDeliveries document
+        days =
+          List.foldr
+            (\delivery -> \dict -> updateDays delivery dict)
+            Dict.empty
+            deliveries
+          |> Dict.values
+        form = createCalendarForm days
+        calendar = { form = form }
       in
-        ({ model | fetching = False, calendar = calendar} , Cmd.none)
+        ({ model | fetching = False
+                 , calendar = calendar
+                 , deliveries = deliveries } , Cmd.none)
     FetchFail error ->
       ({ model | fetching = False }, Cmd.none)
 
@@ -142,25 +155,55 @@ fetchDeliveries window =
     (from, to) = window
     url = "/api/deliveries?include=user&filter[from]=" ++ from ++ "&filter[to]=" ++ to
   in
-    Task.perform FetchFail FetchSucceed (JsonApi.get decodeDeliveriesFetch url)
+    Task.perform FetchFail FetchSucceed (get decodeDocument url)
 
-decodeDeliveriesFetch : Json.Decoder JsonModel
-decodeDeliveriesFetch =
-  Json.object1 JsonModel
-    ("data" := Json.list decodeDeliveries)
+decodeDocument : Json.Decoder Document
+decodeDocument =
+  JsonApi.Decode.document
 
-decodeDeliveries : Json.Decoder Delivery.Model
-decodeDeliveries =
+decodeDeliveries : Document -> List Delivery.Model
+decodeDeliveries document =
+  case JsonApi.Documents.primaryResourceCollection document of
+    Err error -> Debug.crash error
+    Ok deliveries ->
+      List.map (\delivery -> decodeDeliveriesAttributes delivery) deliveries
+
+decodeDeliveriesAttributes : Resource -> Delivery.Model
+decodeDeliveriesAttributes delivery =
+  case JsonApi.Resources.attributes deliveryDecoder delivery of
+    Err error -> Debug.crash error
+    Ok delivery -> delivery
+
+deliveryDecoder : Json.Decoder Delivery.Model
+deliveryDecoder =
   Json.object3 Delivery.Model
-    (Json.at ["attributes", "date"] Json.string)
-    (Json.at ["attributes", "date"] Json.string)
-    (Json.at ["attributes", "date"] Json.string)
+    ("date" := Json.string)
+    ("date" := Json.string) -- FIXME
+    ("date" := Json.string) -- FIXME
 
-renderView : Model -> Html Msg
-renderView model =
+  -- Json.object4 Delivery.Model
+  --   (Json.at ["attributes", "date"] Json.string)
+  --   ((Json.at ["relationships", "user", "data", "id"]) `andThen` decodeUser)
+  --   (JsonApi.Resources.relatedResource "user" decodedPrimaryResource)
+  --   (Json.at ["attributes", "date"] Json.string)
+  --   (Json.at ["attributes", "date"] Json.string)
+
+-- decodeUser : String -> Json.Decoder User.Model
+-- decodeUser id =
+  -- Json.object4 User.Model
+    -- (Json.at ["included", _, 
+
+    -- { url = id
+    -- , name = id
+    -- , balance = "?"
+    -- , tags = [] }
+
+
+renderCalendarView : Model -> Html Msg
+renderCalendarView model =
   let
     width = 1200
-    height = 600
+    height = 200
     calendar =
       model.calendar.form
       |> Collage.moveX (-width/2)
@@ -169,9 +212,27 @@ renderView model =
     Collage.collage width height [calendar]
     |> Element.toHtml
 
+renderDeliveryView : Model -> Html Msg
+renderDeliveryView model =
+  let
+    rows = List.map (\delivery -> Delivery.view delivery) model.deliveries
+    moreLinkWrapper = []
+  in
+    div [ class "row mt-3" ]
+      [ div [ class "col-xs" ]
+        [ table [ class "table table-striped table-sm" ]
+          [ thead [] []
+          , tbody [] rows
+          , tfoot [] moreLinkWrapper ]
+        ]
+      ]
+
 view : Model -> Html Msg
 view model =
   if model.fetching then
-    i [ class "fa fa-spinner fa-pulse fa-3x fa-fw" ] []
+    div [ class "text-center" ]
+      [ i [ class "fa fa-spinner fa-pulse fa-3x fa-fw" ] [] ]
   else
-    renderView model
+    div []
+      [ renderCalendarView model
+      , renderDeliveryView model ]
