@@ -23,10 +23,10 @@ import utils from "./utils"
 // Set up our Elm App(s)
 const elmUserListAppDiv = document.querySelector('#elm-user-list-app');
 if (elmUserListAppDiv) {
-  let elmUserListApp = Elm.UserListApp.embed(elmUserListAppDiv);
+  const elmUserListApp = Elm.UserListApp.embed(elmUserListAppDiv);
 
   // Prefill search bar with URL query part
-  var filter = utils.getParameterByName("filter") || "";
+  const filter = utils.getParameterByName("filter") || "";
   elmUserListApp.ports.jsEvents.send(["UserList.Search", filter]);
 
   // Hook {Ctrl,Cmd}+F to our search bar
@@ -52,10 +52,11 @@ if (elmUserTransactionListApp) {
 
 const elmDeliveryListAppDiv = document.querySelector('#elm-delivery-list-app');
 if (elmDeliveryListAppDiv) {
-  let elmDeliveryListApp = Elm.DeliveryListApp.embed(elmDeliveryListAppDiv)
+  const elmDeliveryListApp = Elm.DeliveryListApp.embed(elmDeliveryListAppDiv)
 
-  var from = utils.getParameterByName("filter[from]") || "2016-11-11";
-  var to = utils.getParameterByName("filter[to]") || "2016-11-11";
+  const today = new Date().toISOString().split("T")[0];
+  const from = utils.getParameterByName("filter\\[from\\]") || today;
+  const to = utils.getParameterByName("filter\\[to\\]") || today;
   elmDeliveryListApp.ports.jsEvents.send(["DeliveryList.Fetch", from, to]);
 }
 
@@ -64,12 +65,12 @@ import socket from "./socket"
 
 socket.connect()
 
-let channel = socket.channel("notification:42", {})
+const channel = socket.channel("notification:42", {})
 
 channel.on("push_notification", payload => {
   utils.notify(payload.body)
 
-  let notificationCount = $("#notification-count")
+  const notificationCount = $("#notification-count")
   if (notificationCount) {
     notificationCount.html(payload.count)
   }

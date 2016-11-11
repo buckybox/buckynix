@@ -48,7 +48,7 @@ initialModel =
   { calendar =
     { days = []
     , form = Text.fromString "..." |> Collage.text }
-  , window = ("2016-11-11", "2016-11-11")
+  , window = ("", "")
   , fetching = False }
 
 type alias JsonModel =
@@ -101,7 +101,7 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     Fetch window ->
-      ({ model | fetching = True, window = window }, fetchDeliveries model)
+      ({ model | fetching = True, window = window }, fetchDeliveries window)
     FetchSucceed jsonModel ->
       let
         deliveries = jsonModel.deliveries
@@ -136,10 +136,10 @@ unsafeFromString string =
       Ok date -> date
       Err msg -> Debug.crash("unsafeFromString")
 
-fetchDeliveries : Model -> Cmd Msg
-fetchDeliveries model =
+fetchDeliveries : Window -> Cmd Msg
+fetchDeliveries window =
   let
-    (from, to) = model.window
+    (from, to) = window
     url = "/api/deliveries?include=user&filter[from]=" ++ from ++ "&filter[to]=" ++ to
   in
     Task.perform FetchFail FetchSucceed (JsonApi.get decodeDeliveriesFetch url)

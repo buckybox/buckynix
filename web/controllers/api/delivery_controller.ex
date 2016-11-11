@@ -4,23 +4,22 @@ defmodule Buckynix.Api.DeliveryController do
   alias Buckynix.Delivery
 
   def index(conn, params) do
-    from = get_window params, "from"
-    to = get_window params, "to"
-    # only_count = Map.get(params, "only-count", false)
+    try do
+      filter = Map.get(params, "filter", %{})
+      from = Map.get(filter, "from") |> Ecto.Date.cast!
+      to = Map.get(filter, "to") |> Ecto.Date.cast!
 
-    deliveries = Repo.all(
-      from d in Delivery,
-      preload: [:user],
-      where: fragment("date::date >= ? AND date::date <= ?", ^from, ^to) # XXX: strip the time for now
-    )
-    |> Enum.map(fn(delivery) -> delivery_with_formatted_date(delivery) end)
+      deliveries = Repo.all(
+        from d in Delivery,
+        preload: [:user],
+        where: fragment("date::date >= ? AND date::date <= ?", ^from, ^to) # XXX: strip the time for now
+      )
+      |> Enum.map(fn(delivery) -> delivery_with_formatted_date(delivery) end)
 
-    render(conn, data: deliveries)
-  end
-
-  defp get_window(params, bound) do
-    Map.get(params, "filter[#{bound}]", Timex.today)
-      |> Ecto.Date.cast!
+      render(conn, data: deliveries)
+    rescue
+      Ecto.CastError -> render(conn, "errors.json-api", data: %{title: "Missing filter dates"})
+    end
   end
 
   defp delivery_with_formatted_date(delivery) do

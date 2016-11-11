@@ -1,8 +1,8 @@
-var utils = (function() {
-  var module = {};
+const utils = (function() {
+  const module = {};
 
   module.getParameterByName = function(name) {
-    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    const match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
     return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
   };
 
@@ -16,16 +16,16 @@ var utils = (function() {
       console.error("This browser does not support system notifications");
     }
 
-    // Let's check whether notification permissions have already been granted
+    // check whether notification permissions have already been granted
     else if (Notification.permission === "granted") {
-      var notification = new Notification(title, options);
+      const notification = new Notification(title, options);
     }
 
-    // Otherwise, we need to ask the user for permission
+    // we need to ask the user for permission
     else if (Notification.permission !== 'denied') {
       Notification.requestPermission(function (permission) {
         if (permission === "granted") {
-          var notification = new Notification(title, options);
+          const notification = new Notification(title, options);
         }
       });
     }
