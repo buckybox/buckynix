@@ -54,10 +54,24 @@ const elmDeliveryListAppDiv = document.querySelector('#elm-delivery-list-app');
 if (elmDeliveryListAppDiv) {
   const elmDeliveryListApp = Elm.DeliveryListApp.embed(elmDeliveryListAppDiv)
 
-  const today = new Date().toISOString().split("T")[0];
-  const from = utils.getParameterByName("filter\\[from\\]") || today;
-  const to = utils.getParameterByName("filter\\[to\\]") || today;
-  elmDeliveryListApp.ports.jsEvents.send(["DeliveryList.Fetch", from, to]);
+  const dateToIso = function(date) {
+    return date.toISOString().split("T")[0];
+  }
+
+  const shiftDate = function(date, days) {
+    date.setDate(date.getDate() + days);
+    return dateToIso(date);
+  }
+
+  const today = dateToIso(new Date());
+  const selectedFrom = utils.getParameterByName("filter\\[from\\]") || today;
+  const selectedTo = utils.getParameterByName("filter\\[to\\]") || today;
+
+  const visibleFrom = shiftDate(new Date(), -14);
+  const visibleTo = shiftDate(new Date(), +14);
+
+  elmDeliveryListApp.ports.jsEvents.send(["DeliveryList.FetchVisibleWindow", visibleFrom, visibleTo]);
+  elmDeliveryListApp.ports.jsEvents.send(["DeliveryList.FetchSelectedWindow", selectedFrom, selectedTo]);
 }
 
 // Set up channels / web sockets

@@ -1,11 +1,14 @@
 module Components.DeliveryListDecoder exposing (decodeDocument, decodeDeliveries)
 
+import Dict exposing (Dict)
 import Json.Decode as Json exposing ((:=))
 
 import JsonApi.Decode
 import JsonApi.Documents
 import JsonApi.Resources
 import JsonApi exposing (Document, Resource)
+
+import Lib.UUID exposing (UUID)
 
 import Components.Delivery as Delivery
 import Components.User as User
@@ -14,12 +17,18 @@ decodeDocument : Json.Decoder Document
 decodeDocument =
   JsonApi.Decode.document
 
-decodeDeliveries : Document -> List Delivery.Model
+decodeDeliveries : Document -> Dict UUID Delivery.Model
 decodeDeliveries document =
   case JsonApi.Documents.primaryResourceCollection document of
     Err error -> Debug.crash error
-    Ok deliveries ->
-      List.map (\delivery -> decodeDeliveriesAttributes delivery) deliveries
+    Ok deliveries -> List.map makeTuple deliveries |> Dict.fromList
+
+makeTuple : Resource -> (UUID, Delivery.Model)
+makeTuple resource =
+  let
+    delivery = decodeDeliveriesAttributes resource
+  in
+    (delivery.id, delivery)
 
 decodeDeliveriesAttributes : Resource -> Delivery.Model
 decodeDeliveriesAttributes resource =
@@ -29,11 +38,12 @@ decodeDeliveriesAttributes resource =
 
 deliveryDecoder : Json.Decoder Delivery.Model
 deliveryDecoder =
-  Json.object4 Delivery.Model
+  Json.object5 Delivery.Model
+    ("id" := Json.string)
     ("date" := Json.string)
     (Json.succeed "ADDRESS") -- FIXME
     (Json.succeed "PRODUCT") -- FIXME
-    (Json.succeed User.empty)
+    (Json.succeed User.emptyModel)
 
 decodeRelatedUser : Resource -> User.Model
 decodeRelatedUser delivery =
@@ -44,7 +54,7 @@ decodeRelatedUser delivery =
 decodeUserAttributes : Resource -> User.Model
 decodeUserAttributes user =
   case JsonApi.Resources.attributes userDecoder user of
-    Err error -> Debug.crash error
+    Err error -> User.emptyModel -- XXX: when user relationship isn't included
     Ok user -> user
 
 userDecoder : Json.Decoder User.Model

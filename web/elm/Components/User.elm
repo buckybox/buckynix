@@ -11,8 +11,8 @@ type alias Model =
   , balance : String
   , tags : List String }
 
-empty : Model
-empty =
+emptyModel : Model
+emptyModel =
   { url = ""
   , name = ""
   , balance = ""

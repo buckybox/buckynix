@@ -3,10 +3,15 @@ module Components.DeliveryListModels exposing (..)
 import Collage exposing (Form)
 import Text
 import Date exposing (Date)
+import Dict exposing (Dict)
+
+import Lib.UUID exposing (UUID)
 
 import Components.Delivery as Delivery
 
 type alias Window = (String, String)
+emptyWindow : Window
+emptyWindow = ("", "")
 
 type alias Calendar =
   { form: Form }
@@ -20,13 +25,17 @@ type alias Day =
 
 type alias Model =
   { calendar: Calendar
-  , window: Window
-  , deliveries: List Delivery.Model
+  , selectedWindow: Window
+  , visibleWindow: Window
+  , allDeliveries: Dict UUID Delivery.Model
+  , selectedDeliveries: Dict UUID Delivery.Model
   , fetching: Bool }
 
 initialModel : Model
 initialModel =
   { calendar = { form = Text.fromString "..." |> Collage.text }
-  , window = ("", "")
-  , deliveries = []
+  , selectedWindow = emptyWindow
+  , visibleWindow = emptyWindow
+  , allDeliveries = Dict.empty
+  , selectedDeliveries = Dict.empty
   , fetching = False }

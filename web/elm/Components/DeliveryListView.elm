@@ -9,6 +9,7 @@ import String
 import Color exposing (Color)
 import Element exposing (Element)
 import Date exposing (Date)
+import Dict exposing (Dict)
 
 import Components.DeliveryListModels exposing (..)
 import Components.Delivery as Delivery
@@ -74,7 +75,9 @@ calendarView model =
 deliveryView : Model -> Html msg
 deliveryView model =
   let
-    rows = List.map (\delivery -> Delivery.view delivery) model.deliveries
+    rows = List.map
+      (\delivery -> Delivery.view delivery)
+      (Dict.values model.selectedDeliveries)
     moreLinkWrapper = []
   in
     div [ class "row mt-3" ]

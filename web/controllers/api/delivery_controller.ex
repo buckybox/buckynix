@@ -9,9 +9,15 @@ defmodule Buckynix.Api.DeliveryController do
       from = Map.get(filter, "from") |> Ecto.Date.cast!
       to = Map.get(filter, "to") |> Ecto.Date.cast!
 
+      include = Map.get(params, "include", "")
+      relationships = String.split(include, ",")
+        |> MapSet.new
+        |> MapSet.intersection(MapSet.new ["user"])
+        |> Enum.map(&String.to_atom/1)
+
       deliveries = Repo.all(
         from d in Delivery,
-        preload: [:user],
+        preload: ^relationships,
         where: fragment("date::date >= ? AND date::date <= ?", ^from, ^to) # XXX: strip the time for now
       )
       |> Enum.map(fn(delivery) -> delivery_with_formatted_date(delivery) end)

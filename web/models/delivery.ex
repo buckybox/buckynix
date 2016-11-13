@@ -1,6 +1,8 @@
 defmodule Buckynix.Delivery do
   use Buckynix.Web, :model
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+
   schema "deliveries" do
     field :date, Ecto.DateTime
     belongs_to :user, Buckynix.User, type: :binary_id

@@ -24,8 +24,11 @@ update msg model =
     DeliveryListCalendarMsg msg ->
       let (updatedModel, cmd) = DeliveryListCalendar.update msg model.calendar
       in ( { model | calendar = updatedModel }, Cmd.map DeliveryListCalendarMsg cmd )
-    JsMsg ["DeliveryList.Fetch", from, to] ->
-      let (updatedModel, cmd) = DeliveryListCalendar.update (DeliveryListCalendar.Fetch (from, to)) model.calendar
+    JsMsg ["DeliveryList.FetchVisibleWindow", from, to] ->
+      let (updatedModel, cmd) = DeliveryListCalendar.update (DeliveryListCalendar.FetchVisibleWindow (from, to)) model.calendar
+      in ( { model | calendar = updatedModel }, Cmd.map DeliveryListCalendarMsg cmd )
+    JsMsg ["DeliveryList.FetchSelectedWindow", from, to] ->
+      let (updatedModel, cmd) = DeliveryListCalendar.update (DeliveryListCalendar.FetchSelectedWindow (from, to)) model.calendar
       in ( { model | calendar = updatedModel }, Cmd.map DeliveryListCalendarMsg cmd )
     JsMsg _ ->
       (model, Cmd.none)

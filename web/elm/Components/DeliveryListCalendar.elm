@@ -6,6 +6,9 @@ import Dict exposing (Dict)
 import Task exposing (Task)
 import Http exposing (Error)
 import JsonApi exposing (Document)
+
+import Lib.UUID exposing (UUID)
+
 import Components.JsonApiExtra exposing (get)
 import Components.DeliveryListModels exposing (..)
 import Components.DeliveryListDecoder as DeliveryListDecoder
@@ -13,38 +16,53 @@ import Components.DeliveryListView as DeliveryListView
 import Components.Delivery as Delivery
 
 type alias JsonModel =
-  { deliveries: List Delivery.Model }
+  { deliveries: Dict UUID Delivery.Model }
 
 type Msg
-  = Fetch Window
+  = FetchSelectedWindow Window
+  | FetchVisibleWindow Window
   | FetchSucceed Document
   | FetchFail Http.Error
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    Fetch window ->
-      ({ model | fetching = True, window = window }, fetchDeliveries window)
+    FetchSelectedWindow window ->
+      ( { model | fetching = True , selectedWindow = window }
+      , fetchSelectedWindow window )
+    FetchVisibleWindow window ->
+      ( { model | fetching = True , visibleWindow = window }
+      , fetchVisibleWindow window )
     FetchSucceed document ->
       let
-        deliveries = DeliveryListDecoder.decodeDeliveries document
+        newDeliveries = DeliveryListDecoder.decodeDeliveries document
+        allDeliveries = Dict.union newDeliveries model.allDeliveries
+        selectedDeliveries = Dict.filter
+          (\key -> \delivery -> selectedDay delivery model.selectedWindow)
+          allDeliveries
+
         days =
           List.foldr
-            (\delivery -> \dict -> updateDays delivery dict)
-            Dict.empty
-            deliveries
-          |> Dict.values
-        form = DeliveryListView.calendarForm days
+            (\delivery -> \dict -> buildDays delivery dict)
+            (Dict.empty)
+            (Dict.values allDeliveries)
+
+        form = DeliveryListView.calendarForm (Dict.values days)
         calendar = { form = form }
       in
         ({ model | fetching = False
                  , calendar = calendar
-                 , deliveries = deliveries } , Cmd.none)
+                 , selectedDeliveries = selectedDeliveries
+                 , allDeliveries = allDeliveries } , Cmd.none)
     FetchFail error ->
       ({ model | fetching = False }, Cmd.none)
 
-updateDays : Delivery.Model -> Dict String Day -> Dict String Day
-updateDays delivery days =
+selectedDay : Delivery.Model -> Window -> Bool
+selectedDay delivery window =
+  delivery.date >= fst window && delivery.date <= snd window
+
+buildDays : Delivery.Model -> Dict String Day -> Dict String Day
+buildDays delivery days =
   let
     date = delivery.date
   in
@@ -52,25 +70,31 @@ updateDays delivery days =
       Just day ->
         Dict.insert date
           { day | deliveryCount = day.deliveryCount + 1 }
-        days
+          days
       Nothing ->
         Dict.insert date
           { date = unsafeFromString date
           , state = Pending
           , deliveryCount = 1 }
-        days
+          days
 
 request : String -> Cmd Msg
 request url =
   Task.perform FetchFail FetchSucceed (get DeliveryListDecoder.decodeDocument url)
 
-fetchDeliveries : Window -> Cmd Msg
-fetchDeliveries window =
+fetchSelectedWindow : Window -> Cmd Msg
+fetchSelectedWindow window =
   let
     (from, to) = window
-    url = "/api/deliveries?include=user&filter[from]=" ++ from ++ "&filter[to]=" ++ to
   in
-    request url
+    "/api/deliveries?include=user&filter[from]=" ++ from ++ "&filter[to]=" ++ to |> request
+
+fetchVisibleWindow : Window -> Cmd Msg
+fetchVisibleWindow window =
+  let
+    (from, to) = window
+  in
+    "/api/deliveries?filter[from]=" ++ from ++ "&filter[to]=" ++ to |> request
 
 unsafeFromString : String -> Date
 unsafeFromString string =
