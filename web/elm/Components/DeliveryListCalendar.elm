@@ -1,6 +1,5 @@
 module Components.DeliveryListCalendar exposing (..)
 
-import Date exposing (Date)
 import Dict exposing (Dict)
 
 import Task exposing (Task)
@@ -21,7 +20,8 @@ type alias JsonModel =
 type Msg
   = FetchSelectedWindow Window
   | FetchVisibleWindow Window
-  | FetchSucceed Document
+  | FetchSucceedSelectedWindow Document
+  | FetchSucceedVisibleWindow Document
   | FetchFail Http.Error
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -33,71 +33,43 @@ update msg model =
     FetchVisibleWindow window ->
       ( { model | fetching = True , visibleWindow = window }
       , fetchVisibleWindow window )
-    FetchSucceed document ->
+    FetchSucceedSelectedWindow document ->
+      let
+        selectedDeliveries =
+          DeliveryListDecoder.decodeDeliveries document
+          |> Dict.values
+      in
+        ({ model | fetching = False
+                 , selectedDeliveries = selectedDeliveries } , Cmd.none)
+    FetchSucceedVisibleWindow document ->
       let
         newDeliveries = DeliveryListDecoder.decodeDeliveries document
-        allDeliveries = Dict.union newDeliveries model.allDeliveries
-        selectedDeliveries = Dict.filter
-          (\key -> \delivery -> selectedDay delivery model.selectedWindow)
-          allDeliveries
-
-        days =
-          List.foldr
-            (\delivery -> \dict -> buildDays delivery dict)
-            (Dict.empty)
-            (Dict.values allDeliveries)
-
-        form = DeliveryListView.calendarForm (Dict.values days)
+        allDeliveries = Dict.union model.allDeliveries newDeliveries
+        form = DeliveryListView.calendarForm (Dict.values allDeliveries)
         calendar = { form = form }
       in
         ({ model | fetching = False
                  , calendar = calendar
-                 , selectedDeliveries = selectedDeliveries
                  , allDeliveries = allDeliveries } , Cmd.none)
     FetchFail error ->
       ({ model | fetching = False }, Cmd.none)
 
-selectedDay : Delivery.Model -> Window -> Bool
-selectedDay delivery window =
-  delivery.date >= fst window && delivery.date <= snd window
-
-buildDays : Delivery.Model -> Dict String Day -> Dict String Day
-buildDays delivery days =
-  let
-    date = delivery.date
-  in
-    case Dict.get date days of
-      Just day ->
-        Dict.insert date
-          { day | deliveryCount = day.deliveryCount + 1 }
-          days
-      Nothing ->
-        Dict.insert date
-          { date = unsafeFromString date
-          , state = Pending
-          , deliveryCount = 1 }
-          days
-
-request : String -> Cmd Msg
-request url =
-  Task.perform FetchFail FetchSucceed (JsonApiExtra.get DeliveryListDecoder.decodeDocument url)
+request : (Document -> Msg) -> String -> Cmd Msg
+request succeedMsg url =
+  Task.perform FetchFail succeedMsg (JsonApiExtra.get DeliveryListDecoder.decodeDocument url)
 
 fetchSelectedWindow : Window -> Cmd Msg
 fetchSelectedWindow window =
   let
     (from, to) = window
   in
-    "/api/deliveries?include=user&filter[from]=" ++ from ++ "&filter[to]=" ++ to |> request
+    "/api/deliveries?include=user&filter[from]=" ++ from ++ "&filter[to]=" ++ to
+    |> request FetchSucceedSelectedWindow
 
 fetchVisibleWindow : Window -> Cmd Msg
 fetchVisibleWindow window =
   let
     (from, to) = window
   in
-    "/api/deliveries?filter[from]=" ++ from ++ "&filter[to]=" ++ to |> request
-
-unsafeFromString : String -> Date
-unsafeFromString string =
-  case Date.fromString string of
-      Ok date -> date
-      Err msg -> Debug.crash("unsafeFromString")
+    "/api/deliveries?filter[from]=" ++ from ++ "&filter[to]=" ++ to
+    |> request FetchSucceedVisibleWindow

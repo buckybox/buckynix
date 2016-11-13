@@ -33,8 +33,36 @@ dayStateColor state =
     Pending   -> Color.rgb 255 220 90
     Open      -> Color.rgb 0 168 23
 
-calendarForm : List Day -> Form
-calendarForm days =
+calendarForm : List Delivery.Model -> Form
+calendarForm deliveries =
+  let
+    days =
+      List.foldr
+        (\delivery -> \dict -> buildDays delivery dict)
+        (Dict.empty)
+        deliveries
+   in
+     buildCalendar (Dict.values days)
+
+buildDays : Delivery.Model -> Dict String Day -> Dict String Day
+buildDays delivery days =
+  let
+    date = delivery.date
+  in
+    case Dict.get date days of
+      Just day ->
+        Dict.insert date
+          { day | deliveryCount = day.deliveryCount + 1 }
+          days
+      Nothing ->
+        Dict.insert date
+          { date = unsafeFromString date
+          , state = Pending
+          , deliveryCount = 1 }
+          days
+
+buildCalendar : List Day -> Form
+buildCalendar days =
   let
     width = barWidth + 1 -- add 1 px for border
     xPositions = List.map (\x -> toFloat(x) * width) [1..(List.length days)]
@@ -81,16 +109,17 @@ calendarView model =
       model.calendar.form
       |> Collage.moveX (-calendarWidth / 2)
       |> Collage.moveY (-height / 2 + fontHeight * 2)
+    html = Collage.collage (truncate calendarWidth) (truncate height) [calendar]
+      |> Element.toHtml
   in
-    Collage.collage (truncate calendarWidth) (truncate height) [calendar]
-    |> Element.toHtml
+    div [ style [("background", "rgba(0,0,0,.01)")] ] [ html ]
 
 deliveryView : Model -> Html msg
 deliveryView model =
   let
     rows = List.map
       (\delivery -> Delivery.view delivery)
-      (Dict.values model.selectedDeliveries)
+      model.selectedDeliveries
     moreLinkWrapper = []
   in
     div [ class "row mt-3" ]
@@ -111,3 +140,9 @@ view model =
     div []
       [ calendarView model
       , deliveryView model ]
+
+unsafeFromString : String -> Date
+unsafeFromString string =
+  case Date.fromString string of
+      Ok date -> date
+      Err msg -> Debug.crash("unsafeFromString")

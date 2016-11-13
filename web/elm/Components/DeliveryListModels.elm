@@ -14,7 +14,7 @@ emptyWindow : Window
 emptyWindow = ("", "")
 
 type alias Calendar =
-  { form: Form }
+  { form: Form } -- FIXME: move to top-level if no other data needed
 
 type DayState = Delivered | Pending | Open
 
@@ -28,7 +28,7 @@ type alias Model =
   , selectedWindow: Window
   , visibleWindow: Window
   , allDeliveries: Dict UUID Delivery.Model
-  , selectedDeliveries: Dict UUID Delivery.Model
+  , selectedDeliveries: List Delivery.Model
   , fetching: Bool }
 
 initialModel : Model
@@ -37,5 +37,5 @@ initialModel =
   , selectedWindow = emptyWindow
   , visibleWindow = emptyWindow
   , allDeliveries = Dict.empty
-  , selectedDeliveries = Dict.empty
+  , selectedDeliveries = []
   , fetching = False }
