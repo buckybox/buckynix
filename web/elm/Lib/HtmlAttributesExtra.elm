@@ -1,4 +1,4 @@
-module Components.HtmlAttributesExtra exposing (..)
+module Lib.HtmlAttributesExtra exposing (..)
 
 import Html exposing (Attribute)
 import Json.Encode exposing (string)

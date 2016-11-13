@@ -3,7 +3,7 @@ module Components.UserTransaction exposing (view, Model)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 
-import Components.HtmlAttributesExtra exposing (innerHtml)
+import Lib.HtmlAttributesExtra exposing (innerHtml)
 
 type alias Model =
   { creationDate : String

@@ -11,6 +11,8 @@ import Element exposing (Element)
 import Date exposing (Date)
 import Dict exposing (Dict)
 
+import Lib.DateExtra exposing (unsafeFromString)
+
 import Components.DeliveryListModels exposing (..)
 import Components.Delivery as Delivery
 
@@ -140,9 +142,3 @@ view model =
     div []
       [ calendarView model
       , deliveryView model ]
-
-unsafeFromString : String -> Date
-unsafeFromString string =
-  case Date.fromString string of
-      Ok date -> date
-      Err msg -> Debug.crash("unsafeFromString")

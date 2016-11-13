@@ -3,7 +3,7 @@ module Components.User exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 
-import Components.HtmlAttributesExtra exposing (innerHtml)
+import Lib.HtmlAttributesExtra exposing (innerHtml)
 
 type alias Model =
   { url : String
