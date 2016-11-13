@@ -9,7 +9,7 @@ import Http exposing (Error)
 import Task
 import Json.Decode as Json exposing ((:=))
 
-import Components.JsonApiExtra as JsonApiExtra
+import Lib.JsonApiExtra as JsonApiExtra
 import Components.UserTransaction as UserTransaction
 
 type alias Model =

@@ -1,4 +1,4 @@
-module Components.JsonApiExtra exposing (..)
+module Lib.JsonApiExtra exposing (..)
 
 import Http
 

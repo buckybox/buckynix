@@ -8,8 +8,8 @@ import Http exposing (Error)
 import JsonApi exposing (Document)
 
 import Lib.UUID exposing (UUID)
+import Lib.JsonApiExtra as JsonApiExtra
 
-import Components.JsonApiExtra exposing (get)
 import Components.DeliveryListModels exposing (..)
 import Components.DeliveryListDecoder as DeliveryListDecoder
 import Components.DeliveryListView as DeliveryListView
@@ -80,7 +80,7 @@ buildDays delivery days =
 
 request : String -> Cmd Msg
 request url =
-  Task.perform FetchFail FetchSucceed (get DeliveryListDecoder.decodeDocument url)
+  Task.perform FetchFail FetchSucceed (JsonApiExtra.get DeliveryListDecoder.decodeDocument url)
 
 fetchSelectedWindow : Window -> Cmd Msg
 fetchSelectedWindow window =

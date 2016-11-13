@@ -14,6 +14,18 @@ import Dict exposing (Dict)
 import Components.DeliveryListModels exposing (..)
 import Components.Delivery as Delivery
 
+calendarWidth : Float
+calendarWidth = 1110
+
+fontHeight : Float
+fontHeight = 10
+
+barWidth : Float
+barWidth = 40
+
+maxBarHeight : Float
+maxBarHeight = 100
+
 dayStateColor : DayState -> Color
 dayStateColor state =
   case state of
@@ -24,29 +36,30 @@ dayStateColor state =
 calendarForm : List Day -> Form
 calendarForm days =
   let
-    width = 30 + 1 -- add 1 px for border
+    width = barWidth + 1 -- add 1 px for border
     xPositions = List.map (\x -> toFloat(x) * width) [1..(List.length days)]
+    maxCount =
+      List.map (\day -> day.deliveryCount) days
+      |> List.maximum
+      |> Maybe.withDefault 0
   in
-    List.map2 (\day -> \x -> calendarDay day |> Collage.moveX x) days xPositions
+    List.map2 (\day -> \x -> calendarDay day maxCount |> Collage.moveX x) days xPositions
     |> Collage.group
 
-calendarDay : Day -> Form
-calendarDay day =
+calendarDay : Day -> Int -> Form
+calendarDay day maxCount =
   let
-    height = 100
-    width = 30
-    fontHeight = 10
-
-    count = toString day.deliveryCount
+    count = day.deliveryCount
+    height = (maxBarHeight * toFloat(count) / toFloat(maxCount))
     dow = toString (Date.dayOfWeek day.date) |> String.left 1
   in
     Collage.group
     [
-      Text.fromString count
+      Text.fromString (toString count)
       |> Collage.text
       |> Collage.moveY (height / 2 + fontHeight)
     ,
-      Collage.rect width height
+      Collage.rect barWidth height
       |> Collage.filled (dayStateColor day.state)
     ,
       Text.fromString dow
@@ -58,18 +71,18 @@ calendarDay day =
       |> Collage.text
       |> Collage.moveY (-height / 2 - fontHeight)
     ]
+    |> Collage.moveY (height / 2)
 
 calendarView : Model -> Html msg
 calendarView model =
   let
-    width = 1200
-    height = 200
+    height = maxBarHeight + 50 -- add 50 for padding
     calendar =
       model.calendar.form
-      |> Collage.moveX (-width/2)
-      |> Collage.moveY (height/2 - 100) -- FIXME 100
+      |> Collage.moveX (-calendarWidth / 2)
+      |> Collage.moveY (-height / 2 + fontHeight * 2)
   in
-    Collage.collage width height [calendar]
+    Collage.collage (truncate calendarWidth) (truncate height) [calendar]
     |> Element.toHtml
 
 deliveryView : Model -> Html msg
