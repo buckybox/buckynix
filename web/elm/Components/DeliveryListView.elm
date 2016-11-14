@@ -26,6 +26,9 @@ fontHeight = 10
 barWidth : Float
 barWidth = 36
 
+barWidthWithMargin : Float
+barWidthWithMargin = barWidth + 1 -- add 1 px for border
+
 maxBarHeight : Float
 maxBarHeight = 100
 
@@ -75,13 +78,8 @@ buildDays delivery days =
 buildEmptyDays : Window -> Dict String Day
 buildEmptyDays window =
   let
-    (from, to) = (
-      fst window |> DateExtra.unsafeFromString |> Date.toTime,
-      snd window |> DateExtra.unsafeFromString |> Date.toTime
-    )
-
+    (from, to) = dateWindow window
     duration = (to - from) / (86400 * Time.second)
-
     emptyDays = List.map
       (\offset ->
         { date = Date.fromTime (from + offset * (86400 * Time.second))
@@ -98,8 +96,7 @@ buildEmptyDays window =
 buildCalendar : List Day -> Form
 buildCalendar days =
   let
-    width = barWidth + 1 -- add 1 px for border
-    xPositions = List.map (\x -> toFloat(x) * width) [1..(List.length days)]
+    xPositions = List.map (\x -> toFloat(x) * barWidthWithMargin) [1..(List.length days)]
     maxCount =
       List.map (\day -> day.deliveryCount) days
       |> List.maximum
@@ -147,7 +144,24 @@ calendarView model =
     html = Collage.collage (truncate calendarWidth) (truncate height) [calendar]
       |> Element.toHtml
   in
-    div [ style [("background", "rgba(0,0,0,.01)")] ] [ html ]
+    div [ class "bg-faded" ] [ html ]
+
+controlView : Model -> Html msg
+controlView model =
+  let
+    (selectedFrom, selectedTo) = dateWindow model.selectedWindow
+    (visibleFrom, visibleTo) = dateWindow model.visibleWindow
+    fromOffset = (selectedFrom - visibleFrom) / (86400 * Time.second)
+    xPosition = fromOffset * barWidthWithMargin
+    icon = i [
+      class "fa fa-step-backward", style
+      [ ("left", (toString xPosition) ++ "px")
+      , ("position", "relative")
+      , ("cursor", "col-resize") ]
+    ] []
+  in
+    div []
+      [ div [ class "col-xs bg-faded" ] [ icon ] ]
 
 deliveryView : Model -> Html msg
 deliveryView model =
@@ -174,4 +188,5 @@ view model =
   else
     div []
       [ calendarView model
+      , controlView model
       , deliveryView model ]

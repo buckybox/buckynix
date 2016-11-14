@@ -3,15 +3,25 @@ module Components.DeliveryListModels exposing (..)
 import Collage exposing (Form)
 import Text
 import Date exposing (Date)
+import Time exposing (Time)
 import Dict exposing (Dict)
 
 import Lib.UUID exposing (UUID)
+import Lib.DateExtra as DateExtra
 
 import Components.Delivery as Delivery
 
 type alias Window = (String, String)
 emptyWindow : Window
-emptyWindow = ("", "")
+emptyWindow =
+  ("1970-01-01", "1970-01-01")
+
+dateWindow : Window -> (Time, Time)
+dateWindow window =
+  (
+    fst window |> DateExtra.unsafeFromString |> Date.toTime,
+    snd window |> DateExtra.unsafeFromString |> Date.toTime
+  )
 
 type alias Calendar =
   { form: Form } -- FIXME: move to top-level if no other data needed
