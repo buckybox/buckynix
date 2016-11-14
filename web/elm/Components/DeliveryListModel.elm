@@ -1,4 +1,4 @@
-module Components.DeliveryListModels exposing (..)
+module Components.DeliveryListModel exposing (..)
 
 import Collage exposing (Form)
 import Text
@@ -11,17 +11,24 @@ import Lib.DateExtra as DateExtra
 
 import Components.Delivery as Delivery
 
-type alias Window = (String, String)
+type alias Window =
+  { from: Time
+  , to: Time }
+
 emptyWindow : Window
 emptyWindow =
-  ("1970-01-01", "1970-01-01")
+  fromStringWindow "1970-01-01" "1970-01-01"
 
-dateWindow : Window -> (Time, Time)
-dateWindow window =
-  (
-    fst window |> DateExtra.unsafeFromString |> Date.toTime,
-    snd window |> DateExtra.unsafeFromString |> Date.toTime
-  )
+fromStringWindow : String -> String -> Window
+fromStringWindow from to =
+  Window
+  (from |> DateExtra.unsafeFromString |> Date.toTime)
+  (to |> DateExtra.unsafeFromString |> Date.toTime)
+
+toStringWindow : Window -> (String, String)
+toStringWindow {from, to} =
+  ( from |> Date.fromTime |> DateExtra.toISOString
+  , to |> Date.fromTime |> DateExtra.toISOString )
 
 type alias Calendar =
   { form: Form } -- FIXME: move to top-level if no other data needed

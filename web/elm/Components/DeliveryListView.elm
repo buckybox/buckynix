@@ -14,7 +14,7 @@ import Dict exposing (Dict)
 
 import Lib.DateExtra as DateExtra
 
-import Components.DeliveryListModels exposing (..)
+import Components.DeliveryListModel exposing (..)
 import Components.Delivery as Delivery
 
 calendarWidth : Float
@@ -76,9 +76,8 @@ buildDays delivery days =
           days
 
 buildEmptyDays : Window -> Dict String Day
-buildEmptyDays window =
+buildEmptyDays {from, to} =
   let
-    (from, to) = dateWindow window
     duration = (to - from) / (86400 * Time.second)
     emptyDays = List.map
       (\offset ->
@@ -149,8 +148,8 @@ calendarView model =
 controlView : Model -> Html msg
 controlView model =
   let
-    (selectedFrom, selectedTo) = dateWindow model.selectedWindow
-    (visibleFrom, visibleTo) = dateWindow model.visibleWindow
+    (selectedFrom, selectedTo) = (model.selectedWindow.from, model.selectedWindow.to)
+    (visibleFrom, visibleTo) = (model.visibleWindow.from, model.visibleWindow.to)
     fromOffset = (selectedFrom - visibleFrom) / (86400 * Time.second)
     xPosition = fromOffset * barWidthWithMargin
     icon = i [

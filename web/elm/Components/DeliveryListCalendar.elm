@@ -9,7 +9,7 @@ import JsonApi exposing (Document)
 import Lib.UUID exposing (UUID)
 import Lib.JsonApiExtra as JsonApiExtra
 
-import Components.DeliveryListModels exposing (..)
+import Components.DeliveryListModel exposing (..)
 import Components.DeliveryListDecoder as DeliveryListDecoder
 import Components.DeliveryListView as DeliveryListView
 import Components.Delivery as Delivery
@@ -63,7 +63,7 @@ request succeedMsg url =
 fetchSelectedWindow : Window -> Cmd Msg
 fetchSelectedWindow window =
   let
-    (from, to) = window
+    (from, to) = toStringWindow window
   in
     "/api/deliveries?include=user&filter[from]=" ++ from ++ "&filter[to]=" ++ to
     |> request FetchSucceedSelectedWindow
@@ -71,7 +71,7 @@ fetchSelectedWindow window =
 fetchVisibleWindow : Window -> Cmd Msg
 fetchVisibleWindow window =
   let
-    (from, to) = window
+    (from, to) = toStringWindow window
   in
     "/api/deliveries?filter[from]=" ++ from ++ "&filter[to]=" ++ to
     |> request FetchSucceedVisibleWindow

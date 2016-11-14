@@ -7,18 +7,18 @@ import Html.App
 
 import Mouse exposing (Position)
 
-import Components.DeliveryListModels as DeliveryListModels
+import Components.DeliveryListModel as DeliveryListModel
 import Components.DeliveryListView as DeliveryListView
 import Components.DeliveryListCalendar as DeliveryListCalendar
 
 type alias Model =
-  { calendar: DeliveryListModels.Model
+  { calendar: DeliveryListModel.Model
   , position: Position
   , drag: Maybe Drag }
 
 init : (Model, Cmd Msg)
 init =
-  ( { calendar = DeliveryListModels.initialModel
+  ( { calendar = DeliveryListModel.initialModel
     , position = Position 0 0
     , drag = Nothing }
   , Cmd.none )
@@ -42,11 +42,15 @@ update msg model =
       in ( { model | calendar = updatedModel }, Cmd.map DeliveryListCalendarMsg cmd )
 
     JsMsg ["DeliveryList.FetchVisibleWindow", from, to] ->
-      let (updatedModel, cmd) = DeliveryListCalendar.update (DeliveryListCalendar.FetchVisibleWindow (from, to)) model.calendar
+      let
+        window = DeliveryListModel.fromStringWindow from to
+        (updatedModel, cmd) = DeliveryListCalendar.update (DeliveryListCalendar.FetchVisibleWindow window) model.calendar
       in ( { model | calendar = updatedModel }, Cmd.map DeliveryListCalendarMsg cmd )
 
     JsMsg ["DeliveryList.FetchSelectedWindow", from, to] ->
-      let (updatedModel, cmd) = DeliveryListCalendar.update (DeliveryListCalendar.FetchSelectedWindow (from, to)) model.calendar
+      let
+        window = DeliveryListModel.fromStringWindow from to
+        (updatedModel, cmd) = DeliveryListCalendar.update (DeliveryListCalendar.FetchSelectedWindow window) model.calendar
       in ( { model | calendar = updatedModel }, Cmd.map DeliveryListCalendarMsg cmd )
 
     JsMsg _ ->
