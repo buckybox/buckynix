@@ -29,12 +29,18 @@ barWidth = 36
 maxBarHeight : Float
 maxBarHeight = 100
 
-dayStateColor : DayState -> Color
-dayStateColor state =
-  case state of
-    Delivered -> Color.rgb 204 204 204
-    Pending   -> Color.rgb 255 220 90
-    Open      -> Color.rgb 0 168 23
+dayColor : Day -> Color
+dayColor day =
+  let
+    colorTuple = case day.state of
+      Delivered -> (Color.grey,   Color.darkGrey)
+      Pending   -> (Color.yellow, Color.darkYellow)
+      Open      -> (Color.green,  Color.darkGreen)
+   in
+     if DateExtra.isWeekend day.date then
+       snd colorTuple
+     else
+       fst colorTuple
 
 calendarForm : List Delivery.Model -> Window -> Form
 calendarForm deliveries window =
@@ -117,7 +123,7 @@ calendarDay day maxCount =
       |> Collage.moveY (height / 2 + fontHeight)
     ,
       Collage.rect barWidth height
-      |> Collage.filled (dayStateColor day.state)
+      |> Collage.filled (dayColor day)
     ,
       Text.fromString dow
       |> Collage.text

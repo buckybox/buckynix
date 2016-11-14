@@ -35,3 +35,10 @@ monthToInt month =
     Date.Oct -> 10
     Date.Nov -> 11
     Date.Dec -> 12
+
+isWeekend : Date -> Bool
+isWeekend day =
+  case Date.dayOfWeek day of
+    Date.Sat -> True
+    Date.Sun -> True
+    _        -> False
