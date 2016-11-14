@@ -9,9 +9,10 @@ import String
 import Color exposing (Color)
 import Element exposing (Element)
 import Date exposing (Date)
+import Time exposing (Time)
 import Dict exposing (Dict)
 
-import Lib.DateExtra exposing (unsafeFromString)
+import Lib.DateExtra as DateExtra
 
 import Components.DeliveryListModels exposing (..)
 import Components.Delivery as Delivery
@@ -23,7 +24,7 @@ fontHeight : Float
 fontHeight = 10
 
 barWidth : Float
-barWidth = 40
+barWidth = 36
 
 maxBarHeight : Float
 maxBarHeight = 100
@@ -35,16 +36,18 @@ dayStateColor state =
     Pending   -> Color.rgb 255 220 90
     Open      -> Color.rgb 0 168 23
 
-calendarForm : List Delivery.Model -> Form
-calendarForm deliveries =
+calendarForm : List Delivery.Model -> Window -> Form
+calendarForm deliveries window =
   let
-    days =
+    paddingDays = buildEmptyDays window
+    deliveryDays =
       List.foldr
         (\delivery -> \dict -> buildDays delivery dict)
         (Dict.empty)
         deliveries
+    days = Dict.union deliveryDays paddingDays |> Dict.values
    in
-     buildCalendar (Dict.values days)
+     buildCalendar days
 
 buildDays : Delivery.Model -> Dict String Day -> Dict String Day
 buildDays delivery days =
@@ -58,10 +61,33 @@ buildDays delivery days =
           days
       Nothing ->
         Dict.insert date
-          { date = unsafeFromString date
+          { date = DateExtra.unsafeFromString date
           , state = Pending
           , deliveryCount = 1 }
           days
+
+buildEmptyDays : Window -> Dict String Day
+buildEmptyDays window =
+  let
+    (from, to) = (
+      fst window |> DateExtra.unsafeFromString |> Date.toTime,
+      snd window |> DateExtra.unsafeFromString |> Date.toTime
+    )
+
+    duration = (to - from) / (86400 * Time.second)
+
+    emptyDays = List.map
+      (\offset ->
+        { date = Date.fromTime (from + offset * (86400 * Time.second))
+        , state = Open
+        , deliveryCount = 0 }
+      )
+      [0..duration]
+  in
+    List.foldr
+      (\day -> \dict -> Dict.insert (DateExtra.toISOString day.date) day dict)
+      Dict.empty
+      emptyDays
 
 buildCalendar : List Day -> Form
 buildCalendar days =
@@ -80,7 +106,8 @@ calendarDay : Day -> Int -> Form
 calendarDay day maxCount =
   let
     count = day.deliveryCount
-    height = (maxBarHeight * toFloat(count) / toFloat(maxCount))
+    minHeight = fontHeight * 2
+    height = (maxBarHeight - minHeight) * toFloat(count) / toFloat(maxCount) + minHeight
     dow = toString (Date.dayOfWeek day.date) |> String.left 1
   in
     Collage.group

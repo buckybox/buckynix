@@ -45,7 +45,9 @@ update msg model =
       let
         newDeliveries = DeliveryListDecoder.decodeDeliveries document
         allDeliveries = Dict.union model.allDeliveries newDeliveries
-        form = DeliveryListView.calendarForm (Dict.values allDeliveries)
+        form = DeliveryListView.calendarForm
+          (Dict.values allDeliveries)
+          model.visibleWindow
         calendar = { form = form }
       in
         ({ model | fetching = False

@@ -14,7 +14,7 @@ type alias Model =
 view : Model -> Html a
 view model =
   tr []
-  [ td [] [ text model.date ]
-  , td [] [ User.badge model.user ]
+  [ td [] [ User.badge model.user ]
+  , td [] [ text model.date ]
   , td [] [ text model.address ]
   , td [] [ text model.product ] ]
