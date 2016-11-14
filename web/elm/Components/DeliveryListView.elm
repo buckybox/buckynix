@@ -1,4 +1,4 @@
-module Components.DeliveryListView exposing (view, calendarForm)
+module Components.DeliveryListView exposing (view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -45,10 +45,10 @@ dayColor day =
      else
        fst colorTuple
 
-calendarForm : List Delivery.Model -> Window -> Form
-calendarForm deliveries window =
+generateCalendar : List Delivery.Model -> Window -> Form
+generateCalendar deliveries visibleWindow =
   let
-    paddingDays = buildEmptyDays window
+    paddingDays = buildEmptyDays visibleWindow
     deliveryDays =
       List.foldr
         (\delivery -> \dict -> buildDays delivery dict)
@@ -137,7 +137,7 @@ calendarView model =
   let
     height = maxBarHeight + 50 -- add 50 for padding
     calendar =
-      model.calendar.form
+      generateCalendar (Dict.values model.allDeliveries) model.visibleWindow
       |> Collage.moveX (-calendarWidth / 2)
       |> Collage.moveY (-height / 2 + fontHeight * 2)
     html = Collage.collage (truncate calendarWidth) (truncate height) [calendar]

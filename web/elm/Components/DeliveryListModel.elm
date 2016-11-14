@@ -1,10 +1,12 @@
 module Components.DeliveryListModel exposing (..)
 
-import Collage exposing (Form)
-import Text
 import Date exposing (Date)
 import Time exposing (Time)
 import Dict exposing (Dict)
+
+import Collage exposing (Form)
+import Element
+import Mouse exposing (Position)
 
 import Lib.UUID exposing (UUID)
 import Lib.DateExtra as DateExtra
@@ -30,9 +32,6 @@ toStringWindow {from, to} =
   ( from |> Date.fromTime |> DateExtra.toISOString
   , to |> Date.fromTime |> DateExtra.toISOString )
 
-type alias Calendar =
-  { form: Form } -- FIXME: move to top-level if no other data needed
-
 type DayState = Delivered | Pending | Open
 
 type alias Day =
@@ -40,19 +39,27 @@ type alias Day =
   , state: DayState
   , deliveryCount: Int }
 
+type alias Drag =
+  { start: Position
+  , current: Position }
+
 type alias Model =
-  { calendar: Calendar
+  { calendar: Form
   , selectedWindow: Window
   , visibleWindow: Window
   , allDeliveries: Dict UUID Delivery.Model
   , selectedDeliveries: List Delivery.Model
-  , fetching: Bool }
+  , fetching: Bool
+  , position: Position
+  , drag: Maybe Drag }
 
 initialModel : Model
 initialModel =
-  { calendar = { form = Text.fromString "..." |> Collage.text }
+  { calendar = Element.empty |> Collage.toForm
   , selectedWindow = emptyWindow
   , visibleWindow = emptyWindow
   , allDeliveries = Dict.empty
   , selectedDeliveries = []
-  , fetching = False }
+  , fetching = False
+  , position = Position 0 0
+  , drag = Nothing }
