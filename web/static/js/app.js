@@ -45,9 +45,9 @@ if (elmUserListAppDiv) {
   });
 }
 
-const elmUserTransactionListApp = document.querySelector('#elm-user-transaction-list-app');
-if (elmUserTransactionListApp) {
-  Elm.UserTransactionListApp.embed(elmUserTransactionListApp, {userId: "123"});
+const elmTransactionListApp = document.querySelector('#elm-transaction-list-app');
+if (elmTransactionListApp) {
+  Elm.TransactionListApp.embed(elmTransactionListApp, {userId: "123"});
 }
 
 const elmDeliveryListAppDiv = document.querySelector('#elm-delivery-list-app');

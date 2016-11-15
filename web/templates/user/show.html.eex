@@ -67,7 +67,7 @@
     <div class="card">
       <h4 class="card-header">Transactions</h4>
       <div class="card-block">
-        <div id="elm-user-transaction-list-app"></div>
+        <div id="elm-transaction-list-app"></div>
 
         <table class="table table-striped table-sm">
           <thead>

@@ -1,4 +1,4 @@
-module Components.UserTransaction exposing (view, Model)
+module Components.Transaction exposing (view, Model)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)

@@ -117,8 +117,8 @@ update msg model =
                     toFloat dx
                         / DeliveryListView.barWidthWithMargin
                         |> round
-                        |> toFloat
                         -- round to snap to whole days
+                        |> toFloat
                         |>
                             (*) (86400 * Time.second)
 
