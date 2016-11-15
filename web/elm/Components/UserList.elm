@@ -48,8 +48,8 @@ update msg model =
 
                 factor =
                     if model.nextCount > List.length (userList) then
-                        1
                         -- don't grow if no more users
+                        1
                     else
                         growthFactor
             in
@@ -103,16 +103,15 @@ decodeUserData =
         (Json.at [ "attributes", "tags" ] (Json.list Json.string))
 
 
+initialCount : Int
 initialCount =
     25
 
 
+-- we'll fetch X times as many on each fetch (exponential)
+growthFactor : Int
 growthFactor =
     2
-
-
-
--- we'll fetch X times as many on each fetch (exponential)
 
 
 initialModel : Model
@@ -134,6 +133,7 @@ view model =
         ]
 
 
+renderUsers : Model -> Html Msg
 renderUsers model =
     let
         length =
@@ -160,6 +160,7 @@ renderUsers model =
             ]
 
 
+searchBar : Model -> Html Msg
 searchBar model =
     div [ class "row flex-items-xs-middle" ]
         [ div [ class "col-xs-3" ] []
@@ -178,6 +179,7 @@ searchBar model =
         ]
 
 
+newLink : Html Msg
 newLink =
     tr []
         [ td [ colspan 5 ]
@@ -185,6 +187,7 @@ newLink =
         ]
 
 
+moreLink : Bool -> Html Msg
 moreLink fetching =
     let
         tag =

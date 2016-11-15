@@ -71,9 +71,9 @@ decodeUserAttributes : Resource -> User.Model
 decodeUserAttributes user =
     case JsonApi.Resources.attributes userDecoder user of
         Err error ->
+            -- XXX: when user relationship isn't included
             User.emptyModel
 
-        -- XXX: when user relationship isn't included
         Ok user ->
             user
 
@@ -82,13 +82,6 @@ userDecoder : Json.Decoder User.Model
 userDecoder =
     Json.object4 User.Model
         (Json.succeed "URL")
-        -- url
         ("name" := Json.string)
         (Json.succeed "")
-        -- balance
         (Json.succeed [])
-
-
-
--- tags
--- ("tags" := Json.list Json.string)
