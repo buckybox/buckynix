@@ -189,9 +189,15 @@ controlView model =
 deliveryView : Model -> Html Msg
 deliveryView model =
   let
-    rows = List.map
-      (\delivery -> Delivery.view delivery)
-      model.selectedDeliveries
+    rows = case model.selectedDeliveries of
+      [] -> [ tr
+            [ class "text-center" ]
+            [ td [] [ text "No delieries for this date range" ] ] ]
+
+      _  -> List.map
+            (\delivery -> Delivery.view delivery)
+            model.selectedDeliveries
+
     moreLinkWrapper = []
   in
     div [ class "row mt-3" ]
