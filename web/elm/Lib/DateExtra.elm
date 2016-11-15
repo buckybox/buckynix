@@ -1,6 +1,7 @@
 module Lib.DateExtra exposing (..)
 
 import Date exposing (Date)
+import Time exposing (Time)
 import String
 
 unsafeFromString : String -> Date
@@ -42,3 +43,7 @@ isWeekend day =
     Date.Sat -> True
     Date.Sun -> True
     _        -> False
+
+diffDays : Time -> Time -> Time
+diffDays from to =
+  (to - from) / (86400 * Time.second)

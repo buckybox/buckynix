@@ -20,7 +20,8 @@ type Msg
   | FetchSucceedSelectedWindow Document
   | FetchSucceedVisibleWindow Document
   | FetchFail Http.Error
-  | DragStart Position
+  | DragStartSelectedWindowFrom Position
+  | DragStartSelectedWindowTo Position
   | DragAt Position
   | DragEnd Position
 
@@ -54,6 +55,8 @@ type alias Drag =
   { start: Position
   , current: Position }
 
+type DragElement = SelectedWindowFrom | SelectedWindowTo
+
 type alias Model =
   { calendar: Form
   , selectedWindow: Window
@@ -63,7 +66,8 @@ type alias Model =
   , selectedDeliveries: List Delivery.Model
   , fetching: Bool
   , position: Position
-  , drag: Maybe Drag }
+  , drag: Maybe Drag
+  , dragElement: DragElement }
 
 initialModel : Model
 initialModel =
@@ -75,4 +79,5 @@ initialModel =
   , selectedDeliveries = []
   , fetching = False
   , position = Position 0 0
-  , drag = Nothing }
+  , drag = Nothing
+  , dragElement = SelectedWindowFrom }

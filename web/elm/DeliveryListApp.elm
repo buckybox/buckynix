@@ -29,6 +29,7 @@ update msg model =
         selectedDeliveries =
           DeliveryListDecoder.decodeDeliveries document
           |> Dict.values
+          |> List.sortBy .date
       in
         ( { model | fetching = False, selectedDeliveries = selectedDeliveries }
         , Cmd.none )
@@ -63,9 +64,23 @@ update msg model =
       ( model
       , Cmd.none )
 
-    DragStart position ->
-      ( { model | drag = Just (Drag position position), tempWindow = model.selectedWindow }
-      , Cmd.none )
+    DragStartSelectedWindowFrom position ->
+      let
+        drag = Just (Drag position position)
+        dragElement = SelectedWindowFrom
+        tempWindow = model.selectedWindow
+      in
+        ( { model | drag = drag, dragElement = dragElement, tempWindow = tempWindow }
+        , Cmd.none )
+
+    DragStartSelectedWindowTo position ->
+      let
+        drag = Just (Drag position position)
+        dragElement = SelectedWindowTo
+        tempWindow = model.selectedWindow
+      in
+        ( { model | drag = drag, dragElement = dragElement, tempWindow = tempWindow }
+        , Cmd.none )
 
     DragAt position ->
       let
@@ -78,13 +93,17 @@ update msg model =
              |> (*) (86400 * Time.second)
 
         window = model.tempWindow
+        newWindow = case model.dragElement of
+          SelectedWindowFrom -> { window | from = window.from + dt }
+          SelectedWindowTo   -> { window | to   = window.to   + dt }
+
       in
-        ( { model | selectedWindow = { window | from = window.from + dt } }
+        ( { model | selectedWindow = newWindow }
         , Cmd.none )
 
     DragEnd _ ->
       ( { model | drag = Nothing, position = getPosition model }
-      , Cmd.none )
+      , fetchSelectedWindow model.selectedWindow )
 
 getPosition : Model -> Position
 getPosition {position, drag} =

@@ -14,7 +14,7 @@ import Dict exposing (Dict)
 
 import Html.Events exposing (on)
 import Json.Decode as Json
-import Mouse
+import Mouse exposing (Position)
 
 import Lib.DateExtra as DateExtra
 
@@ -30,15 +30,18 @@ fontHeight = 10
 barWidth : Float
 barWidth = 36
 
+barMargin : Float
+barMargin = 1
+
 barWidthWithMargin : Float
-barWidthWithMargin = barWidth + 1 -- add 1 px for border
+barWidthWithMargin = barWidth + barMargin
 
 maxBarHeight : Float
 maxBarHeight = 100
 
-onMouseDown : Html.Attribute Msg
-onMouseDown =
-  on "mousedown" (Json.map DragStart Mouse.position)
+onMouseDown : (Position -> Msg) -> Html.Attribute Msg
+onMouseDown msg =
+  on "mousedown" (Json.map msg Mouse.position)
 
 dayColor : Day -> Color
 dayColor day =
@@ -86,7 +89,7 @@ buildDays delivery days =
 buildEmptyDays : Window -> Dict String Day
 buildEmptyDays {from, to} =
   let
-    duration = (to - from) / (86400 * Time.second)
+    duration = DateExtra.diffDays from to
     emptyDays = List.map
       (\offset ->
         { date = Date.fromTime (from + offset * (86400 * Time.second))
@@ -157,18 +160,31 @@ controlView : Model -> Html Msg
 controlView model =
   let
     (selectedFrom, selectedTo) = (model.selectedWindow.from, model.selectedWindow.to)
-    (visibleFrom, visibleTo) = (model.visibleWindow.from, model.visibleWindow.to)
-    fromOffset = (selectedFrom - visibleFrom) / (86400 * Time.second)
-    xPosition = fromOffset * barWidthWithMargin
-    icon = i [
-      onMouseDown,
+    (visibleFrom, _) = (model.visibleWindow.from, model.visibleWindow.to)
+    fromOffset = DateExtra.diffDays visibleFrom selectedFrom
+    toOffset = DateExtra.diffDays visibleFrom selectedTo
+    iconWidth = 5
+    fromPosition = fromOffset * barWidthWithMargin + iconWidth - barMargin
+    toPosition = (toOffset + 1) * barWidthWithMargin - iconWidth - barMargin
+
+    fromIcon = i [
+      onMouseDown DragStartSelectedWindowFrom,
       class "fa fa-step-backward", style
-      [ ("left", (toString xPosition) ++ "px")
+      [ ("left", (toString fromPosition) ++ "px")
+      , ("position", "relative")
+      , ("cursor", "col-resize") ]
+    ] []
+    toIcon = i [
+      onMouseDown DragStartSelectedWindowTo,
+      class "fa fa-step-forward", style
+      [ ("left", (toString toPosition) ++ "px")
       , ("position", "relative")
       , ("cursor", "col-resize") ]
     ] []
   in
-    div [] [ div [ class "col-xs bg-faded" ] [ icon ] ]
+    div [ class "col-xs bg-faded pb-4" ]
+      [ span [ style [("position", "absolute")] ] [ fromIcon ]
+      , span [ style [("position", "absolute")] ] [ toIcon ] ]
 
 deliveryView : Model -> Html Msg
 deliveryView model =
