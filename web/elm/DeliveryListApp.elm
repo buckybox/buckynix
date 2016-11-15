@@ -1,4 +1,4 @@
-port module DeliveryListApp exposing (..)
+port module DeliveryListApp exposing (main)
 
 import Html.App
 import Html exposing (Html, Attribute, div)
@@ -74,73 +74,70 @@ update msg model =
             )
 
         DragStartSelectedWindowFrom position ->
-            let
-                drag =
-                    Just (Drag position position)
-
-                dragElement =
-                    SelectedWindowFrom
-
-                tempWindow =
-                    model.selectedWindow
-            in
-                ( { model | drag = drag, dragElement = dragElement, tempWindow = tempWindow }
-                , Cmd.none
-                )
+            registerDragStart SelectedWindowFrom position model
 
         DragStartSelectedWindowTo position ->
-            let
-                drag =
-                    Just (Drag position position)
-
-                dragElement =
-                    SelectedWindowTo
-
-                tempWindow =
-                    model.selectedWindow
-            in
-                ( { model | drag = drag, dragElement = dragElement, tempWindow = tempWindow }
-                , Cmd.none
-                )
+            registerDragStart SelectedWindowTo position model
 
         DragAt position ->
-            let
-                dx =
-                    case model.drag of
-                        Nothing ->
-                            0
-
-                        Just drag ->
-                            position.x - drag.start.x
-
-                dt =
-                    toFloat dx
-                        / DeliveryListView.barWidthWithMargin
-                        |> round
-                        -- round to snap to whole days
-                        |> toFloat
-                        |>
-                            (*) (86400 * Time.second)
-
-                window =
-                    model.tempWindow
-
-                newWindow =
-                    case model.dragElement of
-                        SelectedWindowFrom ->
-                            { window | from = window.from + dt }
-
-                        SelectedWindowTo ->
-                            { window | to = window.to + dt }
-            in
-                ( { model | selectedWindow = newWindow }
-                , Cmd.none
-                )
+            ( { model | selectedWindow = updateWindow model position }
+            , Cmd.none
+            )
 
         DragEnd _ ->
             ( { model | drag = Nothing, position = getPosition model }
             , fetchSelectedWindow model.selectedWindow
             )
+
+
+registerDragStart : DragElement -> Position -> Model -> ( Model, Cmd Msg )
+registerDragStart dragElement position model =
+    ( { model
+        | drag = Just (Drag position position)
+        , dragElement = dragElement
+        , tempWindow = model.selectedWindow
+      }
+    , Cmd.none
+    )
+
+
+updateWindow : Model -> Position -> Window
+updateWindow model position =
+    let
+        dx =
+            case model.drag of
+                Nothing ->
+                    0
+
+                Just drag ->
+                    position.x - drag.start.x
+
+        dt =
+            toFloat dx
+                / DeliveryListView.barWidthWithMargin
+                |> round
+                -- round to snap to whole days
+                |>
+                    toFloat
+                |> (*) (86400 * Time.second)
+
+        window =
+            model.tempWindow
+    in
+        case model.dragElement of
+            SelectedWindowFrom ->
+                { window
+                    | from =
+                        max model.visibleWindow.from
+                            (min window.to (window.from + dt))
+                }
+
+            SelectedWindowTo ->
+                { window
+                    | to =
+                        min model.visibleWindow.to
+                            (max window.from (window.to + dt))
+                }
 
 
 getPosition : Model -> Position
@@ -187,14 +184,7 @@ fetchVisibleWindow window =
 
 view : Model -> Html Msg
 view model =
-    let
-        debug =
-            model.selectedWindow.from |> Date.fromTime
-    in
-        div []
-            [ div [] [ Html.text (toString debug) ]
-            , div [] [ DeliveryListView.view model ]
-            ]
+    div [] [ div [] [ DeliveryListView.view model ] ]
 
 
 subscriptions : Model -> Sub Msg

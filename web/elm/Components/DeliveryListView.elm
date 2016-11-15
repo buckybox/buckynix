@@ -174,7 +174,7 @@ calendarDay day maxCount =
                 |> Collage.text
                 |> Collage.moveY (-height / 2 + fontHeight)
             , Text.fromString (toString (Date.day day.date))
-                |> Text.color Color.gray
+                |> Text.color Color.darkGrey
                 |> Collage.text
                 |> Collage.moveY (-height / 2 - fontHeight)
             ]

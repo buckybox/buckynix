@@ -1,4 +1,4 @@
-port module UserListApp exposing (..)
+port module UserListApp exposing (main)
 
 import Html exposing (Html, div)
 import Html.App

@@ -1,4 +1,4 @@
-module TransactionListApp exposing (..)
+module TransactionListApp exposing (main)
 
 import Html exposing (Html)
 import Html.App
