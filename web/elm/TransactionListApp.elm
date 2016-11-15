@@ -15,22 +15,26 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( initialModel flags.userId, Cmd.none )
+    let
+        userId =
+            flags.userId
+    in
+        ( initialModel userId, fetchTransactions userId )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Fetch ->
-            ( { model | fetching = True }, fetchTransactions model )
+            ( { model | fetching = True }, fetchTransactions model.userId )
 
-        FetchSucceed jsonModel ->
+        FetchSucceed document ->
             let
-                transactionList =
-                    jsonModel.data
+                transactions =
+                    TransactionListDecoder.decodeTransactions document
             in
                 ( { model
-                    | transactions = transactionList
+                    | transactions = transactions
                     , fetching = False
                   }
                 , Cmd.none
@@ -40,13 +44,18 @@ update msg model =
             ( { model | fetching = False }, Cmd.none )
 
 
-fetchTransactions : Model -> Cmd Msg
-fetchTransactions model =
-    let
-        url =
-            "/api/users/" ++ model.userId ++ "/transactions"
-    in
-        Task.perform FetchFail FetchSucceed (JsonApiExtra.get TransactionListDecoder.decodeTransactionFetch url)
+request : String -> Cmd Msg
+request url =
+    Task.perform FetchFail FetchSucceed <|
+        JsonApiExtra.get TransactionListDecoder.decodeDocument url
+
+
+fetchTransactions : String -> Cmd Msg
+fetchTransactions userId =
+    "/api/users/"
+        ++ userId
+        ++ "/transactions"
+        |> request
 
 
 view : Model -> Html Msg

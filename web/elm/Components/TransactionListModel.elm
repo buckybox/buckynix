@@ -1,6 +1,7 @@
 module Components.TransactionListModel exposing (..)
 
 import Http
+import JsonApi exposing (Document)
 import Components.Transaction as Transaction
 
 
@@ -23,9 +24,5 @@ initialModel userId =
 
 type Msg
     = Fetch
-    | FetchSucceed JsonModel
+    | FetchSucceed Document
     | FetchFail Http.Error
-
-
-type alias JsonModel =
-    { data : List Transaction.Model }

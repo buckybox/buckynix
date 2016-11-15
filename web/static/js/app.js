@@ -40,7 +40,7 @@ if (elmUserListAppDiv) {
   // Fetch more results when we scroll to the bottom
   $(window).scroll(function() {
     if($(window).scrollTop() + $(window).height() == $(document).height()) {
-      app.ports.jsEvents.send(["UserList.Fetch"]);
+      elmUserListApp.ports.jsEvents.send(["UserList.Fetch"]);
     }
   });
 }
