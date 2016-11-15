@@ -44,9 +44,14 @@ defmodule Buckynix.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-    user = Repo.get!(User, id)
-    account = Repo.get_by!(Account, user_id: user.id)
+    user = (from u in User,
+      preload: [:account, :address]
+    ) |> Repo.get!(id)
+
     orders = []
+
+    account = user.account
+    address = user.address
 
     transactions = Repo.all(
       from t in Transaction,
@@ -63,18 +68,23 @@ defmodule Buckynix.UserController do
       end
     )
 
-    # TODO: must be a cleaner way to fetch this - with preload?
-    render(conn, "show.html", user: user, account: account, orders: orders, transactions: transactions)
+    render(conn, "show.html", user: user, account: account, address: address, orders: orders, transactions: transactions)
   end
 
   def edit(conn, %{"id" => id}) do
-    user = Repo.get!(User, id)
+    user = (from u in User,
+      preload: [:address]
+    ) |> Repo.get!(id)
+
     changeset = User.changeset(user)
     render(conn, "edit.html", user: user, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
-    user = Repo.get!(User, id)
+    user = (from u in User,
+      preload: [:address]
+    ) |> Repo.get!(id)
+
     changeset = User.changeset(user, user_params)
 
     case Repo.update(changeset) do

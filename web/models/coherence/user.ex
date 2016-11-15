@@ -15,6 +15,7 @@ defmodule Buckynix.User do
     field :balance, :string, virtual: true
 
     has_one :account, Buckynix.Account
+    has_one :address, Buckynix.Address
     has_many :notifications, Buckynix.Notification
     many_to_many :organizations, Buckynix.Organization, join_through: "organizations_users"
   end
@@ -27,6 +28,7 @@ defmodule Buckynix.User do
     |> validate_required(@required_fields)
     |> unique_constraint(:email)
     |> validate_coherence(params)
+    |> cast_assoc(:address, required: false)
   end
 
   def with_tag(query, tag) do

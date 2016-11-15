@@ -55,6 +55,11 @@ accounts =
   |> Enum.map(&Ecto.build_assoc(&1, :account, %{currency: "EUR"}))
   |> Enum.map(&Repo.insert!(&1))
 
+addresses =
+  users
+  |> Enum.map(&Ecto.build_assoc(&1, :address, %{street: "42 Supergeilstrasse", city: "Berlin"}))
+  |> Enum.map(&Repo.insert!(&1))
+
 for i <- Enum.random(2..4)..0 do
   accounts
   |> Enum.map(&Ecto.build_assoc(&1, :transaction, %{

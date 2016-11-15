@@ -15,4 +15,24 @@ defmodule Buckynix.UserTest do
     changeset = User.changeset(%User{}, @invalid_attrs)
     refute changeset.valid?
   end
+
+  test "changeset with a valid address" do
+    params = Map.put(@valid_attrs, :address, %{
+      street: "Valid street",
+      city: "Praha"
+    })
+
+    changeset = User.changeset(%User{}, params)
+    assert changeset.valid?
+  end
+
+  test "changeset with an invalid address" do
+    params = Map.put(@valid_attrs, :address, %{
+      street: "Valid street",
+      city: ""
+    })
+
+    changeset = User.changeset(%User{}, params)
+    refute changeset.valid?
+  end
 end
