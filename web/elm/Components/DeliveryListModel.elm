@@ -1,5 +1,6 @@
 module Components.DeliveryListModel exposing (..)
 
+import Http exposing (Error)
 import Date exposing (Date)
 import Time exposing (Time)
 import Dict exposing (Dict)
@@ -7,11 +8,21 @@ import Dict exposing (Dict)
 import Collage exposing (Form)
 import Element
 import Mouse exposing (Position)
+import JsonApi exposing (Document)
 
 import Lib.UUID exposing (UUID)
 import Lib.DateExtra as DateExtra
 
 import Components.Delivery as Delivery
+
+type Msg
+  = JsMsg (List String)
+  | FetchSucceedSelectedWindow Document
+  | FetchSucceedVisibleWindow Document
+  | FetchFail Http.Error
+  | DragStart Position
+  | DragAt Position
+  | DragEnd Position
 
 type alias Window =
   { from: Time
@@ -47,6 +58,7 @@ type alias Model =
   { calendar: Form
   , selectedWindow: Window
   , visibleWindow: Window
+  , tempWindow: Window
   , allDeliveries: Dict UUID Delivery.Model
   , selectedDeliveries: List Delivery.Model
   , fetching: Bool
@@ -58,6 +70,7 @@ initialModel =
   { calendar = Element.empty |> Collage.toForm
   , selectedWindow = emptyWindow
   , visibleWindow = emptyWindow
+  , tempWindow = emptyWindow
   , allDeliveries = Dict.empty
   , selectedDeliveries = []
   , fetching = False

@@ -2,16 +2,16 @@ port module DeliveryListApp exposing (..)
 
 import Html.App
 import Html exposing (Html, Attribute, div)
-import Html.Events exposing (on)
-import Json.Decode as Json
 import Mouse exposing (Position)
 
 import Dict exposing (Dict)
 import Task exposing (Task)
-import Http exposing (Error)
+import Time exposing (Time)
 import JsonApi exposing (Document)
 
 import Lib.JsonApiExtra as JsonApiExtra
+
+import Date exposing (Date)
 
 import Components.DeliveryListModel exposing (..)
 import Components.DeliveryListDecoder as DeliveryListDecoder
@@ -20,15 +20,6 @@ import Components.DeliveryListView as DeliveryListView
 init : (Model, Cmd Msg)
 init =
   ( initialModel, Cmd.none )
-
-type Msg
-  = JsMsg (List String)
-  | FetchSucceedSelectedWindow Document
-  | FetchSucceedVisibleWindow Document
-  | FetchFail Http.Error
-  | DragStart Position
-  | DragAt Position
-  | DragEnd Position
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -73,16 +64,35 @@ update msg model =
       , Cmd.none )
 
     DragStart position ->
-      ( { model | drag = Just (Drag position position) }
+      ( { model | drag = Just (Drag position position), tempWindow = model.selectedWindow }
       , Cmd.none )
 
     DragAt position ->
-      ( { model | drag = (Maybe.map (\{start} -> Drag start position) model.drag) }
-      , Cmd.none )
+      let
+        dx = case model.drag of
+          Nothing -> 0
+          Just drag -> position.x - drag.start.x
+
+        dt = toFloat dx / DeliveryListView.barWidthWithMargin
+             |> round |> toFloat -- round to snap to whole days
+             |> (*) (86400 * Time.second)
+
+        window = model.tempWindow
+      in
+        ( { model | selectedWindow = { window | from = window.from + dt } }
+        , Cmd.none )
 
     DragEnd _ ->
       ( { model | drag = Nothing, position = getPosition model }
       , Cmd.none )
+
+getPosition : Model -> Position
+getPosition {position, drag} =
+  case drag of
+    Nothing ->
+      position
+    Just {start, current} ->
+      Position (current.x - start.x) (current.y - start.y)
 
 request : (Document -> Msg) -> String -> Cmd Msg
 request succeedMsg url =
@@ -108,12 +118,10 @@ fetchVisibleWindow window =
 view : Model -> Html Msg
 view model =
   let
-    x1 = case model.drag of
-      Nothing -> -1
-      Just drag -> drag.current.x - drag.start.x
+    debug = model.selectedWindow.from |> Date.fromTime
   in
-  div [ onMouseDown ]
-    [ div [] [ Html.text (toString x1) ]
+  div [ ]
+    [ div [] [ Html.text (toString debug) ]
     , div [] [ DeliveryListView.view model ] ]
 
 subscriptions : Model -> Sub Msg
@@ -125,18 +133,6 @@ subscriptions model =
       Sub.batch [ jsEvents JsMsg ]
     Just _ ->
       Sub.batch [ jsEvents JsMsg, Mouse.moves DragAt, Mouse.ups DragEnd ]
-
-getPosition : Model -> Position
-getPosition {position, drag} =
-  case drag of
-    Nothing ->
-      position
-    Just {start, current} ->
-      Position (current.x - start.x) (current.y - start.y)
-
-onMouseDown : Html.Attribute Msg
-onMouseDown =
-  on "mousedown" (Json.map DragStart Mouse.position)
 
 -- port for listening for events from JavaScript
 port jsEvents : (List String -> msg) -> Sub msg

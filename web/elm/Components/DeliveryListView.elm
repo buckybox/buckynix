@@ -1,4 +1,4 @@
-module Components.DeliveryListView exposing (view)
+module Components.DeliveryListView exposing (view, barWidthWithMargin)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -11,6 +11,10 @@ import Element exposing (Element)
 import Date exposing (Date)
 import Time exposing (Time)
 import Dict exposing (Dict)
+
+import Html.Events exposing (on)
+import Json.Decode as Json
+import Mouse
 
 import Lib.DateExtra as DateExtra
 
@@ -31,6 +35,10 @@ barWidthWithMargin = barWidth + 1 -- add 1 px for border
 
 maxBarHeight : Float
 maxBarHeight = 100
+
+onMouseDown : Html.Attribute Msg
+onMouseDown =
+  on "mousedown" (Json.map DragStart Mouse.position)
 
 dayColor : Day -> Color
 dayColor day =
@@ -132,7 +140,7 @@ calendarDay day maxCount =
     ]
     |> Collage.moveY (height / 2)
 
-calendarView : Model -> Html msg
+calendarView : Model -> Html Msg
 calendarView model =
   let
     height = maxBarHeight + 50 -- add 50 for padding
@@ -145,7 +153,7 @@ calendarView model =
   in
     div [ class "bg-faded" ] [ html ]
 
-controlView : Model -> Html msg
+controlView : Model -> Html Msg
 controlView model =
   let
     (selectedFrom, selectedTo) = (model.selectedWindow.from, model.selectedWindow.to)
@@ -153,16 +161,16 @@ controlView model =
     fromOffset = (selectedFrom - visibleFrom) / (86400 * Time.second)
     xPosition = fromOffset * barWidthWithMargin
     icon = i [
+      onMouseDown,
       class "fa fa-step-backward", style
       [ ("left", (toString xPosition) ++ "px")
       , ("position", "relative")
       , ("cursor", "col-resize") ]
     ] []
   in
-    div []
-      [ div [ class "col-xs bg-faded" ] [ icon ] ]
+    div [] [ div [ class "col-xs bg-faded" ] [ icon ] ]
 
-deliveryView : Model -> Html msg
+deliveryView : Model -> Html Msg
 deliveryView model =
   let
     rows = List.map
@@ -179,7 +187,7 @@ deliveryView model =
         ]
       ]
 
-view : Model -> Html msg
+view : Model -> Html Msg
 view model =
   if model.fetching then
     div [ class "text-center" ]
