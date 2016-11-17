@@ -8,8 +8,8 @@ defmodule Buckynix.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug Coherence.Authentication.Session
     plug Buckynix.Plugs.Organization
+    plug Coherence.Authentication.Session
   end
 
   pipeline :protected do
@@ -18,8 +18,8 @@ defmodule Buckynix.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug Coherence.Authentication.Session, protected: true
     plug Buckynix.Plugs.Organization
+    plug Coherence.Authentication.Session, protected: true
   end
 
   pipeline :api do

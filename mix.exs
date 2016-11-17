@@ -43,7 +43,7 @@ defmodule Buckynix.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:timex, "~> 3.1"},
-     {:coherence, "~> 0.3", github: "devshane/coherence", branch: "timex3"},
+     {:coherence, github: "infertux/coherence"},
      {:ja_serializer, github: "AgilionApps/ja_serializer"},
      {:money, "~> 1.2"},
      {:ex_machina, ">= 0.0.0", only: [:dev, :test]},

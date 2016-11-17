@@ -10,6 +10,10 @@ defmodule Buckynix.Plugs.Organization do
       get_session(conn, :current_organization)
     end
 
-    assign(conn, :current_organization, current_organization)
+    current_user = Coherence.current_user(conn)
+
+    conn
+    |> assign(:current_organization, current_organization)
+    |> assign(:current_user, current_user)
   end
 end

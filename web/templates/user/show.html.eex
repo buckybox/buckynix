@@ -31,11 +31,13 @@
           </ul>
         </li>
       </ul>
-      <div class="card-block">
-        <%= @address %>
+      <%= if @address do %>
+        <div class="card-block">
+          <%= @address %>
 
-        <iframe class="rounded" width="100%" height="200" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://www.openstreetmap.org/export/embed.html?bbox=9.527077674865723%2C46.96502510207853%2C9.5985746383667%2C46.99161140433591&amp;layer=mapnik&amp;marker=46.978319905617624%2C9.562826156616211" style="border: 1px solid #ccc"></iframe><br/>
-      </div>
+          <iframe class="rounded mt-2" width="100%" height="200" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://www.openstreetmap.org/export/embed.html?bbox=9.527077674865723%2C46.96502510207853%2C9.5985746383667%2C46.99161140433591&amp;layer=mapnik&amp;marker=46.978319905617624%2C9.562826156616211" style="border: 1px solid #ccc"></iframe>
+        </div>
+      <% end %>
     </div>
 
   </div>
