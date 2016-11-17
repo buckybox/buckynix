@@ -1,14 +1,13 @@
 defmodule Buckynix.Organization do
   use Buckynix.Web, :model
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-
   schema "organizations" do
     field :name, :string
 
+    belongs_to :address, Buckynix.Address
     many_to_many :users, Buckynix.User, join_through: "organizations_users"
 
-    timestamps()
+    timestamps
   end
 
   @doc """

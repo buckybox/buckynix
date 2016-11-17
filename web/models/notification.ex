@@ -3,7 +3,7 @@ defmodule Buckynix.Notification do
 
   schema "notifications" do
     field :body, :string
-    belongs_to :user, Buckynix.User, type: :binary_id
+    belongs_to :user, Buckynix.User
 
     timestamps
   end

@@ -8,6 +8,8 @@ defmodule Buckynix.Repo.Migrations.CreateUser do
       add :email, :string, null: false
       add :tags, {:array, :string}, null: false, default: []
 
+      add :archived_at, :datetime, null: true, default: nil
+
       # rememberable
       add :remember_created_at, :datetime
       # trackable
@@ -29,5 +31,12 @@ defmodule Buckynix.Repo.Migrations.CreateUser do
     end
 
     create unique_index(:users, [:email])
+    create index(:users, :id, where: "archived_at IS NULL")
+
+    execute "
+      CREATE TRIGGER users_delete
+      BEFORE DELETE ON users
+      FOR EACH ROW EXECUTE PROCEDURE never_delete();
+    "
   end
 end

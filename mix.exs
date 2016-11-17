@@ -20,12 +20,14 @@ defmodule Buckynix.Mixfile do
     [mod: {Buckynix, []},
      applications: [
        :timex, :coherence,
+       :ex_machina, :faker,
        :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
        :phoenix_ecto, :postgrex]]
   end
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "web", "test/support"]
+  defp elixirc_paths(:dev), do: ["lib", "web", "test/support/factory.ex"]
   defp elixirc_paths(_),     do: ["lib", "web"]
 
   # Specifies your project dependencies.
@@ -44,7 +46,9 @@ defmodule Buckynix.Mixfile do
      {:coherence, "~> 0.3", github: "devshane/coherence", branch: "timex3"},
      {:ja_serializer, github: "AgilionApps/ja_serializer"},
      {:money, "~> 1.2"},
-     {:credo, "~> 0.5", only: [:dev, :test]}]
+     {:ex_machina, ">= 0.0.0", only: [:dev, :test]},
+     {:faker, ">= 0.0.0", only: [:dev, :test]},
+     {:credo, ">= 0.0.0", only: [:dev, :test]}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

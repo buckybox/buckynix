@@ -1,7 +1,7 @@
 defmodule Buckynix.UserController do
   use Buckynix.Web, :controller
 
-  alias Buckynix.{User,Account,Transaction}
+  alias Buckynix.{User}
 
   def index(conn, params) do
     count = Map.get(params, "count", 0)
@@ -54,7 +54,7 @@ defmodule Buckynix.UserController do
     address = user.address
 
     transactions = Repo.all(
-      from t in Transaction,
+      from t in Buckynix.Transaction,
       where: t.account_id == ^account.id,
       order_by: [desc: :value_date]
     )
@@ -85,7 +85,9 @@ defmodule Buckynix.UserController do
       preload: [:address]
     ) |> Repo.get!(id)
 
-    changeset = User.changeset(user, user_params)
+    changeset =
+      User.changeset(user, user_params)
+      |> Ecto.Changeset.cast_assoc(:address, required: false)
 
     case Repo.update(changeset) do
       {:ok, user} ->
@@ -100,12 +102,11 @@ defmodule Buckynix.UserController do
   def delete(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
 
-    # Here we use delete! (with a bang) because we expect
-    # it to always work (and if it does not, it will raise).
-    Repo.delete!(user)
+    User.changeset(user, %{archived_at: Ecto.DateTime.utc})
+    |> Repo.update!
 
     conn
-    |> put_flash(:info, "User deleted successfully.")
+    |> put_flash(:info, "User archived successfully.")
     |> redirect(to: user_path(conn, :index))
   end
 
@@ -118,7 +119,7 @@ defmodule Buckynix.UserController do
       preload: [:account],
       where: ilike(c.name, ^"%#{filter}%")
 
-    query |> User.with_tag(tag)
+    query |> User.with_tag(tag) |> User.non_archived
   end
 
   defp user_with_url_and_balance(conn, user) do

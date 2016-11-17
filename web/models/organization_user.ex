@@ -5,7 +5,7 @@ defmodule Buckynix.OrganizationUser do
     belongs_to :organization, Buckynix.Organization
     belongs_to :user, Buckynix.User
 
-    timestamps()
+    timestamps
   end
 
   @doc """

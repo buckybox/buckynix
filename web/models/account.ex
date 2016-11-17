@@ -4,7 +4,7 @@ defmodule Buckynix.Account do
   schema "accounts" do
     field :currency, :string
     field :balance, Money.Ecto.Type
-    belongs_to :user, Buckynix.User, type: :binary_id
+    belongs_to :user, Buckynix.User
 
     has_many :transaction, Buckynix.Transaction
 

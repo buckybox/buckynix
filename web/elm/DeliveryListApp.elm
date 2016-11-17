@@ -8,7 +8,6 @@ import Task exposing (Task)
 import Time exposing (Time)
 import JsonApi exposing (Document)
 import Lib.JsonApiExtra as JsonApiExtra
-import Date exposing (Date)
 import Components.DeliveryListModel exposing (..)
 import Components.DeliveryListDecoder as DeliveryListDecoder
 import Components.DeliveryListView as DeliveryListView
@@ -162,7 +161,7 @@ fetchSelectedWindow window =
         ( from, to ) =
             toStringWindow window
     in
-        "/api/deliveries?include=user&filter[from]="
+        "/api/deliveries?include=user,address.street&filter[from]="
             ++ from
             ++ "&filter[to]="
             ++ to

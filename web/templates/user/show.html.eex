@@ -9,7 +9,7 @@
             <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
             <div class="dropdown-menu">
               <%= link "Edit", to: user_path(@conn, :edit, @user), class: "dropdown-item" %>
-              <%= link "Delete", to: user_path(@conn, :delete, @user), method: :delete, data: [confirm: "Are you sure?"], class: "dropdown-item" %>
+              <%= link "Archive", to: user_path(@conn, :delete, @user), method: :delete, data: [confirm: "Are you sure?"], class: "dropdown-item" %>
             </div>
           </div>
         </div>

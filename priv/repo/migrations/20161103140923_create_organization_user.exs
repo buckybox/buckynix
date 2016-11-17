@@ -2,9 +2,9 @@ defmodule Buckynix.Repo.Migrations.CreateOrganizationUser do
   use Ecto.Migration
 
   def change do
-    create table(:organizations_users) do
-      add :organization_id, references(:organizations, on_delete: :nothing, type: :binary_id), null: false
-      add :user_id, references(:users, on_delete: :nothing, type: :binary_id), null: false
+    create table(:organizations_users, primary_key: false) do
+      add :organization_id, references(:organizations, on_delete: :delete_all, type: :binary_id), null: false
+      add :user_id, references(:users, on_delete: :delete_all, type: :binary_id), null: false
 
       timestamps()
     end

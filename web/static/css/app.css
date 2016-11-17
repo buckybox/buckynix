@@ -5,4 +5,6 @@
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 
+.help-block { color: #a94442; }
+
 span.money.negative { color: #D0381B; }
