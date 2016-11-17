@@ -27,7 +27,9 @@
         <li class="list-group-item">
           <ul class="list-unstyled">
             <li>Email: <strong><%= @user.email %></strong></li>
-            <li>Phone: <strong><%= link "07123456789", to: "tel:+3307123456789" %></strong></li>
+            <%= if @user.phone do %>
+              <li>Phone: <strong><%= link @user.phone, to: ("tel:" <> String.replace(@user.phone, ~r/[^\d\+]/, "")) %></strong></li>
+            <% end %>
           </ul>
         </li>
       </ul>

@@ -6,6 +6,7 @@ defmodule Buckynix.User do
     coherence_schema
     field :name, :string
     field :email, :string
+    field :phone, :string
     field :tags, {:array, :string}, default: []
 
     field :archived_at, Ecto.DateTime
@@ -22,10 +23,11 @@ defmodule Buckynix.User do
   end
 
   @required_fields ~w(name email tags)a
+  @optional_fields ~w(phone)a
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, @required_fields ++ coherence_fields)
+    |> cast(params, @required_fields ++ @optional_fields ++ coherence_fields)
     |> validate_required(@required_fields)
     |> unique_constraint(:email)
     |> validate_coherence(params)

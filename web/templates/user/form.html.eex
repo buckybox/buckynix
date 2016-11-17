@@ -19,6 +19,12 @@
         <%= error_tag f, :email %>
       </div>
 
+      <div class="form-group">
+        <%= label f, :phone, class: "control-label" %>
+        <%= text_input f, :phone, class: "form-control" %>
+        <%= error_tag f, :phone %>
+      </div>
+
       <%# <div class="form-group"> %>
       <%#   <%= label f, :tags, class: "control-label" %1> %>
       <%#   <%= text_input f, :tags, class: "form-control" %1> %>

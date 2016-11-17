@@ -10,6 +10,7 @@ defmodule Buckynix.Factory do
       name: Faker.Name.name,
       email: sequence(:email, &"user#{&1}@example.net"),
       password_hash: Comeonin.Bcrypt.hashpwsalt("rubbish"),
+      phone: Enum.random([nil, Faker.Phone.EnGb.number]),
       tags: Enum.take_random(~w(test baller elixir), Enum.random(0..3)),
       account: build(:account)
     }

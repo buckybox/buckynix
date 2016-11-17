@@ -6,6 +6,7 @@ defmodule Buckynix.Repo.Migrations.CreateUser do
 
       add :name, :string, null: false
       add :email, :string, null: false
+      add :phone, :string, null: true
       add :tags, {:array, :string}, null: false, default: []
 
       add :archived_at, :datetime, null: true, default: nil
