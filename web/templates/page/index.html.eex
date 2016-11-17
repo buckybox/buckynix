@@ -1,6 +1,7 @@
 <div class="jumbotron text-center">
+  <img class="img-fluid rounded mb-4" src="<%= static_path(@conn, "/images/stock-photo-dinner.jpg") %>" alt="">
   <h2><%= gettext "Welcome to %{name}", name: "Buckynix!" %></h2>
-  <p class="lead">An open platform to sell and buy <strong>local food</strong>.</p>
+  <p class="lead">An open peer-to-peer platform to sell and buy <strong>local food</strong>.</p>
 </div>
 
 <div class="row text-center">
