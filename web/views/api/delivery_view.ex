@@ -6,9 +6,15 @@ defmodule Buckynix.Api.DeliveryView do
     attributes [:url, :name]
   end
 
-  attributes [:id, :date]
+  defmodule AddressSerializer do
+    use JaSerializer.PhoenixView
+    attributes [:street] # FIXME
+  end
+
+  attributes [:id, :date, :address]
 
   has_one :user, include: true, serializer: UserSerializer
+  # has_one :address, include: true, serializer: AddressSerializer
 
   def user(struct, _conn) do
     case struct.user do
@@ -17,6 +23,13 @@ defmodule Buckynix.Api.DeliveryView do
         # empty struct so Elm won't ignore the delivery entirely
         %{data: %{type: "user", id: ""}}
       other -> other
+    end
+  end
+
+  def address(struct, _conn) do
+    case struct.user.address do
+      nil -> "NO ADDRESS"
+      address -> address.street
     end
   end
 end

@@ -11,7 +11,7 @@ defmodule Buckynix.Repo.Migrations.CreateDelivery do
       add :status, :delivery_status, null: false
       add :user_id, references(:users, on_delete: :nothing, type: :binary_id), null: false
 
-      add :archived_address, :map, null: true, default: nil
+      add :address, :map, null: true, default: nil
 
       timestamps
     end

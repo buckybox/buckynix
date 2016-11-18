@@ -10,10 +10,7 @@ defmodule Buckynix.Api.DeliveryController do
       to = Map.get(filter, "to") |> Ecto.Date.cast!
 
       include = Map.get(params, "include", "")
-      relationships = String.split(include, ",")
-        |> MapSet.new
-        |> MapSet.intersection(MapSet.new ["user"])
-        |> Enum.map(&String.to_atom/1)
+      relationships = relationships(include)
 
       deliveries = Repo.all(
         from d in Delivery,
@@ -26,6 +23,15 @@ defmodule Buckynix.Api.DeliveryController do
     rescue
       Ecto.CastError -> render(conn, "errors.json-api", data: %{title: "Missing filter dates"})
     end
+  end
+
+  defp relationships(include) do
+    String.split(include, ",")
+      |> MapSet.new
+      |> MapSet.intersection(MapSet.new ["user"])
+      |> Enum.map(&String.to_atom/1)
+
+    [user: :address] # FIXME
   end
 
   defp delivery_with_formatted_date(delivery) do

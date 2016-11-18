@@ -6,7 +6,7 @@ defmodule Buckynix.Delivery do
     field :status, :string, default: "open"
 
     belongs_to :user, Buckynix.User
-    embeds_one :archived_address, Buckynix.Address
+    embeds_one :address, Buckynix.Address
 
     timestamps
   end

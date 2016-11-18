@@ -66,6 +66,6 @@ for user <- users do
   |> Enum.filter(fn(_) -> Enum.random([true, false]) end)
   |> Enum.map(&Buckynix.Delivery.changeset(%Buckynix.Delivery{}, %{date: &1}))
   |> Enum.map(&Ecto.Changeset.put_assoc(&1, :user, user))
-  |> Enum.map(&Ecto.Changeset.put_embed(&1, :archived_address, user.address))
+  |> Enum.map(&Ecto.Changeset.put_embed(&1, :address, user.address)) # FIXME nil
   |> Enum.map(&Repo.insert!(&1))
 end

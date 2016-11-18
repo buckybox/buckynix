@@ -50,9 +50,8 @@ deliveryDecoder =
     Json.object5 Delivery.Model
         ("id" := Json.string)
         ("date" := Json.string)
-        (Json.succeed "ADDRESS")
-        -- FIXME
-        (Json.succeed "PRODUCT")
+        ("address" := Json.string)
+        (Json.succeed "PRODUCT NAME")
         -- FIXME
         (Json.succeed User.emptyModel)
 

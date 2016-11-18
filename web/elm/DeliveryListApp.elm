@@ -161,7 +161,8 @@ fetchSelectedWindow window =
         ( from, to ) =
             toStringWindow window
     in
-        "/api/deliveries?include=user,address.street&filter[from]="
+        -- "/api/deliveries?include=user,address.street&filter[from]=" -- FIXME
+        "/api/deliveries?include=user,address&filter[from]="
             ++ from
             ++ "&filter[to]="
             ++ to
