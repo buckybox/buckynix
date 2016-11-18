@@ -7,57 +7,109 @@
 
   <div class="row">
     <div class="col-xs">
-      <div class="form-group">
-        <%= label f, :name, class: "control-label" %>
-        <%= text_input f, :name, class: "form-control" %>
-        <%= error_tag f, :name %>
+      <div id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="card">
+          <div class="card-header" role="tab">
+            <h5 class="mb-0">
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapseDetails" aria-expanded="true" aria-controls="collapseDetails">
+                Change details
+              </a>
+            </h5>
+          </div>
+
+          <div id="collapseDetails" class="collapse in" role="tabpanel">
+            <div class="card-block">
+              <div class="form-group row">
+                <%= label f, :name, class: "control-label col-xs-2" %>
+                <%= text_input f, :name, class: "form-control col-xs" %>
+                <%= error_tag f, :name %>
+              </div>
+
+              <div class="form-group row">
+                <%= label f, :email, class: "control-label col-xs-2" %>
+                <%= text_input f, :email, class: "form-control col-xs" %>
+                <%= error_tag f, :email %>
+              </div>
+
+              <div class="form-group row">
+                <%= label f, :phone, class: "control-label col-xs-2" %>
+                <%= text_input f, :phone, class: "form-control col-xs" %>
+                <%= error_tag f, :phone %>
+              </div>
+
+              <%# <div class="form-group row"> %>
+              <%#   <%= label f, :tags, class: "control-label col-xs-2" %1> %>
+              <%#   <%= text_input f, :tags, class: "form-control col-xs" %1> %>
+              <%#   <%= error_tag f, :tags %1> %>
+              <%# </div> %>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" role="tab">
+            <h5 class="mb-0">
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapseAddress" aria-expanded="false" aria-controls="collapseAddress">
+                Change address
+              </a>
+            </h5>
+          </div>
+
+          <div id="collapseAddress" class="collapse" role="tabpanel">
+            <div class="card-block">
+              <%= inputs_for f, :address, fn ff -> %>
+                <div class="form-group row">
+                  <%= label ff, :street, class: "control-label col-xs-2" %>
+                  <%= text_input ff, :street, class: "form-control col-xs" %>
+                  <%= error_tag ff, :street %>
+                </div>
+
+                <div class="form-group row">
+                  <%= label ff, :state, class: "control-label col-xs-2" %>
+                  <%= text_input ff, :state, class: "form-control col-xs" %>
+                  <%= error_tag ff, :state %>
+                </div>
+
+                <div class="form-group row">
+                  <%= label ff, :zip, class: "control-label col-xs-2" %>
+                  <%= text_input ff, :zip, class: "form-control col-xs" %>
+                  <%= error_tag ff, :zip %>
+                </div>
+
+                <div class="form-group row">
+                  <%= label ff, :city, class: "control-label col-xs-2" %>
+                  <%= text_input ff, :city, class: "form-control col-xs" %>
+                  <%= error_tag ff, :city %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" role="tab">
+            <h5 class="mb-0">
+              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapsePassword" aria-expanded="false" aria-controls="collapsePassword">
+                Change password
+              </a>
+            </h5>
+          </div>
+          <div id="collapsePassword" class="collapse" role="tabpanel">
+            <div class="card-block">
+              <div class="form-group row">
+                <%= label f, :password, class: "control-label col-xs-2" %>
+                <%= text_input f, :password, class: "form-control col-xs" %>
+                <%= error_tag f, :password %>
+              </div>
+
+              <div class="form-group row">
+                <%= label f, :password_confirmation, class: "control-label col-xs-2" %>
+                <%= text_input f, :password_confirmation, class: "form-control col-xs" %>
+                <%= error_tag f, :password_confirmation %>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div class="form-group">
-        <%= label f, :email, class: "control-label" %>
-        <%= text_input f, :email, class: "form-control" %>
-        <%= error_tag f, :email %>
-      </div>
-
-      <div class="form-group">
-        <%= label f, :phone, class: "control-label" %>
-        <%= text_input f, :phone, class: "form-control" %>
-        <%= error_tag f, :phone %>
-      </div>
-
-      <%# <div class="form-group"> %>
-      <%#   <%= label f, :tags, class: "control-label" %1> %>
-      <%#   <%= text_input f, :tags, class: "form-control" %1> %>
-      <%#   <%= error_tag f, :tags %1> %>
-      <%# </div> %>
-    </div>
-
-    <div class="col-xs">
-      <%= inputs_for f, :address, fn ff -> %>
-        <div class="form-group">
-          <%= label ff, :street, class: "control-label" %>
-          <%= text_input ff, :street, class: "form-control" %>
-          <%= error_tag ff, :street %>
-        </div>
-
-        <div class="form-group">
-          <%= label ff, :state, class: "control-label" %>
-          <%= text_input ff, :state, class: "form-control" %>
-          <%= error_tag ff, :state %>
-        </div>
-
-        <div class="form-group">
-          <%= label ff, :zip, class: "control-label" %>
-          <%= text_input ff, :zip, class: "form-control" %>
-          <%= error_tag ff, :zip %>
-        </div>
-
-        <div class="form-group">
-          <%= label ff, :city, class: "control-label" %>
-          <%= text_input ff, :city, class: "form-control" %>
-          <%= error_tag ff, :city %>
-        </div>
-      <% end %>
     </div>
   </div>
 

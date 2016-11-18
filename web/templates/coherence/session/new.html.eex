@@ -32,13 +32,16 @@
         <%= coherence_links(@conn, :new_session) %>
       </div>
 
+      <div class="form-group">
+        Don't know your password? No worries.
+        <%# <%= link "Email me a link to sign in" %1> %>
+      </div>
     <% end %>
   </div>
 
   <div class="col-xs">
-    <h3>Sign Up</h3>
+    <h3>Sign In/Up</h3>
 
-    Short Sign Up form here (1st step)
-    a la GitHub.com
+    <div id="elm-login-app"></div>
   </div>
 </div>
