@@ -5,8 +5,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import List
 import Http exposing (Error)
-import Task
-import Json.Decode as Json exposing ((:=))
+import Json.Decode as Json
 import Lib.JsonApiExtra as JsonApiExtra
 import Components.User as User
 
@@ -30,8 +29,7 @@ type alias JsonModel =
 
 type Msg
     = Fetch
-    | FetchSucceed JsonModel
-    | FetchFail Http.Error
+    | FetchResult (Result Http.Error JsonModel)
     | Search String
 
 
@@ -41,7 +39,7 @@ update msg model =
         Fetch ->
             ( { model | fetching = True }, fetchUsers model )
 
-        FetchSucceed jsonModel ->
+        FetchResult (Ok jsonModel) ->
             let
                 userList =
                     jsonModel.data
@@ -63,7 +61,7 @@ update msg model =
                 , Cmd.none
                 )
 
-        FetchFail error ->
+        FetchResult (Err _) ->
             ( { model | fetching = False }, Cmd.none )
 
         Search filter ->
@@ -83,20 +81,20 @@ fetchUsers model =
                 ++ "&filter="
                 ++ model.filter
     in
-        Task.perform FetchFail FetchSucceed (JsonApiExtra.get decodeUserFetch url)
+        JsonApiExtra.get url FetchResult decodeUserFetch
 
 
 decodeUserFetch : Json.Decoder JsonModel
 decodeUserFetch =
-    Json.object3 JsonModel
-        ("data" := Json.list decodeUserData)
+    Json.map3 JsonModel
+        (Json.field "data" (Json.list decodeUserData))
         (Json.at [ "meta", "filter-count" ] Json.int)
         (Json.at [ "meta", "total-count" ] Json.int)
 
 
 decodeUserData : Json.Decoder User.Model
 decodeUserData =
-    Json.object4 User.Model
+    Json.map4 User.Model
         (Json.at [ "attributes", "url" ] Json.string)
         (Json.at [ "attributes", "name" ] Json.string)
         (Json.at [ "attributes", "balance" ] Json.string)
@@ -108,7 +106,10 @@ initialCount =
     25
 
 
+
 -- we'll fetch X times as many on each fetch (exponential)
+
+
 growthFactor : Int
 growthFactor =
     2

@@ -1,8 +1,6 @@
 module TransactionListApp exposing (main)
 
 import Html exposing (Html)
-import Html.App
-import Task
 import Lib.JsonApiExtra as JsonApiExtra
 import Components.TransactionListModel exposing (..)
 import Components.TransactionListView as TransactionListView
@@ -28,7 +26,7 @@ update msg model =
         Fetch ->
             ( { model | fetching = True }, fetchTransactions model.userId )
 
-        FetchSucceed document ->
+        FetchResult (Ok document) ->
             let
                 transactions =
                     TransactionListDecoder.decodeTransactions document
@@ -40,14 +38,13 @@ update msg model =
                 , Cmd.none
                 )
 
-        FetchFail error ->
+        FetchResult (Err error) ->
             ( { model | fetching = False }, Cmd.none )
 
 
 request : String -> Cmd Msg
 request url =
-    Task.perform FetchFail FetchSucceed <|
-        JsonApiExtra.get TransactionListDecoder.decodeDocument url
+    JsonApiExtra.get url FetchResult TransactionListDecoder.decodeDocument
 
 
 fetchTransactions : String -> Cmd Msg
@@ -68,9 +65,9 @@ subscriptions model =
     Sub.none
 
 
-main : Program Flags
+main : Program Flags Model Msg
 main =
-    Html.App.programWithFlags
+    Html.programWithFlags
         { init = init
         , view = view
         , update = update

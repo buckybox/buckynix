@@ -1,12 +1,9 @@
 port module DeliveryListApp exposing (main)
 
-import Html.App
 import Html exposing (Html, Attribute, div)
 import Mouse exposing (Position)
 import Dict exposing (Dict)
-import Task exposing (Task)
 import Time exposing (Time)
-import JsonApi exposing (Document)
 import Lib.JsonApiExtra as JsonApiExtra
 import Components.DeliveryListModel exposing (..)
 import Components.DeliveryListDecoder as DeliveryListDecoder
@@ -21,7 +18,7 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        FetchSucceedSelectedWindow document ->
+        FetchResultSelectedWindow (Ok document) ->
             let
                 selectedDeliveries =
                     DeliveryListDecoder.decodeDeliveries document
@@ -32,7 +29,12 @@ update msg model =
                 , Cmd.none
                 )
 
-        FetchSucceedVisibleWindow document ->
+        FetchResultSelectedWindow (Err _) ->
+            ( { model | fetching = False }
+            , Cmd.none
+            )
+
+        FetchResultVisibleWindow (Ok document) ->
             let
                 newDeliveries =
                     DeliveryListDecoder.decodeDeliveries document
@@ -44,7 +46,7 @@ update msg model =
                 , Cmd.none
                 )
 
-        FetchFail error ->
+        FetchResultVisibleWindow (Err _) ->
             ( { model | fetching = False }
             , Cmd.none
             )
@@ -149,24 +151,20 @@ getPosition { position, drag } =
             Position (current.x - start.x) (current.y - start.y)
 
 
-request : (Document -> Msg) -> String -> Cmd Msg
-request succeedMsg url =
-    Task.perform FetchFail succeedMsg <|
-        JsonApiExtra.get DeliveryListDecoder.decodeDocument url
-
-
 fetchSelectedWindow : Window -> Cmd Msg
 fetchSelectedWindow window =
     let
         ( from, to ) =
             toStringWindow window
-    in
+
         -- "/api/deliveries?include=user,address.street&filter[from]=" -- FIXME
-        "/api/deliveries?include=user,address&filter[from]="
-            ++ from
-            ++ "&filter[to]="
-            ++ to
-            |> request FetchSucceedSelectedWindow
+        url =
+            "/api/deliveries?include=user,address&filter[from]="
+                ++ from
+                ++ "&filter[to]="
+                ++ to
+    in
+        JsonApiExtra.get url FetchResultSelectedWindow DeliveryListDecoder.decodeDocument
 
 
 fetchVisibleWindow : Window -> Cmd Msg
@@ -174,12 +172,14 @@ fetchVisibleWindow window =
     let
         ( from, to ) =
             toStringWindow window
+
+        url =
+            "/api/deliveries?filter[from]="
+                ++ from
+                ++ "&filter[to]="
+                ++ to
     in
-        "/api/deliveries?filter[from]="
-            ++ from
-            ++ "&filter[to]="
-            ++ to
-            |> request FetchSucceedVisibleWindow
+        JsonApiExtra.get url FetchResultVisibleWindow DeliveryListDecoder.decodeDocument
 
 
 view : Model -> Html Msg
@@ -206,9 +206,9 @@ subscriptions model =
 port jsEvents : (List String -> msg) -> Sub msg
 
 
-main : Program Never
+main : Program Never Model Msg
 main =
-    Html.App.program
+    Html.program
         { init = init
         , view = view
         , update = update

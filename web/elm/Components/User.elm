@@ -35,7 +35,7 @@ badge model =
 view : Model -> Html a
 view model =
     tr []
-        [ td [ class "align-middle" ] [ input [ type' "checkbox" ] [] ]
+        [ td [ class "align-middle" ] [ input [ type_ "checkbox" ] [] ]
         , td [] [ badge model ]
         , td []
             (List.map

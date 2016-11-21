@@ -68,9 +68,9 @@ dayColor day =
                     ( Color.green, Color.darkGreen )
     in
         if DateExtra.isWeekend day.date then
-            snd colorTuple
+            Tuple.second colorTuple
         else
-            fst colorTuple
+            Tuple.first colorTuple
 
 
 generateCalendar : List Delivery.Model -> Window -> Form
@@ -116,17 +116,17 @@ buildEmptyDays : Window -> Dict String Day
 buildEmptyDays { from, to } =
     let
         duration =
-            DateExtra.diffDays from to
+            DateExtra.diffDays from to |> ceiling
 
         emptyDays =
             List.map
                 (\offset ->
-                    { date = Date.fromTime (from + offset * (86400 * Time.second))
+                    { date = Date.fromTime (from + (toFloat offset) * (86400 * Time.second))
                     , state = Open
                     , deliveryCount = 0
                     }
                 )
-                [0..duration]
+                (List.range 0 duration)
     in
         List.foldr
             (\day -> \dict -> Dict.insert (DateExtra.toISOString day.date) day dict)
@@ -138,7 +138,7 @@ buildCalendar : List Day -> Form
 buildCalendar days =
     let
         xPositions =
-            List.map (\x -> toFloat (x) * barWidthWithMargin) [1..(List.length days)]
+            List.map (\x -> toFloat (x) * barWidthWithMargin) (List.range 1 (List.length days))
 
         maxCount =
             List.map (\day -> day.deliveryCount) days

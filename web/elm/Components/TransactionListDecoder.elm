@@ -1,6 +1,6 @@
 module Components.TransactionListDecoder exposing (decodeDocument, decodeTransactions)
 
-import Json.Decode as Json exposing ((:=))
+import Json.Decode as Json
 import JsonApi.Decode
 import JsonApi.Documents
 import JsonApi.Resources
@@ -35,9 +35,9 @@ decodeTransactionAttributes resource =
 
 transactionDecoder : Json.Decoder Transaction.Model
 transactionDecoder =
-    Json.object5 Transaction.Model
-        ("inserted-at" := Json.string)
-        ("value-date" := Json.string)
-        ("description" := Json.string)
-        ("amount" := Json.string)
-        ("balance" := Json.string)
+    Json.map5 Transaction.Model
+        (Json.field "inserted-at" Json.string)
+        (Json.field "value-date" Json.string)
+        (Json.field "description" Json.string)
+        (Json.field "amount" Json.string)
+        (Json.field "balance" Json.string)

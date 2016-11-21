@@ -1,7 +1,7 @@
 module Components.DeliveryListDecoder exposing (decodeDocument, decodeDeliveries)
 
 import Dict exposing (Dict)
-import Json.Decode as Json exposing ((:=))
+import Json.Decode as Json
 import JsonApi.Decode
 import JsonApi.Documents
 import JsonApi.Resources
@@ -47,10 +47,10 @@ decodeDeliveriesAttributes resource =
 
 deliveryDecoder : Json.Decoder Delivery.Model
 deliveryDecoder =
-    Json.object5 Delivery.Model
-        ("id" := Json.string)
-        ("date" := Json.string)
-        ("address" := Json.string)
+    Json.map5 Delivery.Model
+        (Json.field "id" Json.string)
+        (Json.field "date" Json.string)
+        (Json.field "address" Json.string)
         (Json.succeed "PRODUCT NAME")
         -- FIXME
         (Json.succeed User.emptyModel)
@@ -79,8 +79,8 @@ decodeUserAttributes user =
 
 userDecoder : Json.Decoder User.Model
 userDecoder =
-    Json.object4 User.Model
+    Json.map4 User.Model
         (Json.succeed "URL")
-        ("name" := Json.string)
+        (Json.field "name" Json.string)
         (Json.succeed "")
         (Json.succeed [])

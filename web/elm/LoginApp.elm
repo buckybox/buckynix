@@ -3,11 +3,9 @@ module LoginApp exposing (main)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Html.App
 import Http exposing (Error)
-import Json.Decode exposing ((:=))
+import Json.Decode
 import Json.Encode
-import Task
 import JsonApi.Decode
 import JsonApi.Documents
 import JsonApi.Resources
@@ -18,8 +16,7 @@ import Lib.JsonApiExtra as JsonApiExtra
 type Msg
     = Input Field String
     | SignIn
-    | SignInSucceed Document
-    | SignInFail Http.Error
+    | SignInResult (Result Http.Error Document)
 
 
 type Field
@@ -74,7 +71,7 @@ update msg model =
         SignIn ->
             ( { model | loading = True }, signIn model.credentials )
 
-        SignInSucceed document ->
+        SignInResult (Ok document) ->
             let
                 cookie =
                     decodeSession document
@@ -86,32 +83,33 @@ update msg model =
                 , Cmd.none
                 )
 
-        SignInFail error ->
+        SignInResult (Err _) ->
             ( { model | loading = False }, Cmd.none )
 
 
-request : String -> String -> Cmd Msg
+request : Json.Encode.Value -> String -> Cmd Msg
 request body url =
-    Task.perform SignInFail SignInSucceed <|
-        JsonApiExtra.post decodeDocument url body
+    JsonApiExtra.post url body SignInResult decodeDocument
 
 
 signIn : Credentials -> Cmd Msg
 signIn credentials =
     let
-        object =
+        attributes =
             Json.Encode.object
                 [ ( "email", Json.Encode.string credentials.email )
                 , ( "password", Json.Encode.string credentials.password )
                 ]
 
-        json =
-            Json.Encode.encode 0 object
-
         body =
-            """{"data":{"type":"sessions","attributes":"""
-                ++ json
-                ++ "}}"
+            Json.Encode.object
+                [ ( "data"
+                  , Json.Encode.object
+                        [ ( "type", Json.Encode.string "sessions" )
+                        , ( "attributes", attributes )
+                        ]
+                  )
+                ]
     in
         "/api/sessions" |> request body
 
@@ -133,7 +131,7 @@ decodeSession document =
 
 decodeSesionAttributes : Resource -> String
 decodeSesionAttributes session =
-    JsonApi.Resources.attributes ("cookie" := Json.Decode.string) session
+    JsonApi.Resources.attributes (Json.Decode.field "cookie" Json.Decode.string) session
         |> Result.toMaybe
         |> Maybe.withDefault ""
 
@@ -153,7 +151,7 @@ emailInput =
         [ onInput (Input Email)
         , name "email"
         , placeholder "Email"
-        , type' "email"
+        , type_ "email"
         , class "form-control"
         , required True
         ]
@@ -173,7 +171,7 @@ passwordInput visible =
             [ onInput (Input Password)
             , name "password"
             , placeholder "Password"
-            , type' "password"
+            , type_ "password"
             , class ("form-control " ++ hiddenClass)
             , required True
             ]
@@ -183,7 +181,7 @@ passwordInput visible =
 actionButtons : List (Html Msg)
 actionButtons =
     [ input
-        [ type' "submit"
+        [ type_ "submit"
         , value "Submit"
         , class "btn btn-primary"
         ]
@@ -197,9 +195,9 @@ subscriptions model =
     Sub.none
 
 
-main : Program Never
+main : Program Never Model Msg
 main =
-    Html.App.program
+    Html.program
         { init = init
         , view = view
         , update = update

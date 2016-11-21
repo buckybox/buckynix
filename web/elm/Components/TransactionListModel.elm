@@ -24,5 +24,4 @@ initialModel userId =
 
 type Msg
     = Fetch
-    | FetchSucceed Document
-    | FetchFail Http.Error
+    | FetchResult (Result Http.Error Document)

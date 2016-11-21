@@ -15,9 +15,8 @@ import Components.Delivery as Delivery
 
 type Msg
     = JsMsg (List String)
-    | FetchSucceedSelectedWindow Document
-    | FetchSucceedVisibleWindow Document
-    | FetchFail Http.Error
+    | FetchResultSelectedWindow (Result Http.Error Document)
+    | FetchResultVisibleWindow (Result Http.Error Document)
     | DragStartSelectedWindowFrom Position
     | DragStartSelectedWindowTo Position
     | DragAt Position

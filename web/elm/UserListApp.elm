@@ -1,7 +1,6 @@
 port module UserListApp exposing (main)
 
 import Html exposing (Html, div)
-import Html.App
 import Components.UserList as UserList
 
 
@@ -49,7 +48,7 @@ update msg model =
 
 userListView : Model -> Html Msg
 userListView model =
-    Html.App.map UserListMsg (UserList.view model.userListModel)
+    Html.map UserListMsg (UserList.view model.userListModel)
 
 
 view : Model -> Html Msg
@@ -69,9 +68,9 @@ subscriptions model =
 port jsEvents : (List String -> msg) -> Sub msg
 
 
-main : Program Never
+main : Program Never Model Msg
 main =
-    Html.App.program
+    Html.program
         { init = init
         , view = view
         , update = update
