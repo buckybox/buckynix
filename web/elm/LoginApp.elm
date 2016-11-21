@@ -140,16 +140,10 @@ decodeSesionAttributes session =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ emailInput
-        , passwordInput
-        , input
-            [ onClick SignIn
-            , type' "submit"
-            , value "Submit"
-            , class "btn btn-primary"
-            ]
-            []
+    Html.form [ onSubmit SignIn ]
+        [ div [ class "form-group" ] [ emailInput ]
+        , div [ class "form-group" ] [ passwordInput False ]
+        , div [ class "form-group text-xs-center" ] actionButtons
         ]
 
 
@@ -160,23 +154,42 @@ emailInput =
         , name "email"
         , placeholder "Email"
         , type' "email"
-        , class "form-control mb-3"
+        , class "form-control"
         , required True
         ]
         []
 
 
-passwordInput : Html Msg
-passwordInput =
-    input
-        [ onInput (Input Password)
-        , name "password"
-        , placeholder "Password"
-        , type' "password"
-        , class "form-control mb-3"
-        , required True
+passwordInput : Bool -> Html Msg
+passwordInput visible =
+    let
+        hiddenClass =
+            if visible then
+                ""
+            else
+                "hidden-xs-up"
+    in
+        input
+            [ onInput (Input Password)
+            , name "password"
+            , placeholder "Password"
+            , type' "password"
+            , class ("form-control " ++ hiddenClass)
+            , required True
+            ]
+            []
+
+
+actionButtons : List (Html Msg)
+actionButtons =
+    [ input
+        [ type' "submit"
+        , value "Submit"
+        , class "btn btn-primary"
         ]
         []
+    , a [ class "btn btn-secondary ml-3", href "#" ] [ text "Don't know your password?" ]
+    ]
 
 
 subscriptions : Model -> Sub Msg

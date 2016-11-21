@@ -44,6 +44,7 @@ defmodule Buckynix.Mixfile do
      {:cowboy, "~> 1.0"},
      {:timex, "~> 3.1"},
      {:coherence, github: "infertux/coherence"},
+     {:comeonin, "~> 2.6"},
      {:ja_serializer, github: "AgilionApps/ja_serializer"},
      {:money, "~> 1.2"},
      {:ex_machina, ">= 0.0.0", only: [:dev, :test]},

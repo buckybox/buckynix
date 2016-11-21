@@ -17,3 +17,6 @@ config :buckynix, Buckynix.Repo,
   database: "buckynix_test",
   hostname: System.get_env("POSTGRES_HOST") || "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+# Speed up test suite
+config :comeonin, :bcrypt_log_rounds, 4
