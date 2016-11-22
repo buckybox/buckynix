@@ -1,4 +1,4 @@
-defmodule Buckynix.TransactionController do
+defmodule Buckynix.Api.TransactionController do
   use Buckynix.Web, :controller
 
   alias Buckynix.Transaction

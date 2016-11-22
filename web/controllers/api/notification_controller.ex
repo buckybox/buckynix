@@ -1,4 +1,4 @@
-defmodule Buckynix.NotificationController do
+defmodule Buckynix.Api.NotificationController do
   use Buckynix.Web, :controller
 
   alias Buckynix.Notification

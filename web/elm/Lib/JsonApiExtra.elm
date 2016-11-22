@@ -26,9 +26,15 @@ get url result decoder =
 
 post : String -> Json.Encode.Value -> (Result Http.Error a -> msg) -> Json.Decode.Decoder a -> Cmd msg
 post url body result decoder =
-    Http.send result <|
-        Http.request <|
-            makeRequest "POST" url (Http.jsonBody body) decoder
+    let
+        stringBody =
+            body
+                |> Json.Encode.encode 0
+                |> Http.stringBody "application/vnd.api+json"
+    in
+        Http.send result <|
+            Http.request <|
+                makeRequest "POST" url stringBody decoder
 
 
 makeRequest : String -> String -> Http.Body -> Json.Decode.Decoder a -> RequestParams a
@@ -37,14 +43,7 @@ makeRequest method url body decoder =
     , url = url
     , body = body
     , expect = Http.expectJson decoder
-    , headers = headers
+    , headers = [ Http.header "Accept" "application/vnd.api+json" ]
     , timeout = Nothing
     , withCredentials = True
     }
-
-
-headers : List Http.Header
-headers =
-    [ Http.header "Accept" "application/vnd.api+json"
-    , Http.header "Content-Type" "application/vnd.api+json"
-    ]

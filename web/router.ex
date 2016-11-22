@@ -53,7 +53,7 @@ defmodule Buckynix.Router do
     resources "/organizations", OrganizationController
 
     resources "/users", UserController do
-      resources "/orders", OrderController
+      # resources "/orders", OrderController
     end
 
     resources "/deliveries", DeliveryController, only: [:index]
@@ -62,12 +62,13 @@ defmodule Buckynix.Router do
   scope "/api", Buckynix do
     pipe_through :api
 
-    resources "/sessions", SessionController, only: [:create]
-    resources "/notifications", NotificationController, except: [:new, :edit]
-    resources "/deliveries", Api.DeliveryController, only: [:index]
+    resources "/sessions", Api.SessionController, only: [:create]
+    resources "/notifications", Api.NotificationController, except: [:new, :edit]
 
-    resources "/users", UserController, only: [:index] do
-      resources "/transactions", TransactionController, only: [:index, :create]
+    resources "/users", Api.UserController, only: [:index] do
+      resources "/transactions", Api.TransactionController, only: [:index, :create]
     end
+
+    resources "/deliveries", Api.DeliveryController, only: [:index]
   end
 end

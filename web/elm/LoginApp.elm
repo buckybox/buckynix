@@ -139,15 +139,15 @@ decodeSesionAttributes session =
 view : Model -> Html Msg
 view model =
     Html.form [ onSubmit SignIn ]
-        [ div [ class "form-group" ] [ emailInput ]
-        , div [ class "form-group" ] [ passwordInput False ]
-        , div [ class "form-group text-xs-center" ] actionButtons
+        [ div [ class "form-group" ] emailInput
+        , div [ class "form-group text-xs-center" ] submitButton
         ]
 
 
-emailInput : Html Msg
+emailInput : List (Html Msg)
 emailInput =
-    input
+    [ label [] [ text "Please enter your email below" ]
+    , input
         [ onInput (Input Email)
         , name "email"
         , placeholder "Email"
@@ -156,37 +156,40 @@ emailInput =
         , required True
         ]
         []
+    ]
 
 
-passwordInput : Bool -> Html Msg
-passwordInput visible =
-    let
-        hiddenClass =
-            if visible then
-                ""
-            else
-                "hidden-xs-up"
-    in
-        input
-            [ onInput (Input Password)
-            , name "password"
-            , placeholder "Password"
-            , type_ "password"
-            , class ("form-control " ++ hiddenClass)
-            , required True
-            ]
-            []
+passwordInput : List (Html Msg)
+passwordInput =
+    [ label [] [ text "Please enter your password below" ]
+    , input
+        [ onInput (Input Password)
+        , name "password"
+        , placeholder "Password"
+        , type_ "password"
+        , class "form-control"
+        , required True
+        ]
+        []
+    ]
 
 
-actionButtons : List (Html Msg)
-actionButtons =
+submitButton : List (Html Msg)
+submitButton =
     [ input
         [ type_ "submit"
         , value "Submit"
         , class "btn btn-primary"
         ]
         []
-    , a [ class "btn btn-secondary ml-3", href "#" ] [ text "Don't know your password?" ]
+    ]
+
+
+noPasswordButton : List (Html Msg)
+noPasswordButton =
+    [ a
+        [ class "btn btn-secondary ml-3", href "#" ]
+        [ text "Don't know your password?" ]
     ]
 
 
