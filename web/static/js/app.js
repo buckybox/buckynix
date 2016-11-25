@@ -21,9 +21,13 @@ import "phoenix_html"
 import utils from "./utils"
 
 // Set up our Elm App(s)
-const elmLoginApp = document.querySelector('#elm-login-app');
-if (elmLoginApp) {
-  Elm.LoginApp.embed(elmLoginApp);
+const elmLoginAppDiv = document.querySelector('#elm-login-app');
+if (elmLoginAppDiv) {
+  const elmLoginApp = Elm.LoginApp.embed(elmLoginAppDiv);
+
+  elmLoginApp.ports.reloadWindow.subscribe(function(dummy) {
+    window.location.reload();
+  });
 }
 
 const elmUserListAppDiv = document.querySelector('#elm-user-list-app');

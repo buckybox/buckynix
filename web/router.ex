@@ -24,6 +24,7 @@ defmodule Buckynix.Router do
 
   pipeline :api do
     plug :accepts, ["json-api"]
+    plug :fetch_session
     plug JaSerializer.ContentTypeNegotiation
     plug JaSerializer.Deserializer
   end

@@ -1,4 +1,4 @@
-module LoginApp exposing (main)
+port module LoginApp exposing (main)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -13,34 +13,48 @@ import JsonApi exposing (Document, Resource)
 import Lib.JsonApiExtra as JsonApiExtra
 
 
+port reloadWindow : String -> Cmd msg
+
+
 type Msg
-    = Input Field String
-    | SignIn
-    | SignInResult (Result Http.Error Document)
+    = Input FieldId String
+    | LogIn
+    | LogInResult (Result Http.Error Document)
 
 
-type Field
+type FieldId
     = Email
     | Password
 
 
 type alias Model =
-    { credentials : Credentials
-    , cookie : String
+    { email : Field
+    , password : Field
+    , userId : String
     , loading : Bool
     }
 
 
-type alias Credentials =
-    { email : String
-    , password : String
+type alias Field =
+    { value : String
+    , visible : Bool
+    , error : Maybe String
+    }
+
+
+initialField : Field
+initialField =
+    { value = ""
+    , visible = False
+    , error = Nothing
     }
 
 
 initialModel : Model
 initialModel =
-    { credentials = { email = "", password = "" }
-    , cookie = ""
+    { email = initialField
+    , password = initialField
+    , userId = ""
     , loading = False
     }
 
@@ -53,59 +67,83 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Input name value ->
+        Input id value ->
             let
-                oldCredentials =
-                    model.credentials
-
-                newCredentials =
-                    case name of
+                fieldVisibility id =
+                    case id of
                         Email ->
-                            { oldCredentials | email = value }
+                            model.email.visible
 
                         Password ->
-                            { oldCredentials | password = value }
+                            model.password.visible
+
+                newField id =
+                    { value = value, error = Nothing, visible = fieldVisibility id }
+
+                newModel =
+                    case id of
+                        Email ->
+                            { model | email = newField Email }
+
+                        Password ->
+                            { model | password = newField Password }
             in
-                ( { model | credentials = newCredentials }, Cmd.none )
+                ( newModel, Cmd.none )
 
-        SignIn ->
-            ( { model | loading = True }, signIn model.credentials )
+        LogIn ->
+            ( { model | loading = True }, signIn model.email.value model.password.value )
 
-        SignInResult (Ok document) ->
+        LogInResult (Ok document) ->
             let
-                cookie =
+                userId =
                     decodeSession document
+
+                showPasswordField =
+                    not (String.isEmpty model.email.value) && String.isEmpty userId
+
+                passwordField =
+                    model.password
+
+                newPasswordField =
+                    { passwordField | visible = showPasswordField }
+
+                reload =
+                    if String.isEmpty userId then
+                        Cmd.none
+                    else
+                        reloadWindow ""
             in
                 ( { model
-                    | cookie = cookie
-                    , loading = False
+                    | userId = userId
+                    , password = newPasswordField
+                    , loading = (reload /= Cmd.none)
                   }
-                , Cmd.none
+                , reload
                 )
 
-        SignInResult (Err _) ->
+        LogInResult (Err _) ->
             ( { model | loading = False }, Cmd.none )
 
 
 request : Json.Encode.Value -> String -> Cmd Msg
 request body url =
-    JsonApiExtra.post url body SignInResult decodeDocument
+    JsonApiExtra.post url body LogInResult decodeDocument
 
 
-signIn : Credentials -> Cmd Msg
-signIn credentials =
+signIn : String -> String -> Cmd Msg
+signIn email password =
     let
         attributes =
             Json.Encode.object
-                [ ( "email", Json.Encode.string credentials.email )
-                , ( "password", Json.Encode.string credentials.password )
+                [ ( "email", Json.Encode.string email )
+                , ( "password", Json.Encode.string password )
                 ]
 
         body =
             Json.Encode.object
                 [ ( "data"
                   , Json.Encode.object
-                        [ ( "type", Json.Encode.string "sessions" )
+                        [ ( "type", Json.Encode.string "session" )
                         , ( "attributes", attributes )
                         ]
                   )
@@ -131,55 +169,92 @@ decodeSession document =
 
 decodeSesionAttributes : Resource -> String
 decodeSesionAttributes session =
-    JsonApi.Resources.attributes (Json.Decode.field "cookie" Json.Decode.string) session
+    JsonApi.Resources.attributes (Json.Decode.field "user-id" Json.Decode.string) session
         |> Result.toMaybe
         |> Maybe.withDefault ""
 
 
 view : Model -> Html Msg
 view model =
-    Html.form [ onSubmit SignIn ]
-        [ div [ class "form-group" ] emailInput
-        , div [ class "form-group text-xs-center" ] submitButton
-        ]
+    Html.form [ onSubmit LogIn ] <|
+        List.concat
+            [ emailInput
+            , passwordInput model.password
+            , buttons model
+            ]
 
 
 emailInput : List (Html Msg)
 emailInput =
-    [ label [] [ text "Please enter your email below" ]
-    , input
-        [ onInput (Input Email)
-        , name "email"
-        , placeholder "Email"
-        , type_ "email"
-        , class "form-control"
-        , required True
+    [ div [ class "form-group" ]
+        [ label [] [ text "Please enter your email below" ]
+        , input
+            [ onInput (Input Email)
+            , name "email"
+            , placeholder "Email"
+            , type_ "email"
+            , class "form-control"
+            , required True
+            ]
+            []
         ]
-        []
     ]
 
 
-passwordInput : List (Html Msg)
-passwordInput =
-    [ label [] [ text "Please enter your password below" ]
-    , input
-        [ onInput (Input Password)
-        , name "password"
-        , placeholder "Password"
-        , type_ "password"
-        , class "form-control"
-        , required True
-        ]
-        []
+passwordInput : Field -> List (Html Msg)
+passwordInput field =
+    let
+        labelAndInput =
+            showIf field.visible
+                [ label [] [ text "Please enter your password below" ]
+                , input
+                    [ onInput (Input Password)
+                    , name "password"
+                    , placeholder "Password"
+                    , type_ "password"
+                    , class "form-control"
+                    , required True
+                    ]
+                    []
+                ]
+
+        error =
+            case field.error of
+                Just error ->
+                    [ span [ class "help-block" ] [ text error ] ]
+
+                Nothing ->
+                    []
+    in
+        [ div [ class "form-group" ] <| List.concat [ labelAndInput, error ] ]
+
+
+buttons : Model -> List (Html Msg)
+buttons model =
+    [ div [ class "form-group text-xs-center" ] <|
+        List.concat
+            [ submitButton model.loading
+            , showIf model.password.visible noPasswordButton
+            ]
     ]
 
 
-submitButton : List (Html Msg)
-submitButton =
+submitButton : Bool -> List (Html Msg)
+submitButton isDisabled =
     [ input
         [ type_ "submit"
-        , value "Submit"
-        , class "btn btn-primary"
+        , class <|
+            "btn btn-primary"
+                ++ if isDisabled then
+                    " fa-spin"
+                   else
+                    ""
+        , disabled isDisabled
+        , value <|
+            if isDisabled then
+                "..."
+            else
+                "Submit"
         ]
         []
     ]
@@ -191,6 +266,14 @@ noPasswordButton =
         [ class "btn btn-secondary ml-3", href "#" ]
         [ text "Don't know your password?" ]
     ]
+
+
+showIf : Bool -> List (Html Msg) -> List (Html Msg)
+showIf condition html =
+    if condition then
+        html
+    else
+        []
 
 
 subscriptions : Model -> Sub Msg
