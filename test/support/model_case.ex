@@ -22,6 +22,8 @@ defmodule Buckynix.ModelCase do
       import Ecto.Changeset
       import Ecto.Query
       import Buckynix.ModelCase
+
+      import Buckynix.Factory
     end
   end
 

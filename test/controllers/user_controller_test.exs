@@ -2,25 +2,18 @@ defmodule Buckynix.UserControllerTest do
   use Buckynix.ConnCase
 
   alias Buckynix.User
-  @valid_attrs %{
-    email: "joe@test.local",
-    name: "Joe",
-    password: "rubbish",
-    password_confirmation: "rubbish"
-  }
+
+  @valid_attrs params_for(:user)
   @invalid_attrs %{name: ""}
 
-  @account_attrs %{currency: "EUR"}
-
   setup context do
+    current_user = insert(:user, account: build(:account))
+    conn = assign context[:conn], :current_user, current_user
+
     user = case context[:with_user] do
-      true -> User.changeset(%User{}, @valid_attrs)
-              |> put_assoc(:account, @account_attrs)
-              |> Repo.insert!
+      true -> insert(:user, account: build(:account))
       _ -> nil
     end
-
-    conn = assign context[:conn], :current_user, user
 
     [conn: conn, user: user]
   end
@@ -38,7 +31,7 @@ defmodule Buckynix.UserControllerTest do
   test "creates resource and redirects when data is valid", %{conn: conn} do
     conn = post conn, user_path(conn, :create), user: @valid_attrs
     assert redirected_to(conn) == user_path(conn, :index)
-    assert Repo.get_by(User, @valid_attrs)
+    assert Repo.get_by(User, email: @valid_attrs.email)
   end
 
   test "does not create resource and renders errors when data is invalid", %{conn: conn} do
@@ -68,7 +61,7 @@ defmodule Buckynix.UserControllerTest do
   test "updates chosen resource and redirects when data is valid", %{conn: conn, user: user} do
     conn = put conn, user_path(conn, :update, user), user: @valid_attrs
     assert redirected_to(conn) == user_path(conn, :show, user)
-    assert Repo.get_by(User, @valid_attrs)
+    assert Repo.get_by(User, email: @valid_attrs.email)
   end
 
   @tag :with_user
@@ -77,10 +70,12 @@ defmodule Buckynix.UserControllerTest do
     assert html_response(conn, 200) =~ "Edit user"
   end
 
+  @tag :skip
   @tag :with_user
-  test "deletes chosen resource", %{conn: conn, user: user} do
+  test "archives chosen resource", %{conn: conn, user: user} do
     conn = delete conn, user_path(conn, :delete, user)
     assert redirected_to(conn) == user_path(conn, :index)
-    refute Repo.get(User, user.id)
+    user = Repo.get!(User, user.id)
+    refute is_nil(user.archived_at)
   end
 end

@@ -17,7 +17,7 @@
             </h5>
           </div>
 
-          <div id="collapseDetails" class="collapse in" role="tabpanel">
+          <div id="collapseDetails" class="collapse active" role="tabpanel">
             <div class="card-block">
               <div class="form-group row">
                 <%= label f, :name, class: "control-label col-xs-2" %>

@@ -27,6 +27,8 @@ defmodule Buckynix.ConnCase do
 
       import Buckynix.Router.Helpers
 
+      import Buckynix.Factory
+
       # The default endpoint for testing
       @endpoint Buckynix.Endpoint
     end

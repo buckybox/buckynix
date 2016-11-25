@@ -2,7 +2,10 @@ defmodule Buckynix.Factory do
   use ExMachina.Ecto, repo: Buckynix.Repo
 
   def organization_factory do
-    %Buckynix.Organization{}
+    %Buckynix.Organization{
+      name: Faker.Company.name,
+      address: build(:address)
+    }
   end
 
   def user_factory do
@@ -10,6 +13,8 @@ defmodule Buckynix.Factory do
       name: Faker.Name.name,
       email: sequence(:email, &"user#{&1}@example.net"),
       password_hash: Comeonin.Bcrypt.hashpwsalt("rubbish"),
+      password: "rubbish",
+      password_confirmation: "rubbish",
       phone: Enum.random([nil, Faker.Phone.EnGb.number]),
       tags: Enum.take_random(~w(test baller elixir), Enum.random(0..3)),
       account: build(:account)
