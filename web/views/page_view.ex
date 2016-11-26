@@ -1,3 +1,3 @@
-defmodule Buckynix.PageView do
+defmodule Buckynix.HomeView do
   use Buckynix.Web, :view
 end

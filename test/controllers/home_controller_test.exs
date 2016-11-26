@@ -1,4 +1,4 @@
-defmodule Buckynix.PageControllerTest do
+defmodule Buckynix.HomeControllerTest do
   use Buckynix.ConnCase
 
   test "GET /", %{conn: conn} do

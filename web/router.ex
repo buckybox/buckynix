@@ -43,7 +43,7 @@ defmodule Buckynix.Router do
     pipe_through :browser
 
     # Add public routes below
-    get "/", PageController, :index
+    get "/", HomeController, :index
     get "/map", MapController, :index
   end
 

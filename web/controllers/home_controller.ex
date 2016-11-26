@@ -1,4 +1,4 @@
-defmodule Buckynix.PageController do
+defmodule Buckynix.HomeController do
   use Buckynix.Web, :controller
 
   def index(conn, _params) do
