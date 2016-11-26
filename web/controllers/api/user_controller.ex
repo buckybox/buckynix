@@ -20,7 +20,6 @@ defmodule Buckynix.Api.UserController do
     users =
       users
       |> Repo.all
-      |> Enum.map(fn(user) -> user_with_url_and_balance(conn, user) end)
 
     meta = %{
       "filter-count" => filter_count,
@@ -40,12 +39,5 @@ defmodule Buckynix.Api.UserController do
       where: ilike(u.name, ^"%#{filter}%")
 
     query |> User.with_tag(tag) |> User.non_archived
-  end
-
-  defp user_with_url_and_balance(conn, user) do # TODO: move to view?
-    %{user |
-      url: user_path(conn, :show, user),
-      balance: (Phoenix.HTML.safe_to_string Buckynix.Money.html(user.account.balance))
-     }
   end
 end

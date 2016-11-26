@@ -95,7 +95,7 @@ decodeUserFetch =
 decodeUserData : Json.Decoder User.Model
 decodeUserData =
     Json.map4 User.Model
-        (Json.at [ "attributes", "url" ] Json.string)
+        (Json.at [ "links", "self" ] Json.string)
         (Json.at [ "attributes", "name" ] Json.string)
         (Json.at [ "attributes", "balance" ] Json.string)
         (Json.at [ "attributes", "tags" ] (Json.list Json.string))
