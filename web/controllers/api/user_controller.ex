@@ -4,18 +4,23 @@ defmodule Buckynix.Api.UserController do
   alias Buckynix.User
 
   def index(conn, params) do
-    count = Map.get(params, "count", 0)
+    count = Map.get(params, "count")
     filter = Map.get(params, "filter", "")
 
     users = get_users(filter)
+
+    filter_count = Repo.aggregate(users, :count, :id)
+    total_count = Repo.aggregate(User, :count, :id)
+
+    users = case count do
+      nil -> users
+      count -> users |> limit(^count)
+    end
+
     users =
       users
-      |> limit(^count)
       |> Repo.all
       |> Enum.map(fn(user) -> user_with_url_and_balance(conn, user) end)
-
-    filter_count = Repo.aggregate(get_users(filter), :count, :id)
-    total_count = Repo.aggregate(User, :count, :id)
 
     meta = %{
       "filter-count" => filter_count,
@@ -30,9 +35,9 @@ defmodule Buckynix.Api.UserController do
     tag = List.last(Regex.run(tag_regex, filter) || [])
     filter = String.strip Regex.replace(tag_regex, filter, "") # remove tag from filter
 
-    query = from c in User,
+    query = from u in User,
       preload: [:account],
-      where: ilike(c.name, ^"%#{filter}%")
+      where: ilike(u.name, ^"%#{filter}%")
 
     query |> User.with_tag(tag) |> User.non_archived
   end
