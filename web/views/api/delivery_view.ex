@@ -27,9 +27,17 @@ defmodule Buckynix.Api.DeliveryView do
   end
 
   def address(struct, _conn) do
-    case struct.user.address do
-      nil -> "NO ADDRESS"
-      address -> address.street
+    IO.inspect struct.user
+
+    case struct.user do
+      Ecto.Association.NotLoaded -> "NO USER"
+      user ->
+        address = user.address
+
+        case address do
+        nil -> "NO ADDRESS"
+        address -> address.street
+      end
     end
   end
 end

@@ -44,6 +44,12 @@ defmodule Buckynix.Factory do
     }
   end
 
+  def delivery_factory do
+    %Buckynix.Delivery{
+      date: Ecto.DateTime.cast!(Timex.shift(Timex.now, days: Enum.random(-30..30)))
+    }
+  end
+
   def notification_factory do
     %Buckynix.Notification{
       body: "This is a test notification to #{Faker.Company.bs}"

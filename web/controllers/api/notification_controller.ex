@@ -15,7 +15,7 @@ defmodule Buckynix.Api.NotificationController do
       {:ok, notification} ->
         conn
         |> put_status(:created)
-        |> put_resp_header("location", notification_path(conn, :show, notification))
+        |> put_resp_header("location", api_notification_path(conn, :show, notification))
         |> render("show.json", notification: notification)
       {:error, changeset} ->
         conn

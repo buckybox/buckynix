@@ -8,7 +8,7 @@ defmodule Buckynix.Coherence.ViewHelpers do
   @seperator {:safe, "&nbsp; | &nbsp;"}
   @helpers Module.concat(Application.get_env(:coherence, :module), Router.Helpers)
 
-  @recover_link  "FORGOT YOUR PASSWORD?!!!!!!!!!!!!!!!" # FIXME: make this SUPER obvious for tech-illiterate users
+  @recover_link  "FORGOT YOUR PASSWORD?!!!!!!!!!!!!!!!" # TODO: make this SUPER obvious for tech-illiterate users
   @unlock_link   "Send an unlock email"
   @register_link "Need An Account?"
   @invite_link   "Invite Someone"

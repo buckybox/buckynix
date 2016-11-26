@@ -28,10 +28,8 @@ defmodule Buckynix.Api.DeliveryController do
   defp relationships(include) do
     String.split(include, ",")
       |> MapSet.new
-      |> MapSet.intersection(MapSet.new ["user"])
+      |> MapSet.intersection(MapSet.new ~w(user))
       |> Enum.map(&String.to_atom/1)
-
-    [user: :address] # FIXME
   end
 
   defp delivery_with_formatted_date(delivery) do

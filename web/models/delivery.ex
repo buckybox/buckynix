@@ -22,7 +22,7 @@ defmodule Buckynix.Delivery do
   end
 
   def update_status(changeset) do
-    # FIXME: or PGSQL TRIGGER?
+    # TODO: or PGSQL TRIGGER?
     if changeset.changes[:status] == :deliverd do
       changeset |> put_assoc(:address, changeset.data.user.address)
     else

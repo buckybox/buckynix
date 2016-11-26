@@ -10,9 +10,10 @@ defmodule Buckynix.UserControllerTest do
     current_user = insert(:user, account: build(:account))
     conn = assign context[:conn], :current_user, current_user
 
-    user = case context[:with_user] do
-      true -> insert(:user, account: build(:account))
-      _ -> nil
+    user = if context[:with_user] do
+      insert(:user, account: build(:account))
+    else
+      nil
     end
 
     [conn: conn, user: user]
@@ -20,7 +21,7 @@ defmodule Buckynix.UserControllerTest do
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, user_path(conn, :index)
-    assert html_response(conn, 200) =~ "users"
+    assert html_response(conn, 200) =~ "elm-user-list-app"
   end
 
   test "renders form for new resources", %{conn: conn} do

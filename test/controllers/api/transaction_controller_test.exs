@@ -1,4 +1,4 @@
-defmodule Buckynix.TransactionControllerTest do
+defmodule Buckynix.Api.TransactionControllerTest do
   use Buckynix.ConnCase
 
   import Buckynix.Factory
@@ -18,7 +18,7 @@ defmodule Buckynix.TransactionControllerTest do
   @tag :skip
   test "lists all entries on index", %{conn: conn} do
     transaction = insert(:transaction)
-    conn = get conn, user_transaction_path(conn, :index, 1)
+    conn = get conn, api_user_transaction_path(conn, :index, 1)
     response = json_response(conn, 200)
 
     data = List.first response["data"]
@@ -30,7 +30,7 @@ defmodule Buckynix.TransactionControllerTest do
 
   @tag :skip
   test "creates and renders resource when data is valid", %{conn: conn} do
-    conn = post conn, user_transaction_path(conn, :create, 1), %{
+    conn = post conn, api_user_transaction_path(conn, :create, 1), %{
       "meta" => %{},
       "data" => %{
         "type" => "transaction",
@@ -43,7 +43,7 @@ defmodule Buckynix.TransactionControllerTest do
   end
 
   test "does not create resource and renders errors when data is invalid", %{conn: conn} do
-    conn = post conn, user_transaction_path(conn, :create, 1), %{
+    conn = post conn, api_user_transaction_path(conn, :create, 1), %{
       "meta" => %{},
       "data" => %{
         "type" => "transaction",
