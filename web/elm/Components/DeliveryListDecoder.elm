@@ -52,7 +52,6 @@ deliveryDecoder =
         (Json.field "date" Json.string)
         (Json.field "address" Json.string)
         (Json.succeed "PRODUCT NAME")
-        -- FIXME
         (Json.succeed User.emptyModel)
 
 
@@ -64,6 +63,7 @@ decodeRelatedUser delivery =
 
         Ok user ->
             decodeUserAttributes user
+                |> decodeUserLinks user
 
 
 decodeUserAttributes : Resource -> User.Model
@@ -77,10 +77,27 @@ decodeUserAttributes user =
             user
 
 
+decodeUserLinks : Resource -> User.Model -> User.Model
+decodeUserLinks resource model =
+    let
+        links =
+            JsonApi.Resources.links resource
+
+        url =
+            case links.self of
+                Nothing ->
+                    Debug.crash "expecting user self link"
+
+                Just link ->
+                    link
+    in
+        { model | url = url }
+
+
 userDecoder : Json.Decoder User.Model
 userDecoder =
     Json.map4 User.Model
-        (Json.succeed "URL")
+        (Json.succeed "")
         (Json.field "name" Json.string)
         (Json.succeed "")
         (Json.succeed [])

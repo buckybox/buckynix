@@ -64,8 +64,10 @@ for user <- users do
   dates
   |> Enum.filter(fn(date) -> rem(Timex.day(date), 7) != 0 end)
   |> Enum.filter(fn(_) -> Enum.random([true, false]) end)
-  |> Enum.map(&Buckynix.Delivery.changeset(%Buckynix.Delivery{}, %{date: &1}))
-  |> Enum.map(&Ecto.Changeset.put_assoc(&1, :user, user))
-  |> Enum.map(&Ecto.Changeset.put_embed(&1, :address, user.address)) # FIXME nil
-  |> Enum.map(&Repo.insert!(&1))
+  |> Enum.map(fn(date) ->
+    Buckynix.Delivery.changeset(%Buckynix.Delivery{}, %{date: date})
+    |> Ecto.Changeset.put_assoc(:user, user)
+    |> Ecto.Changeset.put_embed(:address, user.address) # FIXME nil
+    |> Repo.insert!
+  end)
 end

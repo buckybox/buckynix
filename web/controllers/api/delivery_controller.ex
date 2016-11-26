@@ -5,6 +5,8 @@ defmodule Buckynix.Api.DeliveryController do
 
   def index(conn, params) do
     try do
+      current_organization = Map.fetch!(conn.assigns, :current_organization)
+
       filter = Map.get(params, "filter", %{})
       from = Map.get(filter, "from") |> Ecto.Date.cast!
       to = Map.get(filter, "to") |> Ecto.Date.cast!
@@ -12,12 +14,15 @@ defmodule Buckynix.Api.DeliveryController do
       include = Map.get(params, "include", "")
       relationships = relationships(include)
 
-      deliveries = Repo.all(
-        from d in Delivery,
+      user_ids = get_user_ids(current_organization)
+
+      deliveries = from(
+        d in Delivery,
         preload: ^relationships,
+        where: d.user_id in ^user_ids,
         where: fragment("date::date >= ? AND date::date <= ?", ^from, ^to) # XXX: strip the time for now
       )
-      |> Enum.map(fn(delivery) -> delivery_with_formatted_date(delivery) end)
+      |> Repo.all
 
       render(conn, data: deliveries)
     rescue
@@ -32,9 +37,15 @@ defmodule Buckynix.Api.DeliveryController do
       |> Enum.map(&String.to_atom/1)
   end
 
-  defp delivery_with_formatted_date(delivery) do
-    %{delivery |
-      date: Ecto.DateTime.to_date(delivery.date)
-     }
+  defp get_user_ids(organization) do
+    query = from u in Buckynix.User,
+      join: ou in Buckynix.OrganizationUser, on: ou.user_id == u.id,
+      where: ou.organization_id == ^organization.id,
+      select: {u.id}
+
+    query
+      |> Buckynix.User.non_archived
+      |> Repo.all
+      |> Enum.map(fn(tuple) -> Tuple.to_list(tuple) |> List.first end)
   end
 end
