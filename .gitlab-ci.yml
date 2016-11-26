@@ -28,5 +28,4 @@ credo:
 
 exunit:
   script:
-  - mix ecto.reset
   - mix test
