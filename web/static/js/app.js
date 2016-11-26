@@ -56,7 +56,8 @@ if (elmUserListAppDiv) {
 
 const elmTransactionListApp = document.querySelector('#elm-transaction-list-app');
 if (elmTransactionListApp) {
-  Elm.TransactionListApp.embed(elmTransactionListApp, {userId: "123"});
+  const userId = $(elmTransactionListApp).data('user-id')
+  Elm.TransactionListApp.embed(elmTransactionListApp, {userId: userId})
 }
 
 const elmDeliveryListAppDiv = document.querySelector('#elm-delivery-list-app');

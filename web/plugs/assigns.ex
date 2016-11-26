@@ -1,4 +1,4 @@
-defmodule Buckynix.Plugs.Organization do
+defmodule Buckynix.Plugs.Assigns do
   import Plug.Conn
 
   def init(default), do: default
@@ -7,7 +7,8 @@ defmodule Buckynix.Plugs.Organization do
     current_organization = if conn.request_path =~ ~r/\A(\/|\/organizations)\z/ do # FIXME
       nil
     else
-      get_session(conn, :current_organization)
+      Map.get(conn.assigns, :current_organization, # use existing assign for tests
+              get_session(conn, :current_organization))
     end
 
     current_user = Coherence.current_user(conn)

@@ -6,11 +6,16 @@ defmodule Buckynix.Api.TransactionController do
 
   plug :scrub_params, "data" when action in [:create]
 
-  def index(conn, _params) do
-    transactions = Transaction
-      |> limit(5)
+  def index(conn, %{"user_id" => user_id}) do
+    current_organization = Map.fetch!(conn.assigns, :current_organization)
+    users = assoc(current_organization, :users)
+    user = Repo.get!(users, user_id)
+    account = assoc(user, :account) |> Repo.one!
+    transactions =
+      assoc(account, :transactions)
+      |> order_by([desc: :value_date])
       |> Repo.all
-      |> Enum.map(fn(transaction) -> transaction_with_balance(conn, transaction) end)
+      |> compute_balances(account.balance)
 
     render(conn, "index.json-api", data: transactions)
   end
@@ -30,10 +35,20 @@ defmodule Buckynix.Api.TransactionController do
     end
   end
 
-  defp transaction_with_balance(conn, transaction) do
-    %{transaction |
-      amount: (Phoenix.HTML.safe_to_string Buckynix.Money.html(transaction.amount)),
-      balance: "$0.00"
-     }
+  defp compute_balances(transactions, current_balance) do
+    transactions |> Enum.map(
+      fn(transaction) ->
+        %{transaction | balance: Enum.reduce_while(
+          transactions, current_balance,
+          fn(other_transaction, acc) ->
+            if other_transaction.value_date <= transaction.value_date do
+              {:halt, acc}
+            else
+              {:cont, Money.subtract(acc, other_transaction.amount)}
+            end
+          end
+        )}
+      end
+    )
   end
 end

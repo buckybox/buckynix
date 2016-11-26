@@ -3,52 +3,60 @@ defmodule Buckynix.Api.TransactionControllerTest do
 
   import Buckynix.Factory
 
-  setup do
-    conn = build_conn()
-      |> put_req_header("accept", "application/vnd.api+json")
-      |> put_req_header("content-type", "application/vnd.api+json")
+  setup %{conn: conn, with_user: true} do
+    organization = insert(:organization)
+    user = insert(:user, account: build(:account))
+    user
+    |> Repo.preload(:organizations)
+    |> Ecto.Changeset.change
+    |> Ecto.Changeset.put_assoc(:organizations, [organization])
+    |> Repo.update!
 
-    {:ok, conn: conn}
+    conn =  assign(conn, :current_user, user)
+         |> assign(:current_organization, organization)
+
+    [conn: conn, user: user]
   end
 
-  defp relationships do
-    %{}
-  end
+  @tag :with_user
+  test "lists all user's transactions on index", %{conn: conn, user: user} do
+    account = user.account
+    transaction = insert(:transaction, account: account)
 
-  @tag :skip
-  test "lists all entries on index", %{conn: conn} do
-    transaction = insert(:transaction)
-    conn = get conn, api_user_transaction_path(conn, :index, 1)
+    conn = get conn, api_user_transaction_path(conn, :index, user.id)
     response = json_response(conn, 200)
 
-    data = List.first response["data"]
+    data = Map.fetch!(response, "data") |> List.last
     assert data["id"] == "#{transaction.id}"
     assert data["type"] == "transaction"
     assert data["attributes"]["description"] == transaction.description
-    assert data["attributes"]["value_date"] == transaction.value_date
+    assert data["attributes"]["value-date"] == Ecto.DateTime.to_iso8601 transaction.value_date
   end
 
   @tag :skip
-  test "creates and renders resource when data is valid", %{conn: conn} do
+  @tag :with_user
+  test "creates and renders resource when data is valid", %{conn: conn, user: user} do
     conn = post conn, api_user_transaction_path(conn, :create, 1), %{
       "meta" => %{},
       "data" => %{
         "type" => "transaction",
         "attributes" => params_for(:transaction),
-        "relationships" => relationships
+        "relationships" => %{}
       }
     }
 
     assert json_response(conn, 201)["data"]["id"]
   end
 
-  test "does not create resource and renders errors when data is invalid", %{conn: conn} do
+  @tag :skip
+  @tag :with_user
+  test "does not create resource and renders errors when data is invalid", %{conn: conn, user: user} do
     conn = post conn, api_user_transaction_path(conn, :create, 1), %{
       "meta" => %{},
       "data" => %{
         "type" => "transaction",
         "attributes" => %{},
-        "relationships" => relationships
+        "relationships" => %{}
       }
     }
 

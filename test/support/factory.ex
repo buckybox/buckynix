@@ -31,7 +31,7 @@ defmodule Buckynix.Factory do
     %Buckynix.Transaction{
       amount: Enum.random(-1000..1000),
       description: "Pay for #{Faker.Commerce.product_name}",
-      value_date: Ecto.DateTime.cast!(Timex.shift(Timex.now, days: Enum.random(-30..0)))
+      value_date: Ecto.DateTime.cast!(Timex.shift(Timex.now, days: Enum.random(-30..-1)))
     }
   end
 

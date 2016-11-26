@@ -26,31 +26,14 @@ defmodule Buckynix.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-    user = (from u in User,
-      preload: [:account, :address]
-    ) |> Repo.get!(id)
-
-    orders = []
+    user = (from u in User, preload: [:account, :address])
+         |> Repo.get!(id)
 
     account = user.account
     address = user.address
+    orders = []
 
-    transactions = Repo.all(
-      from t in Buckynix.Transaction,
-      where: t.account_id == ^account.id,
-      order_by: [desc: :value_date]
-    )
-
-    transactions = transactions |> Enum.map(
-      fn(tx) ->
-        %{tx | balance: Enum.reduce_while(transactions, account.balance, fn(tx2, acc) ->
-          if tx2.value_date <= tx.value_date, do: {:halt, acc}, else: {:cont, Money.subtract(acc, tx2.amount)}
-        end
-        )}
-      end
-    )
-
-    render(conn, "show.html", user: user, account: account, address: address, orders: orders, transactions: transactions)
+    render(conn, "show.html", user: user, account: account, address: address, orders: orders)
   end
 
   def edit(conn, %{"id" => id}) do

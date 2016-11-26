@@ -6,7 +6,7 @@ defmodule Buckynix.Account do
     field :balance, Money.Ecto.Type
     belongs_to :user, Buckynix.User
 
-    has_many :transaction, Buckynix.Transaction
+    has_many :transactions, Buckynix.Transaction
 
     timestamps
   end

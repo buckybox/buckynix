@@ -17,9 +17,6 @@ defmodule Buckynix.User do
     many_to_many :organizations, Buckynix.Organization, join_through: "organizations_users"
 
     timestamps
-
-    field :url, :string, virtual: true
-    field :balance, :string, virtual: true
   end
 
   @required_fields ~w(name email tags)a

@@ -8,7 +8,7 @@ defmodule Buckynix.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug Buckynix.Plugs.Organization
+    plug Buckynix.Plugs.Assigns
     plug Coherence.Authentication.Session
   end
 
@@ -18,13 +18,14 @@ defmodule Buckynix.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug Buckynix.Plugs.Organization
+    plug Buckynix.Plugs.Assigns
     plug Coherence.Authentication.Session, protected: true
   end
 
   pipeline :api do
     plug :accepts, ["json-api"]
     plug :fetch_session
+    plug Buckynix.Plugs.Assigns
     plug JaSerializer.ContentTypeNegotiation
     plug JaSerializer.Deserializer
   end
